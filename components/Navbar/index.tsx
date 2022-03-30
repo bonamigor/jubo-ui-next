@@ -2,7 +2,7 @@ import logoImg from '../../assets/logo.png'
 import Image from 'next/image';
 
 import { NextPage } from "next";
-import { Container, Content, Logo, Menu, MenuItem } from './navbar';
+import { Container, Content, Dropdown, Logo, Menu, MenuItem } from './navbar';
 import LogginButton from '../LoginButton';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -26,8 +26,16 @@ const Navbar: NextPage = () => {
             <h1>Jubo</h1>
           </Logo>
           <Menu>
-            <MenuItem onClick={() => {router.push('/dashboard')}} isActive={isActive({route, item: ''})}>DASHBOARD</MenuItem>
-            <MenuItem isActive={isActive({route, item: 'cadastro'})}>CADASTROS</MenuItem>
+            <MenuItem onClick={() => {router.push('/dashboard')}} isActive={isActive({route, item: 'dashboard'})}>DASHBOARD</MenuItem>
+            <Dropdown>
+              <MenuItem isActive={isActive({route, item: 'cadastro'})}>CADASTROS</MenuItem>
+              <div>
+                <MenuItem isActive={isActive({route, item: 'cadastro'})}>USUÁRIO</MenuItem>
+                <MenuItem isActive={isActive({route, item: 'cadastro'})}>CLIENTE</MenuItem>
+                <MenuItem isActive={isActive({route, item: 'cadastro'})}>PRODUTO</MenuItem>
+                <MenuItem isActive={isActive({route, item: 'cadastro'})}>ESTANTE</MenuItem>
+              </div>
+            </Dropdown>
             <MenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDOS</MenuItem>
             <MenuItem isActive={isActive({route, item: 'relatorio'})}>RELATÓRIOS</MenuItem>
             <LogginButton text="Rafael Bonamigo | Sair" />
