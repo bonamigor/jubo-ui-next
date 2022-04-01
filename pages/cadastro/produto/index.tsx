@@ -1,8 +1,9 @@
 import { NextPage } from "next";
 import Image from "next/image";
-import { Container, Content, FormItself, TableContainer } from "./produto";
+import { Container, Content, FormItself, InputFilter, TableContainer } from "./produto";
 import BloomImg from '../../../assets/bloom.png'
 import ConfirmImg from '../../../assets/confirm.png'
+import { useState } from 'react';
 
 interface ProductProps {
   id: number;
@@ -12,6 +13,8 @@ interface ProductProps {
 }
 
 const CadastroProduto: NextPage = () => {
+  const [filter, setFilter] = useState('')
+  const [filteredProducts, setFilteredProducts] = useState<ProductProps[]>([])
   const products: Array<ProductProps> = [
     {
       id: 1,
@@ -36,8 +39,15 @@ const CadastroProduto: NextPage = () => {
       name: 'Molho de Tomate',
       price: 0.99,
       unity: 'UND'
-    },
+    }
   ]
+
+  const handleFilterProductList = (event: any) => {
+    setFilter(event.toUpperCase())
+    setFilteredProducts(products.filter(product => {
+      return product.name.toUpperCase().includes(filter)
+    }))
+  }
 
   return (
     <>
@@ -53,6 +63,9 @@ const CadastroProduto: NextPage = () => {
             <button type="submit" id="button">Cadastrar</button>
           </FormItself>
         </Content>
+        <InputFilter>
+          <input type="text" placeholder="Filtre pelo nome do produto" onChange={event => handleFilterProductList(event.target.value)} />
+        </InputFilter>
         <TableContainer>
           <table>
             <thead>
@@ -65,24 +78,46 @@ const CadastroProduto: NextPage = () => {
             </thead>
 
             <tbody>
-              {products.map(product => {
-                return (
-                  <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>
-                    { new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                      }).format(product.price)}
-                    </td>
-                    <td>{product.unity}</td>
-                    <td>
-                      <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                      <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
-                    </td>
-                  </tr>
-                )
-              })}
+              {filter.length > 1 ? (
+                filteredProducts.map(product => {
+                  return (
+                    <tr key={product.id}>
+                      <td>{product.name}</td>
+                      <td>
+                      { new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }).format(product.price)}
+                      </td>
+                      <td>{product.unity}</td>
+                      <td>
+                        <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              ) : (
+                products.map(product => {
+                  return (
+                    <tr key={product.id}>
+                      <td>{product.name}</td>
+                      <td>
+                      { new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }).format(product.price)}
+                      </td>
+                      <td>{product.unity}</td>
+                      <td>
+                        <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+              
             </tbody>
           </table>
         </TableContainer>

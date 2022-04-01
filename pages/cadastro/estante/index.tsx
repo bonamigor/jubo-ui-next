@@ -1,8 +1,9 @@
 import { NextPage } from "next";
 import Image from "next/image";
-import { Container, Content, FormItself, TableContainer } from "./estante";
 import BloomImg from '../../../assets/bloom.png'
 import ConfirmImg from '../../../assets/confirm.png'
+import { Container, Content, FormItself, InputFilter, TableContainer } from "./estante";
+import { useState } from "react";
 
 interface EstanteProps {
   id: number;
@@ -11,6 +12,8 @@ interface EstanteProps {
 }
 
 const CadastroEstante: NextPage = () => {
+  const [filter, setFilter] = useState('')
+  const [filteredEstantes, setFilteredEstantes] = useState<EstanteProps[]>([])
   const estantes: Array<EstanteProps> = [
     {
       id: 1,
@@ -34,6 +37,13 @@ const CadastroEstante: NextPage = () => {
     }
   ]
 
+  const handleFilterEstanteList = (event: any) => {
+    setFilter(event.toUpperCase())
+    setFilteredEstantes(estantes.filter(estante => {
+      return estante.client.toUpperCase().includes(filter)
+    }))
+  }
+
   return (
     <>
       <Container>
@@ -47,6 +57,9 @@ const CadastroEstante: NextPage = () => {
             <button type="submit" id="button">Cadastrar</button>
           </FormItself>
         </Content>
+        <InputFilter>
+          <input type="text" placeholder="Filtre pelo Cliente" onChange={event => handleFilterEstanteList(event.target.value)} />
+        </InputFilter>
         <TableContainer>
           <table>
             <thead>
@@ -58,18 +71,33 @@ const CadastroEstante: NextPage = () => {
             </thead>
 
             <tbody>
-              {estantes.map(estante => {
-                return (
-                  <tr key={estante.id}>
-                    <td>{estante.client}</td>
-                    <td>{estante.period}</td>
-                    <td>
-                      <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                      <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
-                    </td>
-                  </tr>
-                )
-              })}
+              {filter.length > 1 ? (
+                filteredEstantes.map(estante => {
+                  return (
+                    <tr key={estante.id}>
+                      <td>{estante.client}</td>
+                      <td>{estante.period}</td>
+                      <td>
+                        <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              ) : (
+                estantes.map(estante => {
+                  return (
+                    <tr key={estante.id}>
+                      <td>{estante.client}</td>
+                      <td>{estante.period}</td>
+                      <td>
+                        <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
             </tbody>
           </table>
         </TableContainer>

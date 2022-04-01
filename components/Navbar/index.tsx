@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { NextPage } from "next";
 import { Container, Content, Dropdown, Logo, Menu, MenuItem } from './navbar';
 import LogginButton from '../LoginButton';
-import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 const Navbar: NextPage = () => {
@@ -29,12 +28,14 @@ const Navbar: NextPage = () => {
             <MenuItem onClick={() => {router.push('/dashboard')}} isActive={isActive({route, item: 'dashboard'})}>DASHBOARD</MenuItem>
             <Dropdown>
               <MenuItem isActive={isActive({route, item: 'cadastro'})}>CADASTROS</MenuItem>
-              <div>
-                <MenuItem isActive={isActive({route, item: 'cadastro'})}>USUÁRIO</MenuItem>
-                <MenuItem isActive={isActive({route, item: 'cadastro'})}>CLIENTE</MenuItem>
-                <MenuItem isActive={isActive({route, item: 'cadastro'})}>PRODUTO</MenuItem>
-                <MenuItem isActive={isActive({route, item: 'cadastro'})}>ESTANTE</MenuItem>
-              </div>
+              <nav>
+                <div>
+                  <MenuItem onClick={() => {router.push('/cadastro/usuario')}} isActive={isActive({route, item: 'usuario'})}>USUÁRIO</MenuItem>|
+                  <MenuItem onClick={() => {router.push('/cadastro/cliente')}} isActive={isActive({route, item: 'cliente'})}>CLIENTE</MenuItem>|
+                  <MenuItem onClick={() => {router.push('/cadastro/produto')}} isActive={isActive({route, item: 'produto'})}>PRODUTO</MenuItem>|
+                  <MenuItem onClick={() => {router.push('/cadastro/estante')}} isActive={isActive({route, item: 'estante'})}>ESTANTE</MenuItem>
+                </div>
+              </nav>
             </Dropdown>
             <MenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDOS</MenuItem>
             <MenuItem isActive={isActive({route, item: 'relatorio'})}>RELATÓRIOS</MenuItem>
