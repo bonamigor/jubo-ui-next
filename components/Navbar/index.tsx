@@ -5,16 +5,20 @@ import { NextPage } from "next";
 import { Container, Content, Dropdown, Logo, Menu, MenuItem } from './navbar';
 import LogginButton from '../LoginButton';
 import { useRouter } from 'next/router';
+import { useUser } from '../../hooks/useUser';
 
 const Navbar: NextPage = () => {
+  const { user } = useUser()
   const router = useRouter()
-  const isUserLoggedIn: boolean = true;
+  const isUserLoggedIn: boolean = user.id === 0 ? false : true
   
   const route = router.pathname
 
   const isActive = ({route, item}: {route: string, item: string}) => {
     return route.includes(item)
   }
+
+  const userName = user.id === 0 ? 'Usuário | sair' : `${user.name} | sair`
 
   return isUserLoggedIn ? (
     <>
@@ -39,24 +43,13 @@ const Navbar: NextPage = () => {
             </Dropdown>
             <MenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDOS</MenuItem>
             <MenuItem isActive={isActive({route, item: 'relatorio'})}>RELATÓRIOS</MenuItem>
-            <LogginButton text="Rafael Bonamigo | Sair" />
+            <LogginButton text={userName} />
           </Menu>
         </Content>
       </Container>
     </>
   ) : (
     <>
-      <Container>
-        <Content>
-          <Logo>
-            <Image src={logoImg} alt="Jubo" width={50} height={40}/>
-            <h1>Jubo</h1>
-          </Logo>
-          <Menu>
-            <LogginButton text="Login" />
-          </Menu>
-        </Content>
-      </Container>
     </>
   )
 }
