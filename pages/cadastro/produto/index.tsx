@@ -13,6 +13,9 @@ interface ProductProps {
 }
 
 const CadastroProduto: NextPage = () => {
+  const [name, setName] = useState('')
+  const [price, setPrice] = useState(0)
+  const [unity, setUnity] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredProducts, setFilteredProducts] = useState<ProductProps[]>([])
   const products: Array<ProductProps> = [
@@ -49,6 +52,12 @@ const CadastroProduto: NextPage = () => {
     }))
   }
 
+  const handleUpdateProduct = async (product: ProductProps) => {
+    setName(product.name)
+    setPrice(product.price)
+    setUnity(product.unity)
+  }
+
   return (
     <>
       <Container>
@@ -56,9 +65,9 @@ const CadastroProduto: NextPage = () => {
           <h1>Cadastro de Produto</h1>
           <FormItself>
             <div>
-              <input type="text" id="name" placeholder="Nome" />
-              <input type="text" id="price" placeholder="Preço" />
-              <input type="text" id="unity" placeholder="Und Medida" />
+              <input type="text" id="name" value={name} onChange={event => setName(event.target.value)} placeholder="Nome" />
+              <input type="text" id="price" value={price} onChange={event => setPrice(Number(event.target.value))} placeholder="Preço" />
+              <input type="text" id="unity" value={unity} onChange={event => setUnity(event.target.value)}  placeholder="Und Medida" />
             </div>
             <button type="submit" id="button">Cadastrar</button>
           </FormItself>
@@ -91,7 +100,7 @@ const CadastroProduto: NextPage = () => {
                       </td>
                       <td>{product.unity}</td>
                       <td>
-                        <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a onClick={() => handleUpdateProduct(product)}><Image src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
                       </td>
                     </tr>
@@ -110,7 +119,7 @@ const CadastroProduto: NextPage = () => {
                       </td>
                       <td>{product.unity}</td>
                       <td>
-                        <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a onClick={() => handleUpdateProduct(product)}><Image src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
                       </td>
                     </tr>
