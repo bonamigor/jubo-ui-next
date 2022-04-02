@@ -1,15 +1,51 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { Box, HomeStyle, LeftContent, LoginForm, RightContent } from './home';
+import { auth } from '../services/index';
+import { useUser } from '../hooks/useUser';
+import toast from 'react-hot-toast';
 
 const Home: NextPage = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { receiveUser } = useUser()
   const router = useRouter()
+
   async function handleLogin(event: FormEvent) {
     event.preventDefault()
 
-    router.push('/usuario/cadastro')
+    try {
+      const { data, errors } = await auth.login({ email: email, senha: password })
+
+      if (!errors) {
+        window.localStorage.setItem('token', data.token)
+        window.sessionStorage.setItem('userId', data.user.id)
+        window.sessionStorage.setItem('userName', data.user.nome)
+        window.sessionStorage.setItem('userEmail', data.user.email)
+        window.sessionStorage.setItem('userAdmin', data.user.admin)
+        receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
+        toast.success('Logado com sucesso!')
+        router.push('/dashboard')
+      }
+
+      if (errors?.status === 404) {
+        toast.error('Usuário não encontrado com os dados digitados.')
+      }
+      
+      if (errors?.status === 401) {
+        toast.error('E-mail/senha inválidos.')
+      }
+
+      if (errors?.status === 400) {
+        toast.error('Ocorreu um erro ao fazer o Login. Pintos')
+      }
+      
+    } catch (error) {
+      toast.error('Erro ao realizar o login')
+      console.error(error)
+    }
   }
 
   return (
@@ -42,8 +78,8 @@ const Home: NextPage = () => {
           <RightContent>
             <LoginForm onSubmit={handleLogin}>
               <h1>Login</h1>
-              <input type="text" placeholder="E-mail" />
-              <input type="password" placeholder="Senha" />
+              <input type="text" placeholder="E-mail" value={email} onChange={event => {setEmail(event.target.value)}} />
+              <input type="password" placeholder="Senha" value={password} onChange={event => {setPassword(event.target.value)}} />
               <button type="submit">Entrar</button>
             </LoginForm>
           </RightContent>
