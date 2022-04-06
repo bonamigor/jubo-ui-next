@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 
 interface User {
   id: number;
@@ -15,6 +15,7 @@ interface UserContextData {
   user: User;
   receiveUser: (user: User) => Promise<void>;
   logoutUser: () => Promise<void>;
+  getUserData: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextData>({} as UserContextData);
@@ -30,8 +31,22 @@ export function UserProvider({ children }: UserProviderProps) {
     setUser({ id: 0, name: '', email: '', admin: false})
   }
 
+  async function getUserData() {
+    const userData: User = {
+      id: Number(window.sessionStorage.getItem('userId')),
+      name: String(window.sessionStorage.getItem('userName')),
+      email: String(window.sessionStorage.getItem('userEmail')),
+      admin: String(window.sessionStorage.getItem('userAdmin')) === '1' ? true : false
+    }
+    setUser(userData)
+  }
+
+  useEffect(() => {
+    getUserData()
+  }, [])
+
   return (
-    <UserContext.Provider value={{ user, receiveUser, logoutUser }}>
+    <UserContext.Provider value={{ user, receiveUser, logoutUser, getUserData }}>
       { children }
     </UserContext.Provider>
   );

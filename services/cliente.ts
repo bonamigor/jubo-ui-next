@@ -21,7 +21,8 @@ const ClienteService = (httpClient: AxiosInstance) => ({
   },
 
   listarTodosOsClientes: async () => {
-    const response = await httpClient.get('/api/clientes')
+    const response = await httpClient.get('/api/clientes', {
+    })
 
     let errors = null
 
@@ -39,7 +40,7 @@ const ClienteService = (httpClient: AxiosInstance) => ({
   },
 
   cadastrarCliente: async ({ nome, cnpj, endereco, email, cidade, estado, cep, telefone, ativo }:
-    { nome: string, cnpj: string, endereco: string, email: string, cidade: string, estado: string, cep: string, telefone: string, ativo: boolean }) => {
+    { nome: string, cnpj: string, endereco: string, email: string, cidade: string, estado: string, cep: string, telefone: string, ativo: string }) => {
     const response = await httpClient.post(
       '/api/clientes',
       { nome, cnpj, endereco, email, cidade, estado, cep, telefone, ativo }
@@ -61,7 +62,7 @@ const ClienteService = (httpClient: AxiosInstance) => ({
   },
 
   atualizarCliente: async ({ nome, cnpj, endereco, email, cidade, estado, cep, telefone, ativo, id }:
-    { nome: string, cnpj: string, endereco: string, email: string, cidade: string, estado: string, cep: string, telefone: string, ativo: boolean, id: number }) => {
+    { nome: string, cnpj: string, endereco: string, email: string, cidade: string, estado: string, cep: string, telefone: string, ativo: string, id: number }) => {
     const response = await httpClient.put(
       '/api/clientes',
       { nome, cnpj, endereco, email, cidade, estado, cep, telefone, ativo, id }
@@ -86,10 +87,10 @@ const ClienteService = (httpClient: AxiosInstance) => ({
       `/api/clientes/${id}`
     )
 
-    let errors = null
+    let clienteErrors = null
 
     if (!response.data) {
-      errors = {
+      clienteErrors = {
         status: response.request.status,
         statusText: response.request.statusText
       }
@@ -97,7 +98,7 @@ const ClienteService = (httpClient: AxiosInstance) => ({
 
     return {
       data: response.data,
-      errors
+      clienteErrors
     }
   }
 })

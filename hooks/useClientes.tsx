@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { cliente } from '../services';
+import { clienteService } from '../services';
 
 interface Cliente {
   id: number;
@@ -11,7 +11,7 @@ interface Cliente {
   estado: string;
   cep: string;
   telefone: string;
-  ativo: boolean;
+  ativo: string;
 }
 
 type ClienteInput = Omit<Cliente, 'id'>
@@ -22,7 +22,9 @@ interface ClienteProviderProps {
 
 interface ClienteContextData {
   clientes: Cliente[];
+  populateClienteArray: () => Promise<void>;
   createCliente: (cliente: ClienteInput) => Promise<void>;
+  updateCliente: (cliente: Cliente) => Promise<void>;
 }
 
 const ClienteContext = createContext<ClienteContextData>({} as ClienteContextData);
@@ -30,21 +32,27 @@ const ClienteContext = createContext<ClienteContextData>({} as ClienteContextDat
 export function ClienteProvider({ children }: ClienteProviderProps) {
   const [clientes, setClientes] = useState<Cliente[]>([])
 
-  const fetchClientes = async () => {
-    const { data, errors } = await cliente.listarTodosOsClientes()
+  async function populateClienteArray () {
+    const { data, errors } = await clienteService.listarTodosOsClientes()
 
     if(!errors){
       setClientes(data.clientes)
     }
   }
 
-  useEffect(() => {
-    fetchClientes()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   async function createCliente(clienteInput: ClienteInput) {
-    const { data, errors } = await cliente.cadastrarCliente(clienteInput)
+    const { data, errors } = await clienteService.cadastrarCliente(clienteInput)
+
+    if (!errors) {
+      setClientes([
+        ...clientes,
+        data
+      ]);
+    }
+  }
+
+  async function updateCliente(clienteUpdate: Cliente) {
+    const { data, errors } = await clienteService.atualizarCliente(clienteUpdate)
 
     if (!errors) {
       setClientes([
@@ -55,7 +63,7 @@ export function ClienteProvider({ children }: ClienteProviderProps) {
   }
 
   return (
-    <ClienteContext.Provider value={{ clientes, createCliente }}>
+    <ClienteContext.Provider value={{ clientes, populateClienteArray, createCliente, updateCliente }}>
       { children }
     </ClienteContext.Provider>
   );

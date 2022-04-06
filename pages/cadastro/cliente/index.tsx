@@ -1,13 +1,16 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import { FormEvent, useState, useEffect } from 'react';
 import Image from "next/image";
-import BloomImg from '../../../assets/bloom.png'
-import ConfirmImg from '../../../assets/confirm.png'
-import { Container, Content, FormItself, InputFilter, TableContainer } from './cliente';
+import EditImg from '../../../assets/edit.png'
+import DeleteImg from '../../../assets/delete.png'
+import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from './cliente';
 import { useClientes } from '../../../hooks/useClientes'
-import InputMask from 'react-input-mask'
+import { useRouter } from "next/router";
+import { clienteService } from "../../../services";
+import toast from 'react-hot-toast';
+import DeleteModal from "../../../components/Modal/Delete";
 
-interface ClienteProps {
+interface Cliente {
   id: number;
   nome: string;
   cnpj: string;
@@ -17,13 +20,18 @@ interface ClienteProps {
   estado: string;
   cep: string;
   telefone: string;
-  ativo: boolean;
+  ativo: string;
 }
 
+type ClienteInput = Omit<Cliente, 'id'>
+
 const CadastroCliente: NextPage = () => {
+  const router = useRouter()
+  const [isUpdate, setIsUpdate] = useState(false)
   const [filter, setFilter] = useState('')
-  const [filteredClients, setFilteredClients] = useState<ClienteProps[]>([])
-  const { clientes } = useClientes()
+  const [filteredClients, setFilteredClients] = useState<Cliente[]>([])
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const { clientes, populateClienteArray, createCliente } = useClientes()
 
   const handleFilterClienteList = (event: any) => {
     setFilter(event.toUpperCase())
@@ -32,25 +40,116 @@ const CadastroCliente: NextPage = () => {
     }))
   }
 
+  useEffect(() => {
+    populateClienteArray()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  
+  const [id, setId] = useState(0)
+  const [nome, setNome] = useState('')
+  const [cnpj, setCnpj] = useState('')
+  const [email, setEmail] = useState('')
+  const [endereco, setEndereco] = useState('')
+  const [cep, setCep] = useState('')
+  const [cidade, setCidade] = useState('')
+  const [estado, setEstado] = useState('')
+  const [telefone, setTelefone] = useState('')
+  const [ativo, setAtivo] = useState('')
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault()
+    
+    const newCliente: ClienteInput = {
+      nome, cnpj, email, endereco, cep, cidade, estado, telefone, ativo: '1'
+    }
+
+    try {
+      createCliente(newCliente)
+      populateClienteArray()
+      router.reload()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const prepareUpdate = (cliente: Cliente) => {
+    setId(cliente.id)
+    setNome(cliente.nome)
+    setCnpj(cliente.cnpj)
+    setEmail(cliente.email)
+    setEndereco(cliente.endereco)
+    setCep(cliente.cep)
+    setCidade(cliente.cidade)
+    setEstado(cliente.estado)
+    setTelefone(cliente.telefone)
+    setAtivo(cliente.ativo)
+    setIsUpdate(true)
+  }
+
+  const handleUpdate = async () => {
+    const newCliente: Cliente = {
+      id, nome, cnpj, email, endereco, cep, cidade, estado, telefone, ativo
+    }
+    console.log(newCliente)
+    const { errors } = await clienteService.atualizarCliente(newCliente)
+
+    if (!errors) {
+      toast.success('Cliente atualizado!')
+      cleanFields()
+      setIsUpdate(false)
+      router.reload()
+    } else {
+      toast.error(errors.statusText)
+    }
+    
+  }
+
+  const cleanFields = () => {
+    setNome('')
+    setCnpj('')
+    setEmail('')
+    setEndereco('')
+    setCep('')
+    setCidade('')
+    setEstado('')
+    setTelefone('')
+    setIsUpdate(false)
+  }
+
+  const deleteCliente = (cliente: Cliente) => {
+    setId(cliente.id)
+    setIsDeleteModalOpen(true)
+  }
+
+  const onRequestClose = () => {
+    setIsDeleteModalOpen(false)
+  }
+
   return (
     <>
       <Container>
         <Content>
           <h1>Cadastro de Cliente</h1>
-          <FormItself>
-            <input type="text" id="name" placeholder="Nome" />
-            
-            <InputMask mask="99.999.999/9999-99" alwaysShowMask={false} type="text" id="cnpj" placeholder="CNPJ" />
-            <input type="email" id="email" placeholder="E-mail" />
-            <input type="text" id="address" placeholder="Endereço" />
-            
-            <input type="text" id="cep" placeholder="CEP" />
-            <input type="text" id="city" placeholder="Cidade" />
-            <input type="text" id="state" placeholder="Estado" />
-            
-            <InputMask mask={'(99) 99999-9999'} alwaysShowMask={false} type="text" id="phone" placeholder="Telefone" />
+          <FormItself onSubmit={handleSubmit}>
+            <input type="text" id="name" placeholder="Nome" 
+              value={nome} onChange={event => {setNome(event.target.value)}} />
+            <input type="text" id="cnpj" placeholder="CNPJ" 
+              value={cnpj} onChange={event => {setCnpj(event.target.value)}} />
+            <input type="email" id="email" placeholder="E-mail" 
+              value={email} onChange={event => {setEmail(event.target.value)}} />
+            <input type="text" id="address" placeholder="Endereço" 
+              value={endereco} onChange={event => {setEndereco(event.target.value)}} />
+            <input type="text" id="cep" placeholder="CEP" 
+              value={cep} onChange={event => {setCep(event.target.value)}} />
+            <input type="text" id="city" placeholder="Cidade" 
+              value={cidade} onChange={event => {setCidade(event.target.value)}} />
+            <input type="text" id="state" placeholder="Estado" 
+              value={estado} onChange={event => {setEstado(event.target.value)}} />
+            <input type="text" id="phone" placeholder="Telefone" 
+              value={telefone} onChange={(event) => {setTelefone(event.target.value)}} />
 
-            <button type="submit" id="button">Cadastrar</button>
+            <FormSubmitButton type="submit" id="button" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+            <FormButton type="button" id="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>
         <InputFilter>
@@ -78,8 +177,8 @@ const CadastroCliente: NextPage = () => {
                         <td>{client.email}</td>
                         <td>{client.telefone}</td>
                         <td>
-                          <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                          <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
+                          <a><Image onClick={() => prepareUpdate(client)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                          <a><Image onClick={() => {deleteCliente(client)}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
                         </td>
                       </tr>
                     )
@@ -93,8 +192,8 @@ const CadastroCliente: NextPage = () => {
                         <td>{cliente.email}</td>
                         <td>{cliente.telefone}</td>
                         <td>
-                          <a><Image onClick={() => {}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                          <a><Image onClick={() => {}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>
+                          <a><Image onClick={() => prepareUpdate(cliente)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                          <a><Image onClick={() => {deleteCliente(cliente)}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
                         </td>
                       </tr>
                     )
@@ -103,6 +202,7 @@ const CadastroCliente: NextPage = () => {
               </tbody>
             </table>
           </TableContainer>
+          <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Cliente' id={id} />
       </Container>
     </>
   )

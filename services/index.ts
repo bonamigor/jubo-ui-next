@@ -4,22 +4,28 @@ setupInterceptorsTo(axios)
 
 import AuthService from './auth'
 import ClienteService from "./cliente";
+import UsuarioService from './usuario';
 
 const API_ENVS = {
-  local: 'http://localhost:3000'
+  local: 'http://localhost:3001'
 }
 
 const httpClient = axios.create({
   baseURL: API_ENVS.local
 })
 
-axios.interceptors.request.use(() => {
+httpClient.interceptors.request.use(config => {
   const token = window.localStorage.getItem('token')
 
-  if(token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+  if (token) {
+    config.headers = {
+      Authorization: `Bearer ${token}`
+    }
   }
+
+  return config;
 })
 
 export const auth = AuthService(httpClient)
-export const cliente = ClienteService(httpClient)
+export const clienteService = ClienteService(httpClient)
+export const usuarioService = UsuarioService(httpClient)

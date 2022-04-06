@@ -88,21 +88,49 @@ export const FormItself = styled.form`
       font-weight: 400;
     }
   }
-  button[type="submit"] {
-    width: 100%;
-    padding: 0 1.5rem;
-    height: 4rem;
-    background: var(--green-500);
-    color: #FFF;
-    border-radius: 0.25rem;
-    border: 0;
-    font-size: 1rem;
-    margin-top: 1.5rem;
-    font-weight: 600;
-    transition: filter 0.2s;
-    &:hover {
-      filter: brightness(0.9);
-    }
+`
+
+interface FormButtonProps {
+  isUpdate?: boolean;
+}
+
+export const FormSubmitButton = styled.button<FormButtonProps>` 
+  display: ${(props) => props.isUpdate
+    ? 'none'
+    : 'block'};
+  width: 100%;
+  padding: 0 1.5rem;
+  height: 4rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
+  }
+`
+
+export const FormButton = styled.button<FormButtonProps>` 
+  display: ${(props) => props.isUpdate
+    ? 'block'
+    : 'none'};
+  width: 100%;
+  padding: 0 1.5rem;
+  height: 4rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
   }
 `
 
