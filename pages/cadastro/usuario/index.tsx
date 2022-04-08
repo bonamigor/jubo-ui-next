@@ -6,7 +6,7 @@ import { Admin, Container, FormButton, Forms, FormSubmitButton, InputFilter, Tab
 import EditImg from '../../../assets/edit.png'
 import DeleteImg from '../../../assets/delete.png'
 import { useClientes } from '../../../hooks/useClientes';
-import { clienteService, usuarioService } from "../../../services";
+import { usuarioService } from "../../../services";
 import toast from "react-hot-toast";
 import DeleteModal from "../../../components/Modal/Delete";
 import { useRouter } from "next/router";
@@ -51,7 +51,6 @@ const CadastroUsuario: NextPage = () => {
       }
     }
     fetchUsers()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -85,13 +84,13 @@ const CadastroUsuario: NextPage = () => {
     }
   }
 
-  const handleSubmitUser = async () => {
+  const handleSubmitUser = async (event: FormEvent) => {
     try {
       const { errors } = await usuarioService.cadastrarUsuarioRegular({
         nome: nome,
         email: email,
         senha: senha,
-        clienteId: clienteId
+        clienteId: clienteId.split(' ')[0]
       })
 
       if (!errors) {
@@ -176,12 +175,14 @@ const CadastroUsuario: NextPage = () => {
             <input type="text" placeholder="Nome" value={nome} onChange={event => {setNome(event.target.value)}} />
             <input type="email" placeholder="E-mail" value={email} onChange={event => {setEmail(event.target.value)}} />
             <input type="password" placeholder="Senha" value={senha} onChange={event => {setSenha(event.target.value)}} />
-            <select value={clienteId} onChange={event => {setClienteId(event.target.value)}}>
-            <option value="">Selecione o Cliente</option>
+            <input type="text" placeholder="Pesquise o Cliente" 
+              list="clientes" id="cliente-choice" name="cliente-choice"
+              value={clienteId} onChange={event => {setClienteId(event.target.value)}} />
+            <datalist id="clientes">
               {clientes.map(cliente => {
-                return (<option key={cliente.id} value={cliente.id}>{cliente.nome}</option>)
+                return (<option key={cliente.id} value={`${cliente.id} - ${cliente.nome}`} />)
               })}
-            </select>
+            </datalist>
             <FormSubmitButton type="submit" id="button" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
             <FormButton type="button" id="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </User>

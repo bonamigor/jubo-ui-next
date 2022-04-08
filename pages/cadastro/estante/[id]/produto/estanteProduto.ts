@@ -15,7 +15,7 @@ export const Content = styled.div`
   background: var(--white);
   border-radius: 10px;
   width: 1100px;
-  height: 320px;
+  height: 250px;
   padding: 0 5px;
   
   h1 {
@@ -25,27 +25,28 @@ export const Content = styled.div`
 
 export const FormItself = styled.form`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   width: 100%;
   margin-top: 2.5rem;
   padding: 0 1rem;
 
-  div {
-    display: flex;
-    flex-direction: row;
+  input:first-of-type {
+    padding: 0 1rem;
+    margin: 0 0rem;
+    height: 4rem;
+    width: 550px;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    font-weight: 300;
+    font-size: 1rem;
 
-    #name {
-      width: 500px;
-    }
-
-    #price {
-      width: 150px;
-    }
-
-    #unity {
-      width: 200px;
+    &::placeholder {
+      color: var(--gray-300);
+      font-size: 1.5rem;
+      font-weight: 400;
     }
   }
 
@@ -53,6 +54,7 @@ export const FormItself = styled.form`
     padding: 0 1.5rem;
     margin: 0 1rem;
     height: 4rem;
+    width: 150px;
     border-radius: 0.25rem;
     border: 1px solid #d7d7d7;
     background: var(--gray-100);
@@ -65,8 +67,30 @@ export const FormItself = styled.form`
       font-weight: 400;
     }
   }
+
+  select {
+    width: 600px;
+    padding: 0 1.5rem;
+    height: 4rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    font-weight: 400;
+    font-size: 1rem;
+
+    &::placeholder {
+      color: var(--gray-300);
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+    
+    option {
+      padding: 0 1.5rem;
+    }
+  }
+
   button[type="submit"] {
-    width: 300px;
+    width: 150px;
     padding: 0 1.5rem;
     height: 4rem;
     background: var(--green-500);
@@ -74,12 +98,15 @@ export const FormItself = styled.form`
     border-radius: 0.25rem;
     border: 0;
     font-size: 1rem;
-    margin-top: 1.5rem;
     font-weight: 600;
     transition: filter 0.2s;
     &:hover {
       filter: brightness(0.9);
     }
+  }
+
+  ul {
+    list-style-type: none;
   }
 `
 
@@ -91,15 +118,14 @@ export const FormSubmitButton = styled.button<FormButtonProps>`
   display: ${(props) => props.isUpdate
     ? 'none'
     : 'block'};
-  width: 150px;
+  width: 100px;
   padding: 0 1rem;
-  height: 3rem;
+  height: 2rem;
   background: var(--green-500);
   color: #FFF;
   border-radius: 0.25rem;
   border: 0;
   font-size: 1rem;
-  margin-top: 1.5rem;
   font-weight: 600;
   transition: filter 0.2s;
   &:hover {
@@ -128,27 +154,33 @@ export const FormButton = styled.button<FormButtonProps>`
 `
 
 export const InputFilter = styled.div`
-  display: flex;
+  display: inline-block;
+  position: relative;
   justify-content: center;
   align-items: center;
-  margin-top: 4rem;
 
   input {
     padding: 0 1.5rem;
-    margin: 0 1rem;
     height: 4rem;
     border-radius: 0.25rem;
     border: 1px solid #d7d7d7;
     background: var(--gray-100);
     font-weight: 400;
     font-size: 1rem;
-    width: 1100px;
+    width: 500px;
 
     &::placeholder {
       color: var(--gray-300);
       font-size: 1.5rem;
       font-weight: 400;
     }
+  }
+
+  div {
+    position: absolute;
+    z-index: 1;
+    padding-left: 25px;
+    margin-top: 1rem;
   }
 `
 

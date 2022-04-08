@@ -49,6 +49,24 @@ export const FormItself = styled.form`
     }
   }
 
+  input:first-of-type {
+    padding: 0 1.5rem;
+    margin: 0 1rem;
+    height: 4rem;
+    width: 600px;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    font-weight: 400;
+    font-size: 1rem;
+
+    &::placeholder {
+      color: var(--gray-300);
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+  }
+
   input {
     padding: 0 1.5rem;
     margin: 0 1rem;
@@ -65,6 +83,28 @@ export const FormItself = styled.form`
       font-weight: 400;
     }
   }
+
+  select {
+    width: 600px;
+    padding: 0 1.5rem;
+    height: 4rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    font-weight: 400;
+    font-size: 1rem;
+
+    &::placeholder {
+      color: var(--gray-300);
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+    
+    option {
+      padding: 0 1.5rem;
+    }
+  }
+
   button[type="submit"] {
     width: 300px;
     padding: 0 1.5rem;
@@ -80,6 +120,50 @@ export const FormItself = styled.form`
     &:hover {
       filter: brightness(0.9);
     }
+  }
+`
+
+interface FormButtonProps {
+  isUpdate?: boolean;
+}
+
+export const FormSubmitButton = styled.button<FormButtonProps>` 
+  display: ${(props) => props.isUpdate
+    ? 'none'
+    : 'block'};
+  width: 150px;
+  padding: 0 1rem;
+  height: 3rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
+  }
+`
+
+export const FormButton = styled.button<FormButtonProps>` 
+  display: ${(props) => props.isUpdate
+    ? 'block'
+    : 'none'};
+  width: 200px;
+  padding: 0 1rem;
+  height: 3rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
   }
 `
 

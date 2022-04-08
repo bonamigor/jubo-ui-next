@@ -1,10 +1,10 @@
 
 import Modal from 'react-modal'
 import { NextPage } from "next";
-import { clienteService } from '../../../services';
+import { clienteService, produtoService } from '../../../services';
 import toast from 'react-hot-toast';
 import { Buttons, Container, Content } from './delete';
-import { usuarioService } from '../../../services/index';
+import { usuarioService, estanteService } from '../../../services/index';
 import { useUser } from '../../../hooks/useUser';
 import { useRouter } from 'next/router';
 
@@ -27,6 +27,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
         if(!clienteErrors) {
           onRequestClose()
           toast.success('Cliente excluído com sucesso!')
+          router.reload()
         } else {
           toast.error('Erro ao excluir o cliente.')
         }
@@ -36,7 +37,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
 
         if(!userErrors) {
           onRequestClose()
-          toast.success('Cliente excluído com sucesso!')
+          toast.success('Usuário excluído com sucesso!')
           if (id === user.id) {
             window.localStorage.removeItem('token')
             window.sessionStorage.removeItem('userId')
@@ -46,8 +47,31 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
             logoutUser()
             router.push('/')
           }
+          router.reload()
         } else {
-          toast.error('Erro ao excluir o cliente.')
+          toast.error('Erro ao excluir o Usuário.')
+        }
+        break;
+      
+      case 'Produto':
+        const { produtoErrors } = await produtoService.deletarProduto(id)
+        if (!produtoErrors) {
+          onRequestClose()
+          toast.success('Produto excluído com sucesso!')
+          router.reload()
+        } else {
+          toast.error('Erro ao excluir o Produto.')
+        }
+        break;
+
+      case 'Estante':
+        const { estanteErrors } = await estanteService.deletarEstante(id)
+        if (!estanteErrors) {
+          onRequestClose()
+          toast.success('Estante excluída com sucesso!')
+          router.reload()
+        } else {
+          toast.error('Erro ao excluir a Estante.')
         }
         break;
     }

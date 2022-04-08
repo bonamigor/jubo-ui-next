@@ -15,10 +15,6 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 }
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {
-    const token = window.localStorage.getItem('token')
-    response.config.headers = {
-        Authorization: `Bearer ${token}`
-    }
     console.info(`[response] [${JSON.stringify(response)}]`);
     return response;
 }

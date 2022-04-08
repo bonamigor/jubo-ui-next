@@ -5,6 +5,8 @@ setupInterceptorsTo(axios)
 import AuthService from './auth'
 import ClienteService from "./cliente";
 import UsuarioService from './usuario';
+import ProdutoService from "./produto";
+import EstanteService from "./estante";
 
 const API_ENVS = {
   local: 'http://localhost:3001'
@@ -29,3 +31,5 @@ httpClient.interceptors.request.use(config => {
 export const auth = AuthService(httpClient)
 export const clienteService = ClienteService(httpClient)
 export const usuarioService = UsuarioService(httpClient)
+export const produtoService = ProdutoService(httpClient)
+export const estanteService = EstanteService(httpClient)
