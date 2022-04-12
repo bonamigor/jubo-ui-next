@@ -113,7 +113,7 @@ const CadastroEstante: NextPage = () => {
           <FormItself onSubmit={handleSubmit}>
             <div>
               <input type="text" placeholder="Pesquise o Cliente" 
-                list="clientes" id="cliente-choice" name="cliente-choice"
+                list="clientes" id="cliente-choice" name="cliente-choice" autoComplete="off"
                 value={cliente} onChange={event => {setCliente(event.target.value)}} />
               <datalist id="clientes">
                 {clientes.map(cliente => {
@@ -151,8 +151,8 @@ const CadastroEstante: NextPage = () => {
                       <td>{estante.periodo}</td>
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
-                        <a><Image onClick={() => handleDeleteEstante(estante)} src={AddImg} alt="Deletear" width={30} height={30} /></a>
+                        <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
+                        <a><Image onClick={() => router.push(`/cadastro/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
@@ -165,8 +165,8 @@ const CadastroEstante: NextPage = () => {
                       <td>{estante.periodo}</td>
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
-                        <a><Image onClick={() => router.push(`/cadastro/estante/${estante.id}/produto`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
+                        <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
+                        <a><Image onClick={() => router.push(`/cadastro/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )

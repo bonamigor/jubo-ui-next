@@ -20,14 +20,27 @@ const Home: NextPage = () => {
       const { data, errors } = await auth.login({ email: email, senha: password })
 
       if (!errors) {
-        window.localStorage.setItem('token', data.token)
-        window.sessionStorage.setItem('userId', data.user.id)
-        window.sessionStorage.setItem('userName', data.user.nome)
-        window.sessionStorage.setItem('userEmail', data.user.email)
-        window.sessionStorage.setItem('userAdmin', data.user.admin)
-        receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
-        toast.success('Logado com sucesso!')
-        router.push('/dashboard')
+        if (data.user.admin === 1) {
+          window.localStorage.setItem('token', data.token)
+          window.sessionStorage.setItem('userId', data.user.id)
+          window.sessionStorage.setItem('userName', data.user.nome)
+          window.sessionStorage.setItem('userEmail', data.user.email)
+          window.sessionStorage.setItem('userAdmin', data.user.admin)
+          receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
+          toast.success('Logado com sucesso!')
+          router.push('/dashboard')
+        } else {
+          window.localStorage.setItem('token', data.token)
+          window.sessionStorage.setItem('userId', data.user.id)
+          window.sessionStorage.setItem('userName', data.user.nome)
+          window.sessionStorage.setItem('userEmail', data.user.email)
+          window.sessionStorage.setItem('userAdmin', data.user.admin)
+          window.sessionStorage.setItem('userClientId', data.user.clienteId)
+          receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin, clienteId: data.user.clienteId })
+          toast.success('Logado com sucesso!')
+          router.push('/cliente/estante')
+        }
+        
       }
 
       if (errors?.status === 404) {
@@ -72,7 +85,7 @@ const Home: NextPage = () => {
             <footer>
               <p>Dúvidas?</p>
               <p>(62) 99155-4437 / (62) 3091-5471</p>
-              <p>mendesalimentos@hotmail.com</p>
+              <p><a href="mailto:mendesalimentos@hotmail.com">mendesalimentos@hotmail.com</a></p>
             </footer>
           </LeftContent>
           <RightContent>

@@ -6,10 +6,10 @@ interface Cliente {
   nome: string;
   cnpj: string;
   endereco: string;
+  cep: string;
   email: string;
   cidade: string;
   estado: string;
-  cep: string;
   telefone: string;
   ativo: string;
 }
@@ -21,8 +21,10 @@ interface ClienteProviderProps {
 }
 
 interface ClienteContextData {
+  cliente: Cliente;
   clientes: Cliente[];
   populateClienteArray: () => Promise<void>;
+  setClienteData: (id: number) => Promise<void>;
   createCliente: (cliente: ClienteInput) => Promise<void>;
   updateCliente: (cliente: Cliente) => Promise<void>;
 }
@@ -31,12 +33,31 @@ const ClienteContext = createContext<ClienteContextData>({} as ClienteContextDat
 
 export function ClienteProvider({ children }: ClienteProviderProps) {
   const [clientes, setClientes] = useState<Cliente[]>([])
+  const [cliente, setCliente] = useState<Cliente>({
+    id: 0,
+    nome: '',
+    cnpj: '',
+    endereco: '',
+    cep: '',
+    email: '',
+    cidade: '',
+    estado: '',
+    telefone: '',
+    ativo: ''
+  })
 
   async function populateClienteArray () {
     const { data, errors } = await clienteService.listarTodosOsClientes()
 
     if(!errors){
       setClientes(data.clientes)
+    }
+  }
+
+  async function setClienteData (id: number) {
+    const { data, errors } = await clienteService.listarUmCliente(id)
+    if (!errors) {
+      setCliente(data.cliente)
     }
   }
 
@@ -63,7 +84,7 @@ export function ClienteProvider({ children }: ClienteProviderProps) {
   }
 
   return (
-    <ClienteContext.Provider value={{ clientes, populateClienteArray, createCliente, updateCliente }}>
+    <ClienteContext.Provider value={{ cliente, clientes, populateClienteArray, setClienteData, createCliente, updateCliente }}>
       { children }
     </ClienteContext.Provider>
   );

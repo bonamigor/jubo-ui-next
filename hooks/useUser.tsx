@@ -5,6 +5,7 @@ interface User {
   name: string;
   email: string;
   admin: boolean;
+  clienteId?: number;
 }
 
 interface UserProviderProps {
@@ -21,7 +22,7 @@ interface UserContextData {
 const UserContext = createContext<UserContextData>({} as UserContextData);
 
 export function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useState<User>({ id: 0, name: '', email: '', admin: false});
+  const [user, setUser] = useState<User>({ id: 0, name: '', email: '', admin: false, clienteId: 0});
 
   async function receiveUser(user: User) {
     setUser(user);

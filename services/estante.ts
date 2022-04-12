@@ -20,7 +20,25 @@ const EstanteService = (httpClient: AxiosInstance) => ({
   },
 
   listarTodosAsEstantes: async () => {
-    const response = await httpClient.get('/api/estantes-cliente')
+    const response = await httpClient.get('/api/estantes')
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
+  listarEstantesDoCliente: async (id: number) => {
+    const response = await httpClient.get(`/api/cliente/${id}/estantes`)
 
     let errors = null
 

@@ -32,6 +32,10 @@ export const LeftContent = styled.div`
   align-items: center;
   text-align: center;
 
+  a {
+    color: var(--white);
+  }
+
   h1 {
     color: var(--white);
     font-size: 3rem;

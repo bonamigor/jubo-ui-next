@@ -176,7 +176,7 @@ const CadastroUsuario: NextPage = () => {
             <input type="email" placeholder="E-mail" value={email} onChange={event => {setEmail(event.target.value)}} />
             <input type="password" placeholder="Senha" value={senha} onChange={event => {setSenha(event.target.value)}} />
             <input type="text" placeholder="Pesquise o Cliente" 
-              list="clientes" id="cliente-choice" name="cliente-choice"
+              list="clientes" id="cliente-choice" name="cliente-choice" autoComplete="off"
               value={clienteId} onChange={event => {setClienteId(event.target.value)}} />
             <datalist id="clientes">
               {clientes.map(cliente => {
