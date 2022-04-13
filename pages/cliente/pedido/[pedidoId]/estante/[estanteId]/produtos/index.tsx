@@ -1,13 +1,14 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Container, Content, FormContent, FormHeader, PedidoData, PedidoForm, TableContainer } from "./produtos";
-import { useState, useEffect } from 'react';
-import { produtoEstanteService } from '../../../../../../../services/index';
+import { useState, useEffect, FormEvent } from 'react';
+import { produtoEstanteService, itemPedidoService } from '../../../../../../../services/index';
 import Image from "next/image";
 import EditImg from '../../../../../assets/edit.png'
 import DeleteImg from '../../../../../assets/delete.png'
 import { usePedido } from '../../../../../../../hooks/usePedido';
 import { useClientes } from '../../../../../../../hooks/useClientes';
+import toast from "react-hot-toast";
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
@@ -26,6 +27,7 @@ const PedidoProdutos: NextPage = () => {
 
   const [produtoNaEstante, setProdutosNaEstante] = useState<ProdutoNaEstanteProps[]>([])
   const [produtoId, setProdutoId] = useState('')
+  const [quantidade, setQuantidade] = useState('')
 
   useEffect(() => {
     const fetchProdutos = async () => {
@@ -44,10 +46,31 @@ const PedidoProdutos: NextPage = () => {
     setPedidoData(Number(pedidoId))
   }, [pedidoId, setClienteData, setPedidoData])
 
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault()
+    try {
+      const newProdutoId = produtoId.split(' ')[0]
+
+      const { data, errors } = await itemPedidoService.adicionarProdutoNoPedido({
+        estanteId: String(estanteId),
+        produtoId: String(produtoId),
+        quantidade: Number(quantidade),
+        pedidoId: String(pedidoId)
+      })
+
+      if (!errors) {
+        toast.success('Produto adicionado no pedido!')
+      }
+    } catch (error) {
+      toast.error('Erro ao adicionar o produto no pedido.')
+      console.error(error)
+    }
+  }
+
   return (
     <Container>
       <Content>
-        <PedidoForm>
+        <PedidoForm onSubmit={handleSubmit}> 
           <FormHeader>
             <h1>Adicionar Produtos no Pedido</h1>
             <PedidoData>
@@ -69,7 +92,7 @@ const PedidoProdutos: NextPage = () => {
                 {produtoNaEstante.map(produto => {
                   return (
                   <option key={produto.produtoId} 
-                    value={`${produto.produtoId} - ${produto.nome}`}
+                    value={`${produto.produtoId} - ${produto.nome} - R$ ${produto.precoVenda}`}
                   />)
                 })}
               </datalist>
@@ -78,6 +101,61 @@ const PedidoProdutos: NextPage = () => {
             <button type="submit">Adicionar</button>
           </FormContent>
         </PedidoForm>
+        {/* <TableContainer>
+        <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Unidade</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {filter.length > 1 ? (
+                filteredprodutos.map(produto => {
+                  return (
+                    <tr key={produto.id}>
+                      <td>{produto.nome}</td>
+                      <td>
+                      { new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }).format(produto.preco)}
+                      </td>
+                      <td>{produto.unidade}</td>
+                      <td>
+                        <a><Image onClick={() => prepareUpdate(produto)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => handleDeleteProduto(produto)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              ) : (
+                produtos.map(produto => {
+                  return (
+                    <tr key={produto.id}>
+                      <td>{produto.nome}</td>
+                      <td>
+                      { new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }).format(produto.preco)}
+                      </td>
+                      <td>{produto.unidade}</td>
+                      <td>
+                        <a><Image onClick={() => prepareUpdate(produto)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => handleDeleteProduto(produto)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+              
+            </tbody>
+          </table>
+        </TableContainer> */}
       </Content>
     </Container>
   )

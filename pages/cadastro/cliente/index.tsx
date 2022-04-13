@@ -66,6 +66,7 @@ const CadastroCliente: NextPage = () => {
     try {
       createCliente(newCliente)
       populateClienteArray()
+      toast.success('Cliente cadastrado com sucesso.')
       router.reload()
     } catch (error) {
       console.log(error)

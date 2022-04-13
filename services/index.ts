@@ -9,6 +9,7 @@ import ProdutoService from "./produto";
 import EstanteService from "./estante";
 import ProdutoEstanteService from "./produtoEstante";
 import PedidoService from './pedido'
+import ItemPedidoService from './item-pedido'
 
 const API_ENVS = {
   local: 'http://localhost:3001'
@@ -37,3 +38,4 @@ export const produtoService = ProdutoService(httpClient)
 export const estanteService = EstanteService(httpClient)
 export const produtoEstanteService = ProdutoEstanteService(httpClient)
 export const pedidoService = PedidoService(httpClient)
+export const itemPedidoService = ItemPedidoService(httpClient)

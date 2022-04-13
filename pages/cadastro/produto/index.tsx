@@ -23,7 +23,7 @@ const CadastroProduto: NextPage = () => {
   const [produtos, setProdutos] = useState<ProdutoProps[]>([])
   const [id, setId] = useState(0)
   const [nome, setNome] = useState('')
-  const [preco, setPreco] = useState(0)
+  const [preco, setPreco] = useState('')
   const [unidade, setUnidade] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredprodutos, setFilteredprodutos] = useState<ProdutoProps[]>([])
@@ -67,7 +67,7 @@ const CadastroProduto: NextPage = () => {
   const prepareUpdate = async (produto: ProdutoProps) => {
     setId(produto.id)
     setNome(produto.nome)
-    setPreco(produto.preco)
+    setPreco(String(produto.preco))
     setUnidade(produto.unidade)
     setIsUpdate(true)
   }
@@ -107,7 +107,7 @@ const CadastroProduto: NextPage = () => {
           <FormItself onSubmit={handleSubmit}>
             <div>
               <input type="text" id="name" value={nome} onChange={event => setNome(event.target.value)} placeholder="Nome" />
-              <input type="text" id="price" value={preco} onChange={(event: { target: { value: any; }; }) => setPreco(Number(event.target.value))} placeholder="Preço" />
+              <input type="text" id="price" value={preco} onChange={(event: { target: { value: any; }; }) => setPreco(event.target.value)} placeholder="Preço" />
               <input type="text" id="unity" value={unidade} onChange={event => setUnidade(event.target.value)}  placeholder="Und Medida" />
             </div>
             <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
