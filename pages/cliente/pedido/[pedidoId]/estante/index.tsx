@@ -41,7 +41,6 @@ const EstanteCliente: NextPage = () => {
       }
     }
     fetchEstantes()
-    console.log('Pedido', pedido)
   }, [])
 
   const handleSubmit = (event: FormEvent) => {

@@ -37,7 +37,44 @@ const PedidoService = (httpClient: AxiosInstance) => ({
       data: response.data,
       errors
     }
+  },
+
+  listarProdutosByPedidoId: async (pedidoId: number) => {
+    const response = await httpClient.get(`/api/pedidos/${pedidoId}/produtos`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
+  valorTotalPedidoByPedidoId: async (pedidoId: number) => {
+    const response = await httpClient.get(`/api/pedidos/${pedidoId}/valorTotal`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
   }
+  
 })
 
 export default PedidoService

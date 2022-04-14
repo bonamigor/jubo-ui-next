@@ -15,7 +15,7 @@ export const Content = styled.div`
   background: var(--white);
   border-radius: 10px;
   width: 1100px;
-  height: 700px;
+  height: 100%;
   padding: 0 5px;
   
   h1 {
@@ -25,6 +25,7 @@ export const Content = styled.div`
   h2 {
     font-weight: 400;
   }
+
 `
 
 export const PedidoForm = styled.form`
@@ -118,26 +119,44 @@ export const PedidoData = styled.div`
 `
 
 export const TableContainer = styled.div`
-  margin: 10px 0;
+  margin-top: 4rem 0;
+  padding-bottom: 4rem;
+  text-align: center;
+
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 2rem;
+    span {
+      
+      text-align: center;
+    }
+  }
+
+  h2 {
+    font-weight: 400;
+    margin-top: 4rem;
+  }
 
   table {
-    width: 1100px;
+    width: 900px;
     border-spacing: 0 0.5rem;
-    text-align: left;
     margin-bottom: 1rem;
     
     th {
       color: var(--text-body);
       font-weight: 400;
       padding: 1rem 2rem;
-      text-align: left;
       line-height: 1.5rem;
     }
 
     thead {
+      background: var(--gray-700);
       tr {
         &:first-child {
-          color: var(--gray-700);
+          color: var(--white);
         }
       }
     }
@@ -145,11 +164,8 @@ export const TableContainer = styled.div`
     tbody {
       tr {
         td {
+          background: var(--gray-200);
           font-size: 1rem;
-
-          &:first-child {
-            text-align: left;
-          }
         }
       }
     }
@@ -159,7 +175,6 @@ export const TableContainer = styled.div`
       border: 0;
       background: var(--white);
       color: var(--black);
-      border-radius: 0.25rem;
 
       a {
         margin: 0 5px;
