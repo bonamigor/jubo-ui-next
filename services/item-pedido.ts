@@ -24,6 +24,29 @@ const ItemPedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  atualizarItemDoPedido: async (
+    { estanteId, produtoId, pedidoId, itemPedidoId, quantidade }:
+    { estanteId: number, produtoId: number, pedidoId: number, itemPedidoId: number, quantidade: string }) => {
+
+    const response = await httpClient.put(
+      `/api/pedido/${pedidoId}/atualizar/${itemPedidoId}`,
+      { estanteId, produtoId, quantidade })
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
   deletarProdutoDoPedidoById: async (itemPedidoId: number) => {
     const response = await httpClient.delete(`/api/pedido/item-pedido/${itemPedidoId}`)
 

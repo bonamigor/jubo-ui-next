@@ -1,11 +1,8 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { CancelButton, ConfirmButton, Container, Content, DecideButtons, FormContent, FormHeader, PedidoData, PedidoForm, TableBorder, TableContainer, TableFooter, TableTitle } from "./produtos";
+import { CancelButton, ConfirmButton, Container, Content, DecideButtons, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm, TableBorder, TableContainer, TableFooter, TableTitle } from "./produtos";
 import { useState, useEffect, FormEvent } from 'react';
 import { produtoEstanteService, itemPedidoService, clienteService, pedidoService } from '../../../../../../../services/index';
-import Image from "next/image";
-import EditImg from '../../../../../../../assets/edit.png'
-import DeleteImg from '../../../../../../../assets/delete.png'
 import toast from "react-hot-toast";
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable";
 import DeleteModal from "../../../../../../../components/Modal/Delete";
@@ -21,7 +18,8 @@ interface ProdutoNaEstanteProps {
 }
 
 interface ProdutoNoPedidoProps {
-  id: string;
+  itemPedidoId?: string;
+  produtoId: string;
   nome: string;
   unidade: string;
   precoVenda: number;
@@ -51,6 +49,7 @@ const PedidoProdutos: NextPage = () => {
   const [pedido, setPedido] = useState({ id: 0, status: '', dataCriacao: '', dataConfirmacao: '', dataCancelamento: '', dataEntrega: '', valorTotal: 0, clienteId: 0});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [id, setId] = useState(0)
+  const [isUpdate, setIsUpdate] = useState(false)
 
   useEffect(() => {
     const fetchProdutos = async () => {
@@ -97,7 +96,7 @@ const PedidoProdutos: NextPage = () => {
         setQuantidade('')
 
         const newProduto: ProdutoNoPedidoProps = {
-          id: produtoId.split(' ')[0],
+          produtoId: produtoId.split(' ')[0],
           nome: produtoId.split(' ')[1],
           unidade: produtoId.split(' ')[5],
           precoVenda: Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')),
@@ -115,8 +114,34 @@ const PedidoProdutos: NextPage = () => {
   }
 
   const prepareUpdate = async (produto: ProdutoNoPedidoProps) => {
-    setProdutoId(`${produto.id} ${produto.nome} - R$ ${produto.precoVenda}/${produto.unidade}`)
+    setProdutoId(`${produto.itemPedidoId} - ${produto.produtoId} . ${produto.nome} - R$ ${produto.precoVenda}/${produto.unidade}`)
     setQuantidade(String(produto.quantidade))
+    setIsUpdate(true)
+  }
+
+  const handleUpdate = async () => {
+    try {
+      const itemPedidoId = produtoId.split(' ')[0]
+      const idProduto = produtoId.split(' ')[2]
+
+      const { data, errors } = await itemPedidoService.atualizarItemDoPedido({
+        estanteId: Number(estanteId),
+        produtoId: Number(idProduto),
+        pedidoId: Number(pedidoId),
+        itemPedidoId: Number(itemPedidoId),
+        quantidade: quantidade
+      })
+
+      if (!errors) {
+        toast.success(data.message)
+        setProdutoId('')
+        setQuantidade('')
+        setIsUpdate(false)
+      }
+    } catch (error) {
+      toast.error('Erro ao atualizar Item do Pedido.')
+      console.error(error)
+    }
   }
 
   const handleFecharPedido = () => {
@@ -167,7 +192,8 @@ const PedidoProdutos: NextPage = () => {
                 </datalist>
               </div>
               <input type="text" placeholder="Quantidade" value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
-              <button type="submit">Adicionar</button>
+              <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+              <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
             </FormContent>
           </PedidoForm>
           <ProductsInDemandTable prepareUpdate={prepareUpdate} />

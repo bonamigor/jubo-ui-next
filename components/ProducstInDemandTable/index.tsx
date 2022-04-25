@@ -10,7 +10,8 @@ import DeleteModal from '../Modal/Delete';
 import { useRouter } from 'next/router';
 
 interface ProductsProps {
-  id: string;
+  itemPedidoId: string;
+  produtoId: string;
   nome: string;
   unidade: string;
   precoVenda: number;
@@ -52,7 +53,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate 
   }, [products])
 
   const handleDeleteItemPedido = (product: ProductsProps) => {
-    setId(product.id)
+    setId(product.itemPedidoId)
     setIsDeleteModalOpen(true)
   }
 
@@ -75,6 +76,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate 
             <table>
               <thead>
                 <tr>
+                  <th>ID</th>
                   <th>Nome</th>
                   <th>Preço</th>
                   <th>Unidade</th>
@@ -88,15 +90,26 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate 
                 {
                   products.map(product => {
                     return (
-                      <tr key={product.id}>
+                      <tr key={String(product.itemPedidoId)}>
+                        <td>{product.itemPedidoId}</td>
                         <td>{product.nome}</td>
-                        <td>{product.precoVenda}</td>
+                        <td>
+                          {new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL'
+                          }).format(product.precoVenda)}
+                        </td>
                         <td>{product.unidade}</td>
                         <td>{product.quantidade}</td>
-                        <td>{product.total}</td>
+                        <td>
+                          {new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL'
+                          }).format(product.total)}
+                        </td>
                         <td>
                           <a><Image onClick={() => prepareUpdate(product)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                          <a><Image onClick={() => {}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                          <a><Image onClick={() => handleDeleteItemPedido(product)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
                         </td>
                       </tr>
                     )

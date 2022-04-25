@@ -122,6 +122,50 @@ export const FormContent = styled.div`
   }
 `
 
+interface FormButtonProps {
+  isUpdate?: boolean;
+}
+
+export const FormSubmitButton = styled.button<FormButtonProps>` 
+  display: ${(props) => props.isUpdate
+    ? 'none'
+    : 'block'};
+  width: 150px;
+  padding: 0 1rem;
+  height: 3rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
+  }
+`
+
+export const FormButton = styled.button<FormButtonProps>` 
+  display: ${(props) => props.isUpdate
+    ? 'block'
+    : 'none'};
+  width: 200px;
+  padding: 0 1rem;
+  height: 3rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
+  }
+`
+
 export const PedidoData = styled.div`
   display: flex;
   flex-direction: row;
