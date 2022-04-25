@@ -17,6 +17,7 @@ interface EstanteProps {
   clienteId: string;
   cliente: string;
   periodo: string;
+  observacao: string;
   ativa: string;
 }
 
@@ -32,6 +33,7 @@ const CadastroEstante: NextPage = () => {
   const [id, setId] = useState(0)
   const [cliente, setCliente] = useState('')
   const [periodo, setPeriodo] = useState('')
+  const [observacao, setObservacao] = useState('')
 
   useEffect(() => {
     const fetchEstantes = async () => {
@@ -61,6 +63,7 @@ const CadastroEstante: NextPage = () => {
       const { errors } = await estanteService.cadastrarEstante({
         clienteId: Number(cliente.split(' ')[0]),
         periodo: periodo,
+        observacao
       })
       if (!errors) {
         toast.success('Estante cadastrada com sucesso!')
@@ -76,6 +79,7 @@ const CadastroEstante: NextPage = () => {
     setId(estante.id)
     setCliente(`${estante.clienteId} - ${estante.cliente}`)
     setPeriodo(estante.periodo)
+    setObservacao(estante.observacao)
     setIsUpdate(true)
   }
 
@@ -84,6 +88,7 @@ const CadastroEstante: NextPage = () => {
       const { errors } = await estanteService.atualizarEstante({
         clienteId: Number(cliente.split(' ')[0]),
         periodo: periodo,
+        observacao,
         id: id
       })
       if (!errors) {
@@ -124,6 +129,7 @@ const CadastroEstante: NextPage = () => {
                 onChange={(event: { target: { value: SetStateAction<string>; }; }) => {setPeriodo(event.target.value)}} 
                 placeholder="Período" 
               />
+              <input type="text" placeholder="Observação" value={observacao} onChange={event => {setObservacao(event.target.value)}} />
             </div>
             <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
@@ -138,6 +144,7 @@ const CadastroEstante: NextPage = () => {
               <tr>
                 <th>ID - Cliente</th>
                 <th>Período</th>
+                <th>Observação</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -149,6 +156,7 @@ const CadastroEstante: NextPage = () => {
                     <tr key={estante.id}>
                       <td>{`${estante.clienteId} - ${estante.cliente}`}</td>
                       <td>{estante.periodo}</td>
+                      <td>{estante.observacao}</td>
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
@@ -163,6 +171,7 @@ const CadastroEstante: NextPage = () => {
                     <tr key={estante.id}>
                       <td>{`${estante.clienteId} - ${estante.cliente}`}</td>
                       <td>{estante.periodo}</td>
+                      <td>{estante.observacao}</td>
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>

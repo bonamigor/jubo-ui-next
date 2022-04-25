@@ -85,7 +85,7 @@ const CadastroProduto: NextPage = () => {
         router.reload()
       }
     } catch (error) {
-      toast.error('Erro ao cadastra rproduto.')
+      toast.error('Erro ao cadastra produto.')
       console.error(error)
     }
   }

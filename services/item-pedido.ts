@@ -22,6 +22,24 @@ const ItemPedidoService = (httpClient: AxiosInstance) => ({
       data: response.data,
       errors
     }
+  },
+
+  deletarProdutoDoPedidoById: async (itemPedidoId: number) => {
+    const response = await httpClient.delete(`/api/pedido/item-pedido/${itemPedidoId}`)
+
+    let itemPedidoErrors = null
+
+    if (!response.data) {
+      itemPedidoErrors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      itemPedidoErrors
+    }
   }
 })
 

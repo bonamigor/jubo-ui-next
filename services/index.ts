@@ -1,6 +1,6 @@
 import axios from "axios"
 import { setupInterceptorsTo } from './Interceptors';
-setupInterceptorsTo(axios)
+// setupInterceptorsTo(axios)
 
 import AuthService from './auth'
 import ClienteService from "./cliente";

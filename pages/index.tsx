@@ -38,7 +38,7 @@ const Home: NextPage = () => {
           window.sessionStorage.setItem('userClientId', data.user.clienteId)
           receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin, clienteId: data.user.clienteId })
           toast.success('Logado com sucesso!')
-          router.push('/cliente/estante')
+          router.push('/cliente/inicial')
         }
         
       }

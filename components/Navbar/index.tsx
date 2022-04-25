@@ -8,21 +8,25 @@ import { useRouter } from 'next/router';
 import { useUser } from '../../hooks/useUser';
 import { pedidoService } from '../../services';
 import { usePedido } from '../../hooks/usePedido';
+import { useEffect, useState } from 'react';
 
-const Navbar: NextPage = () => {
-  const { user } = useUser()
-  const { pedido, receivePedido } = usePedido()
+interface NavbarProps {
+  isUserLoggedIn: boolean;
+}
+
+const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
+  const { user, logoutUser } = useUser()
+  const { receivePedido } = usePedido()
+
   const router = useRouter()
-  const isUserLoggedIn: boolean = user.id === 0 ? false : true
-  
   const route = router.pathname
-
+  
+  const userName = user.id === 0 ? 'Usuário | Sair' : `${user.name} | Sair`
+  const isAdmin = user.admin ? true : false
+  
   const isActive = ({route, item}: {route: string, item: string}) => {
     return route.includes(item)
   }
-
-  const userName = user.id === 0 ? 'Usuário | sair' : `${user.name} | sair`
-  const isAdmin = user.admin ? true : false
 
   const criarPedido = async () => {
     const clienteId: number = Number(window.sessionStorage.getItem('userClientId'))
@@ -72,7 +76,7 @@ const Navbar: NextPage = () => {
                 <MenuItem isActive={isActive({route, item: 'cadastro'})}>RELATÓRIOS</MenuItem>
                 <nav>
                   <div>
-                    <MenuItem onClick={() => {router.push('/cadastro/usuario')}} isActive={isActive({route, item: 'usuario'})}>USUÁRIO</MenuItem>|
+                    <MenuItem onClick={() => {router.push('/dashboard')}} isActive={isActive({route, item: 'usuario'})}>USUÁRIO</MenuItem>|
                     <MenuItem onClick={() => {router.push('/cadastro/cliente')}} isActive={isActive({route, item: 'cliente'})}>CLIENTE</MenuItem>|
                     <MenuItem onClick={() => {router.push('/cadastro/produto')}} isActive={isActive({route, item: 'produto'})}>PRODUTO</MenuItem>|
                     <MenuItem onClick={() => {router.push('/cadastro/estante')}} isActive={isActive({route, item: 'estante'})}>ESTANTE</MenuItem>

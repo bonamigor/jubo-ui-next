@@ -4,7 +4,7 @@ import { NextPage } from "next";
 import { clienteService, produtoService } from '../../../services';
 import toast from 'react-hot-toast';
 import { Buttons, Container, Content } from './delete';
-import { usuarioService, estanteService } from '../../../services/index';
+import { usuarioService, estanteService, pedidoService, itemPedidoService } from '../../../services/index';
 import { useUser } from '../../../hooks/useUser';
 import { useRouter } from 'next/router';
 
@@ -72,6 +72,27 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
           router.reload()
         } else {
           toast.error('Erro ao excluir a Estante.')
+        }
+        break;
+
+      case 'Pedido':
+        const { pedidoErrors } = await pedidoService.deletarPedidoById(id)
+        if (!pedidoErrors) {
+          onRequestClose()
+          toast.success('Pedido excluído com sucesso!')
+          router.push('/cliente/inicial')
+        } else {
+          toast.error('Erro ao excluir o Pedido.')
+        }
+        break;
+
+      case 'ItemPedido':
+        const { itemPedidoErrors } = await itemPedidoService.deletarProdutoDoPedidoById(id)
+        if (!itemPedidoErrors) {
+          onRequestClose()
+          toast.success('Item excluído do Pedido com sucesso!')
+        } else {
+          toast.error('Erro ao excluir o Item do Pedido.')
         }
         break;
     }

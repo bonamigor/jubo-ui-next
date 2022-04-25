@@ -4,8 +4,43 @@ import { Container, LeftPanel, RightPanel, Table } from './dashboard';
 import AlertImg from '../../assets/alert.png'
 import TruckImg from '../../assets/truck.png'
 import DemandsTable from '../../components/DemandsTable';
+import { useEffect, useState } from 'react';
+import { pedidoService } from '../../services';
+
+interface PedidosProps {
+  id: number;
+  dataCriacao: string;
+  valorTotal: number;
+  nome: string;
+  cidade: string;
+  estado: string;
+}
 
 const Dashboard: NextPage = () => {
+  const [pedidos, setPedidos] = useState<PedidosProps[]>([])
+  const [pedidosAmanha, setPedidosAmanha] = useState<PedidosProps[]>([])
+
+  useEffect(() => {
+    const fetchPedidos = async () => {
+      const { data, errors } = await pedidoService.listarPedidos()
+
+      if (!errors) {
+        setPedidos(data.pedidos)
+      }
+    }
+
+    const fetchPedidosAmanha = async () => {
+      const { data, errors } = await pedidoService.listarPedidosDeAmanha()
+
+      if (!errors) {
+        setPedidosAmanha(data.pedidos)
+      }
+    }
+
+    fetchPedidos()
+    fetchPedidosAmanha()
+  }, [])
+
   return (
     <>
       <Container>
@@ -16,8 +51,8 @@ const Dashboard: NextPage = () => {
             </div>
             <div>
               <h2>Novos Pedidos</h2>
-              <p>Você possui 15 novos pedidos!</p>
-              <p>Clique <a>aqui</a> para ver-los<br/> Ou intereja com a tabela abaixo!</p>
+              <p>Você possui {pedidos.length} novos pedidos!</p>
+              <p>Clique <a>aqui</a> para ver-los<br/> Ou interaja com a tabela abaixo!</p>
             </div>
           </LeftPanel>
           <RightPanel>
@@ -26,13 +61,13 @@ const Dashboard: NextPage = () => {
             </div>
             <div>
               <h2>Pedidos para amanhã</h2>
-              <p>Estão agendados para amanhã<br/> a entrega de 56 pedidos.</p>
+              <p>Estão agendados para amanhã<br/> a entrega de {pedidosAmanha.length} pedidos.</p>
               <p>Visualize-os clicando <a>aqui.</a></p>
             </div>
           </RightPanel>
         </div>
         <Table>
-          <DemandsTable />
+          <DemandsTable pedidos={pedidos} />
         </Table>
       </Container>
     </>

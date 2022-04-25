@@ -6,6 +6,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: -7rem;
+  margin-bottom: 2rem;
 `
 
 export const Content = styled.div`
@@ -28,12 +29,21 @@ export const Content = styled.div`
 
 `
 
+export const TableBorder = styled.div`
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  margin: 1rem;
+  padding-left: 1rem;
+  padding-right:  1rem;
+  padding-bottom: 1rem;
+`
+
 export const PedidoForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 1rem;
 `
 
 export const FormHeader = styled.div`
@@ -109,13 +119,35 @@ export const FormContent = styled.div`
       &:hover {
         filter: brightness(0.9);
       }
-    }
+  }
 `
 
 export const PedidoData = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   margin: 2rem 0;
+  background: var(--gray-300);
+  width: 940px;
+  border-radius: 10px;
+  padding: 1rem;
+
+  h2 {
+    text-align: center;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2rem;
+  }
+
+  span {
+    text-decoration: underline;
+    font-weight: 400;
+  }
 `
 
 export const TableContainer = styled.div`
@@ -180,5 +212,65 @@ export const TableContainer = styled.div`
         margin: 0 5px;
       }
     }
+  }
+`
+
+export const TableTitle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+`
+
+export const TableFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -4rem;
+  padding: 1rem 0;
+`
+
+export const DecideButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  margin-top: 1rem;
+`
+
+export const ConfirmButton = styled.button`
+  width: 200px;
+  padding: 0 1.5rem;
+  height: 4rem;
+  margin: 0 1rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
+  }
+`
+
+export const CancelButton = styled.button`
+  width: 200px;
+  padding: 0 1.5rem;
+  height: 4rem;
+  margin: 0 1rem;
+  background: red;
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
   }
 `

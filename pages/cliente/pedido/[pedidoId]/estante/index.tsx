@@ -1,24 +1,21 @@
 import { NextPage } from "next";
-import { Container, Content, InputFilter, SelectEstante, TableContainer } from "./estante";
+import { Container, Content, InputFilter, TableContainer } from "./estante";
 import { useState, useEffect, FormEvent } from 'react';
-import { useUser } from "../../../../../hooks/useUser";
 import { estanteService } from "../../../../../services";
 import Image from "next/image";
 import AddImg from '../../../../../assets/add.png'
 import { useRouter } from 'next/router';
-import { usePedido } from '../../../../../hooks/usePedido';
 
 interface EstanteClienteProps {
   id: number;
   periodo: string;
   clienteId: number;
   cliente: string;
+  observacao: string;
   ativa: number;
 }
 
 const EstanteCliente: NextPage = () => {
-  const { user } = useUser()
-  const { pedido } = usePedido()
   const router = useRouter()
   const [estantes, setEstantes] = useState<EstanteClienteProps[]>([])
   const [filter, setFilter] = useState('')
@@ -64,6 +61,7 @@ const EstanteCliente: NextPage = () => {
               <th>ID</th>
               <th>Cliente</th>
               <th>Período</th>
+              <th>Observação</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -76,6 +74,7 @@ const EstanteCliente: NextPage = () => {
                     <td>{estante.id}</td>
                     <td>{estante.cliente}</td>
                     <td>{estante.periodo}</td>
+                    <td>{estante.observacao}</td>
                     <td>
                       <a><Image onClick={() => router.push(`/cliente/pedido/${pedidoId}/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                     </td>
@@ -89,6 +88,7 @@ const EstanteCliente: NextPage = () => {
                     <td>{estante.id}</td>
                     <td>{estante.cliente}</td>
                     <td>{estante.periodo}</td>
+                    <td>{estante.observacao}</td>
                     <td>
                       <a><Image onClick={() => router.push(`/cliente/pedido/${pedidoId}/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                     </td>

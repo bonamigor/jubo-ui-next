@@ -13,13 +13,10 @@ const LogginButton: NextPage<LogginButtonProps> = (props) => {
   const { text } = props;
 
   const handleLogout = () => {
-    window.localStorage.removeItem('token')
-    window.sessionStorage.removeItem('userId')
-    window.sessionStorage.removeItem('userName')
-    window.sessionStorage.removeItem('userEmail')
-    window.sessionStorage.removeItem('userAdmin')
-    logoutUser()
     router.push('/')
+    window.localStorage.clear()
+    window.sessionStorage.clear()
+    logoutUser()
   }
 
   return (
