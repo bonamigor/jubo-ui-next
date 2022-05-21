@@ -89,22 +89,6 @@ export const FormItself = styled.form`
     }
   }
 
-  button[type="submit"] {
-    width: 150px;
-    padding: 0 1.5rem;
-    height: 4rem;
-    background: var(--green-500);
-    color: #FFF;
-    border-radius: 0.25rem;
-    border: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: filter 0.2s;
-    &:hover {
-      filter: brightness(0.9);
-    }
-  }
-
   ul {
     list-style-type: none;
   }
@@ -118,9 +102,9 @@ export const FormSubmitButton = styled.button<FormButtonProps>`
   display: ${(props) => props.isUpdate
     ? 'none'
     : 'block'};
-  width: 100px;
+  width: 120px;
   padding: 0 1rem;
-  height: 2rem;
+  height: 4rem;
   background: var(--green-500);
   color: #FFF;
   border-radius: 0.25rem;
@@ -137,15 +121,14 @@ export const FormButton = styled.button<FormButtonProps>`
   display: ${(props) => props.isUpdate
     ? 'block'
     : 'none'};
-  width: 200px;
+  width: 120px;
   padding: 0 1rem;
-  height: 3rem;
+  height: 4rem;
   background: var(--green-500);
   color: #FFF;
   border-radius: 0.25rem;
   border: 0;
   font-size: 1rem;
-  margin-top: 1.5rem;
   font-weight: 600;
   transition: filter 0.2s;
   &:hover {

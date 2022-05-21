@@ -33,7 +33,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate 
 
   useEffect(() => {
     const fetchProdutosNoPedido = async () => {
-      const { data, errors } = await pedidoService.listarProdutosByPedidoId({ estanteId: Number(estanteId), pedidoId: Number(pedidoId) })
+      const { data, errors } = await pedidoService.listarProdutosByPedidoId(Number(pedidoId))
 
       if (!errors) {
         setProducts(data.produtos)

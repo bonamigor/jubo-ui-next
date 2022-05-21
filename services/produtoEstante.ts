@@ -23,6 +23,28 @@ const ProdutoEstanteService = (httpClient: AxiosInstance) => ({
       }
     },
 
+    atualizarProdutoNaEstante: async ({ idEstante, idProduto, precoVenda, quantidade }:
+      { idEstante: Number, idProduto: Number, precoVenda: string, quantidade: string }) => {
+        const response = await httpClient.put(
+          `/api/estantes/${idEstante}/produtos/${idProduto}/preco-quantidade`,
+          { precoVenda, quantidade }
+        )
+  
+        let errors = null
+  
+        if (!response.data) {
+          errors = {
+            status: response.request.status,
+            statusText: response.request.statusText
+          }
+        }
+  
+        return {
+          data: response.data,
+          errors
+        }
+      },
+
     listarProdutosNaEstante: async (idEstante: number) => {
       const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade`)
 
@@ -38,6 +60,24 @@ const ProdutoEstanteService = (httpClient: AxiosInstance) => ({
       return {
         data: response.data,
         errors
+      }
+    },
+
+    deletarProdutoDaEstante: async ({ idEstante, idProduto }: { idEstante: Number, idProduto: number }) => {
+      const response = await httpClient.delete(`api/estantes/${idEstante}/produtos/${idProduto}`)
+
+      let produtoEstanteErrors = null
+
+      if (!response.data) {
+        produtoEstanteErrors = {
+          status: response.request.status,
+          statusText: response.request.statusText
+        }
+      }
+
+      return {
+        data: response.data,
+        produtoEstanteErrors
       }
     }
 })

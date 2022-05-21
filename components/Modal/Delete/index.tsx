@@ -4,7 +4,7 @@ import { NextPage } from "next";
 import { clienteService, produtoService } from '../../../services';
 import toast from 'react-hot-toast';
 import { Buttons, Container, Content } from './delete';
-import { usuarioService, estanteService, pedidoService, itemPedidoService } from '../../../services/index';
+import { usuarioService, estanteService, pedidoService, itemPedidoService, produtoEstanteService } from '../../../services/index';
 import { useUser } from '../../../hooks/useUser';
 import { useRouter } from 'next/router';
 
@@ -12,10 +12,11 @@ interface DeleteModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   entity: string;
-  id: number;
+  id?: number;
+  idArray?: Array<number>;
 }
 
-const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entity, id }: DeleteModalProps) => {
+const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entity, id = 0, idArray = [0, 0] }: DeleteModalProps) => {
   const { user, logoutUser } = useUser()
   const router = useRouter()
 
@@ -93,6 +94,20 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
           toast.success('Item excluído do Pedido com sucesso!')
         } else {
           toast.error('Erro ao excluir o Item do Pedido.')
+        }
+        break;
+
+      case 'ProdutoEstante':
+        const { produtoEstanteErrors } = await produtoEstanteService.deletarProdutoDaEstante({
+          idEstante: idArray[0],
+          idProduto: idArray[1]
+        })
+
+        if (!produtoEstanteErrors) {
+          onRequestClose()
+          toast.success('Produto excluído da Estante com sucesso!')
+        } else {
+          toast.error('Erro ao excluir o produto da Estante.')
         }
         break;
     }

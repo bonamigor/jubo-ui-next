@@ -65,6 +65,19 @@ export const FormItself = styled.form`
       font-weight: 400;
     }
   }
+
+  select {
+    padding: 0 1.5rem;
+    margin: 0 1rem;
+    height: 4rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    color: var(--gray-300);
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+  
   button[type="submit"] {
     width: 300px;
     padding: 0 1.5rem;

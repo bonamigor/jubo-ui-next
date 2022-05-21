@@ -68,5 +68,14 @@ export const RightPanel = styled.div`
 `
 
 export const Table = styled.div`
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    margin-top: 4rem;
+  }
 `

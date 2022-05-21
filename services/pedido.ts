@@ -93,8 +93,8 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  listarProdutosByPedidoId: async ({ estanteId, pedidoId }: { estanteId: number, pedidoId: number }) => {
-    const response = await httpClient.get(`/api/pedidos/${pedidoId}/estante/${estanteId}/produtos`)
+  listarProdutosByPedidoId: async (pedidoId: number ) => {
+    const response = await httpClient.get(`/api/pedidos/${pedidoId}/produtos`)
 
     let errors = null
 
@@ -144,6 +144,43 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     return {
       data: response.data,
       pedidoErrors
+    }
+  },
+
+
+  confirmarPedidoById: async ({ pedidoId, dataEntrega }: { pedidoId: number, dataEntrega: string }) => {
+    const response = await httpClient.put(`/api/pedidos/${pedidoId}/confirmar`, { dataEntrega })
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
+  cancelarPedidoById: async (pedidoId: number) => {
+    const response = await httpClient.put(`/api/pedidos/${pedidoId}/cancelar`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
     }
   }
   

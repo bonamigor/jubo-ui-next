@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
+    "date-fns": "^2.28.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.23",
     "next": "12.1.0",
     "polished": "^4.2.1",
     "react": "17.0.2",

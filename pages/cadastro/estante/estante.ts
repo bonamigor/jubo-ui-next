@@ -35,25 +35,13 @@ export const FormItself = styled.form`
   div {
     display: flex;
     flex-direction: row;
-
-    #name {
-      width: 500px;
-    }
-
-    #price {
-      width: 150px;
-    }
-
-    #unity {
-      width: 200px;
-    }
   }
 
   input:first-of-type {
     padding: 0 1.5rem;
     margin: 0 1rem;
     height: 4rem;
-    width: 600px;
+    width: 500px;
     border-radius: 0.25rem;
     border: 1px solid #d7d7d7;
     background: var(--gray-100);
@@ -76,6 +64,7 @@ export const FormItself = styled.form`
     background: var(--gray-100);
     font-weight: 400;
     font-size: 1rem;
+    width: 200px;
 
     &::placeholder {
       color: var(--gray-300);

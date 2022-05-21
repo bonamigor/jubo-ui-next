@@ -9,6 +9,7 @@ import { produtoEstanteService } from '../../../../../services/index';
 import Image from "next/image";
 import EditImg from '../../../../../assets/edit.png'
 import DeleteImg from '../../../../../assets/delete.png'
+import DeleteModal from "../../../../../components/Modal/Delete";
 
 interface EstanteProdutoProps {
   produtoId: number;
@@ -32,6 +33,9 @@ const EstanteProduto: NextPage = () => {
   const [estanteId, setEstanteId] = useState(id)
   const [precoVenda, setPrecoVenda] = useState('')
   const [quantidade, setQuantidade] = useState('')
+
+  const [produtoNaEstanteId, setProdutoNaEstanteId] = useState<number[]>([])
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const handleFilterProdutoList = (event: any) => {
     setFilter(event.toUpperCase())
@@ -81,8 +85,43 @@ const EstanteProduto: NextPage = () => {
     }
   }
 
-  const handleUpdate = () => {
+  const prepareUpdate = (produto: EstanteProdutoProps) => {
+    const produtoId = `${produto.produtoId} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}/${produto.unidade}`
+    setProdutoId(produtoId)
+    setPrecoVenda(String(produto.precoVenda))
+    setQuantidade(String(produto.quantidade))
+    setIsUpdate(true)
+  }
 
+  const handleUpdate = async () => {
+    try {
+      console.log(estanteId)
+      const { errors } = await produtoEstanteService.atualizarProdutoNaEstante({
+        idEstante: Number(id),
+        idProduto: Number(produtoId.split(' ')[0]),
+        precoVenda: precoVenda,
+        quantidade: quantidade
+      })
+
+      if (!errors) {
+        toast.success('Produto atualizado com sucesso!')
+        router.reload()
+      }
+    } catch (error) {
+      toast.error('Erro ao atualizar o produto na estante.')
+      console.error(error)
+    }
+  }
+
+  const handleDeleteProdutoNaEstante = (produto: EstanteProdutoProps) => {
+    const ids = [Number(id), Number(produto.produtoId)]
+    setProdutoNaEstanteId(ids)
+    console.log(produtoNaEstanteId)
+    setIsDeleteModalOpen(true)
+  }
+
+  const onRequestClose = () => {
+    setIsDeleteModalOpen(false)
   }
   
   return (
@@ -112,6 +151,7 @@ const EstanteProduto: NextPage = () => {
           <table>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Nome</th>
                 <th>Preço Custo</th>
                 <th>Unidade</th>
@@ -126,14 +166,15 @@ const EstanteProduto: NextPage = () => {
                 filteredProdutosNaEstante.map(produto => {
                   return (
                     <tr key={produto.produtoId}>
+                      <td>{produto.produtoId}</td>
                       <td>{produto.nome}</td>
-                      <td>{produto.precoCusto}</td>
+                      <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoCusto)}</td>
                       <td>{produto.unidade}</td>
-                      <td>{produto.precoVenda}</td>
+                      <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}</td>
                       <td>{produto.quantidade}</td>
                       <td>
-                        <a><Image onClick={() => {}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => {}} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
+                        <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {handleDeleteProdutoNaEstante(produto)}} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
@@ -142,14 +183,15 @@ const EstanteProduto: NextPage = () => {
                 produtosNaEstante.map(produto => {
                   return (
                     <tr key={produto.produtoId}>
+                      <td>{produto.produtoId}</td>
                       <td>{produto.nome}</td>
-                      <td>{produto.precoCusto}</td>
+                      <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoCusto)}</td>
                       <td>{produto.unidade}</td>
-                      <td>{produto.precoVenda}</td>
+                      <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}</td>
                       <td>{produto.quantidade}</td>
                       <td>
-                        <a><Image onClick={() => {}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => {}} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
+                        <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {handleDeleteProdutoNaEstante(produto)}} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
@@ -158,6 +200,7 @@ const EstanteProduto: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>
+        <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ProdutoEstante' idArray={produtoNaEstanteId} />
       </Container>
     </>
   )

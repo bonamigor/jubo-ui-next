@@ -8,11 +8,13 @@ import { produtoService } from '../../../services/index';
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../components/Modal/Delete";
+import jsPDF from "jspdf";
+import autoTable from 'jspdf-autotable';
 
 export interface ProdutoProps {
   id: number;
   nome: string;
-  preco: number;
+  preco: string;
   unidade: string;
 }
 
@@ -99,6 +101,29 @@ const CadastroProduto: NextPage = () => {
     setIsDeleteModalOpen(false)
   }
 
+  const generatePdf = () => {
+    const doc = new jsPDF()
+
+    const formatedPrices = produtos.map(produto => {
+      produto.preco = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+      }).format(Number(produto.preco))
+      return produto
+    })
+
+    const newProdutosArray = formatedPrices.map(produto => {
+      return Object.values(produto)
+    })
+
+    autoTable(doc, {
+      head: [['ID', 'Nome', 'Preço', 'Unidade']],
+      body: newProdutosArray,
+    })
+
+    doc.save('produtos.pdf')
+  }
+
   return (
     <>
       <Container>
@@ -108,7 +133,15 @@ const CadastroProduto: NextPage = () => {
             <div>
               <input type="text" id="name" value={nome} onChange={event => setNome(event.target.value)} placeholder="Nome" />
               <input type="text" id="price" value={preco} onChange={(event: { target: { value: any; }; }) => setPreco(event.target.value)} placeholder="Preço" />
-              <input type="text" id="unity" value={unidade} onChange={event => setUnidade(event.target.value)}  placeholder="Und Medida" />
+              <select name="unities" id="unity" value={unidade} onChange={event => setUnidade(event.target.value)}>
+                <option value="">Und Medida</option>
+                <option value="KG">KG</option>
+                <option value="PCT">PCT</option>
+                <option value="UND">UND</option>
+                <option value="LT">LT</option>
+                <option value="L">L</option>
+                <option value="MÇ">MÇ</option>
+              </select>
             </div>
             <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
@@ -118,7 +151,7 @@ const CadastroProduto: NextPage = () => {
           <input type="text" placeholder="Filtre pelo nome do produto" onChange={event => handleFilterProdutoList(event.target.value)} />
         </InputFilter>
         <TableContainer>
-          <table>
+          <table id="products-table">
             <thead>
               <tr>
                 <th>Nome</th>
@@ -138,7 +171,7 @@ const CadastroProduto: NextPage = () => {
                       { new Intl.NumberFormat('pt-BR', {
                             style: 'currency',
                             currency: 'BRL'
-                        }).format(produto.preco)}
+                        }).format(Number(produto.preco))}
                       </td>
                       <td>{produto.unidade}</td>
                       <td>
@@ -157,7 +190,7 @@ const CadastroProduto: NextPage = () => {
                       { new Intl.NumberFormat('pt-BR', {
                             style: 'currency',
                             currency: 'BRL'
-                        }).format(produto.preco)}
+                        }).format(Number(produto.preco))}
                       </td>
                       <td>{produto.unidade}</td>
                       <td>
@@ -172,6 +205,7 @@ const CadastroProduto: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>
+        <button onClick={generatePdf}>Criar PDF</button>
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Produto' id={id} />
       </Container>
     </>

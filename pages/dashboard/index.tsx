@@ -67,7 +67,19 @@ const Dashboard: NextPage = () => {
           </RightPanel>
         </div>
         <Table>
-          <DemandsTable pedidos={pedidos} />
+          {pedidos.length < 1 ? 
+            (
+              <>
+                <div>
+                  <h1>Não há novos pedidos.</h1>
+                  <p>Quando houverem novos pedidos, eles aparecerão listados bem aqui.</p>
+                </div>
+              </>
+            ) : 
+            (
+              <DemandsTable pedidos={pedidos} />
+            )
+          }
         </Table>
       </Container>
     </>

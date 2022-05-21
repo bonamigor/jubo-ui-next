@@ -39,35 +39,41 @@ const Inicial: NextPage = () => {
         <p>Estes são os dados do seu último pedido, clique em + para mais detalhes!</p>
 
         <TableContainer>
-          <table>
-            <thead>
-              <tr>
-                <th>Nº</th>
-                <th>Data Criação</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
+          {lastOrder ? 
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th>Nº</th>
+                  <th>Data Criação</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              <tr>
-                <td>{lastOrder.id}</td>
-                <td>
-                  {lastOrder.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
-                        .format(new Date(lastOrder.dataCriacao))}
-                </td>
-                <td>
-                  { new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                  }).format(lastOrder.total)}
-                </td>
-                <td>{lastOrder.status}</td>
-                <td>+</td>
-              </tr>
-            </tbody>
-          </table>
+              <tbody>
+                <tr>
+                  <td>{lastOrder.id}</td>
+                  <td>
+                    {lastOrder.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
+                          .format(new Date(lastOrder.dataCriacao))}
+                  </td>
+                  <td>
+                    { new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }).format(lastOrder.total)}
+                  </td>
+                  <td>{lastOrder.status}</td>
+                  <td>+</td>
+                </tr>
+              </tbody>
+            </table>
+          </> : 
+          <>
+            <h1>Não existem pedidos feitos por você. Clique em Realizar Pedido!</h1>
+          </>}
         </TableContainer>
       </Content>
     </Container>

@@ -138,7 +138,7 @@ const CadastroUsuario: NextPage = () => {
           nome: nome,
           email: email,
           senha: senha,
-          clienteId: clienteId,
+          clienteId: clienteId.split(' ')[0],
           id: id
         })
 
