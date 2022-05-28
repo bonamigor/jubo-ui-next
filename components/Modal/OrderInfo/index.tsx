@@ -6,19 +6,23 @@ import { pedidoService } from '../../../services';
 import { format } from 'date-fns'
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
+import jsPDF from "jspdf";
+import autoTable from 'jspdf-autotable';
 
 interface Pedido {
   id: number;
+  endereco: string;
   dataCriacao: string;
   valorTotal: number;
   nome: string;
   cidade: string;
   estado: string;
+  telefone: string;
 }
 
 interface ProductsProps {
   itemPedidoId: string;
-  produtoId: string;
+  produtoId?: string;
   nome: string;
   unidade: string;
   precoVenda: number;
@@ -84,6 +88,81 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       toast.error('Erro ao cancelar o pedido.')
       console.error(error)
     }
+  }
+
+  const generatePdf = () => {
+    const doc = new jsPDF('l')
+
+    products.forEach(product => {
+      delete product['produtoId'];
+    })
+
+    // const formatedPrices = products.map(produto => {
+    //   produto.precoVenda = Number(new Intl.NumberFormat('pt-BR', {
+    //       style: 'currency',
+    //       currency: 'BRL'
+    //   }).format(Number(produto.precoVenda)))
+    //   return produto
+    // })
+
+    const newProdutosArray = products.map(produto => {
+      return Object.values(produto)
+    })
+
+    let pageWidth = doc.internal.pageSize.getWidth()
+
+    let pageNumber = doc.internal.pages.length - 1
+
+    doc.text(`Pedido ${pedido.id}`, 14, 15)
+    doc.text(`Pedido ${pedido.id}`, 154, 15)
+
+    doc.setFontSize(10)
+    doc.text(`Cliente: ${pedido.nome}`, 14, 20)
+    doc.text(`Cliente: ${pedido.nome}`, 154, 20)
+
+    doc.text(`Endereço: ${pedido.endereco}`, 14, 25)
+    doc.text(`Endereço: ${pedido.endereco}`, 154, 25)
+
+    doc.text(`Cidade/Estado: ${pedido.cidade} / ${pedido.estado}`, 14, 30)
+    doc.text(`Cidade/Estado: ${pedido.cidade} / ${pedido.estado}`, 154, 30)
+
+    doc.text(`Telefone: ${pedido.telefone}`, 14, 35)
+    doc.text(`Telefone: ${pedido.telefone}`, 154, 35)
+
+    autoTable(doc, {
+      head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
+      body: newProdutosArray,
+      startY: 40,
+      tableWidth: 130,
+      showHead: 'firstPage',
+      margin: { right: 125 },
+      styles: { overflow: 'hidden' },
+      pageBreak: 'auto'
+    })
+
+    doc.setPage(pageNumber)
+
+    autoTable(doc, {
+      head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
+      body: newProdutosArray,
+      startY: 40,
+      tableWidth: 130,
+      showHead: 'firstPage',
+      margin: { left: 153 },
+      styles: { overflow: 'hidden' },
+      pageBreak: 'auto'
+    })
+
+    const obs = 'Comi o cu de quem ta lendo'
+
+    doc.text(`Observação: ${obs}`, 14, 200)
+    doc.text(`Observação: ${obs}`, 154, 200)
+
+    doc.text(`Assinatura: _______________________________________________`, 14, 205)
+    doc.text(`Assinatura: _______________________________________________`, 154, 205)
+
+
+    doc.save(`pedido-${pedido.id}.pdf`)
   }
 
   return (
@@ -155,6 +234,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             <div>
               <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
               <button onClick={confirmOrder}>Confirmar Pedido</button>
+              <button onClick={generatePdf}>Criar PDF</button>
             </div>
           </ConfirmSection>
           <CancelSection>

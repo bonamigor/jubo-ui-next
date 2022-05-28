@@ -12,8 +12,10 @@ interface PedidosProps {
   dataCriacao: string;
   valorTotal: number;
   nome: string;
+  endereco: string;
   cidade: string;
   estado: string;
+  telefone: string;
 }
 
 const Dashboard: NextPage = () => {

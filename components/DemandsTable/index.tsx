@@ -14,8 +14,10 @@ interface PedidosProps {
   dataCriacao: string;
   valorTotal: number;
   nome: string;
+  endereco: string;
   cidade: string;
   estado: string;
+  telefone: string;
 }
 
 interface DemandsProps {
@@ -26,7 +28,7 @@ const PedidosTable: NextPage<DemandsProps> = ({ pedidos }) => {
   const router = useRouter()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, nome: '', cidade: '', estado: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   const onRequestClose = async () => {
     setIsModalOpen(false)
@@ -38,17 +40,7 @@ const PedidosTable: NextPage<DemandsProps> = ({ pedidos }) => {
   }
 
   const confirmOrder = async (pedidoId: number) => {
-    try {
-      const { data, errors } = await pedidoService.confirmarPedidoById(pedidoId);
 
-      if (!errors) {
-        router.reload()
-        toast.success(data.message)
-      }
-    } catch (error) {
-      console.log(error)
-      toast.error('Erro ao confirmar o pedido.')
-    }
   }
 
   return (
