@@ -137,7 +137,7 @@ const EstanteProduto: NextPage = () => {
               {produtos.map(produto => {
                 return (
                 <option key={produto.id} 
-                  value={`${produto.id} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.preco)}/${produto.unidade}`}
+                  value={`${produto.id} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(Number(produto.preco))}/${produto.unidade}`}
                 />)
               })}
             </datalist>
