@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Container, LeftPanel, RightPanel, Table } from './dashboard';
 import AlertImg from '../../assets/alert.png'
 import TruckImg from '../../assets/truck.png'
-import DemandsTable from '../../components/DemandsTable';
+import DemandsTable from '../../components/DemandsTable/index.page';
 import { useEffect, useState } from 'react';
 import { pedidoService } from '../../services';
 

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { NextPage } from "next";
 import { Container, Content, Dropdown, Logo, Menu, MenuItem } from './navbar';
-import LogginButton from '../LoginButton';
+import LogginButton from '../LoginButton/index.page';
 import { useRouter } from 'next/router';
 import { useUser } from '../../hooks/useUser';
 import { pedidoService } from '../../services';

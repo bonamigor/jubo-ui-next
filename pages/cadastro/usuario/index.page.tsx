@@ -8,7 +8,7 @@ import DeleteImg from '../../../assets/delete.png'
 import { useClientes } from '../../../hooks/useClientes';
 import { usuarioService } from "../../../services";
 import toast from "react-hot-toast";
-import DeleteModal from "../../../components/Modal/Delete";
+import DeleteModal from "../../../components/Modal/Delete/index.page";
 import { useRouter } from "next/router";
 
 interface UserProps {

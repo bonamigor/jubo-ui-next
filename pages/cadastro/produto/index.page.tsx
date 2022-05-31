@@ -7,7 +7,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { produtoService } from '../../../services/index';
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import DeleteModal from "../../../components/Modal/Delete";
+import DeleteModal from "../../../components/Modal/Delete/index.page";
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 

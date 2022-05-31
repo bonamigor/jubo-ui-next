@@ -8,7 +8,7 @@ import { useClientes } from '../../../hooks/useClientes'
 import { useRouter } from "next/router";
 import { clienteService } from "../../../services";
 import toast from 'react-hot-toast';
-import DeleteModal from "../../../components/Modal/Delete";
+import DeleteModal from "../../../components/Modal/Delete/index.page";
 
 interface Cliente {
   id: number;

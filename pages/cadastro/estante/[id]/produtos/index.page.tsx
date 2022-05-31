@@ -2,14 +2,14 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estanteProduto";
 import { useState, useEffect, FormEvent } from 'react';
-import { ProdutoProps } from '../../../produto/index';
+import { ProdutoProps } from '../../../produto/index.page';
 import { produtoService } from "../../../../../services";
 import toast from "react-hot-toast";
 import { produtoEstanteService } from '../../../../../services/index';
 import Image from "next/image";
 import EditImg from '../../../../../assets/edit.png'
 import DeleteImg from '../../../../../assets/delete.png'
-import DeleteModal from "../../../../../components/Modal/Delete";
+import DeleteModal from "../../../../../components/Modal/Delete/index.page";
 
 interface EstanteProdutoProps {
   produtoId: number;

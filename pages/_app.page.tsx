@@ -1,6 +1,6 @@
 import { GlobalStyle } from '../styles/global'
 import type { AppProps } from 'next/app'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/Navbar/index.page'
 import { UserProvider, useUser } from '../hooks/useUser';
 import toast, { Toaster } from 'react-hot-toast';
 import { ClienteProvider } from '../hooks/useClientes';

@@ -6,7 +6,7 @@ import EditImg from '../../assets/edit.png'
 import DeleteImg from '../../assets/delete.png'
 import { useState, useEffect } from 'react';
 import { pedidoService } from '../../services';
-import DeleteModal from '../Modal/Delete';
+import DeleteModal from '../Modal/Delete/index.page';
 import { useRouter } from 'next/router';
 
 interface ProductsProps {

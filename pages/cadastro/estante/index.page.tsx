@@ -9,7 +9,7 @@ import { estanteService } from '../../../services/index';
 import { useClientes } from '../../../hooks/useClientes';
 import NumberFormat from "react-number-format";
 import { useRouter } from "next/router";
-import DeleteModal from "../../../components/Modal/Delete";
+import DeleteModal from "../../../components/Modal/Delete/index.page";
 import toast from "react-hot-toast";
 
 interface EstanteProps {

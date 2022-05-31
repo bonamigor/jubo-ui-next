@@ -4,8 +4,8 @@ import { CancelButton, ConfirmButton, Container, Content, DecideButtons, FormBut
 import { useState, useEffect, FormEvent } from 'react';
 import { produtoEstanteService, itemPedidoService, clienteService, pedidoService } from '../../../../../../../services/index';
 import toast from "react-hot-toast";
-import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable";
-import DeleteModal from "../../../../../../../components/Modal/Delete";
+import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
+import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
