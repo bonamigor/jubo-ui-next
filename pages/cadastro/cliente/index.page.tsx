@@ -56,7 +56,7 @@ const CadastroCliente: NextPage = () => {
   const [telefone, setTelefone] = useState('')
   const [ativo, setAtivo] = useState('')
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     
     const newCliente: ClienteInput = {
@@ -64,10 +64,15 @@ const CadastroCliente: NextPage = () => {
     }
 
     try {
-      createCliente(newCliente)
-      populateClienteArray()
-      toast.success('Cliente cadastrado com sucesso.')
-      router.reload()
+      const { errors } = await clienteService.cadastrarCliente(newCliente)
+
+      if (!errors) {
+        populateClienteArray()
+        toast.success('Cliente cadastrado com sucesso.')
+        router.reload()
+      } else {
+        toast.error('Erro ao adicionar o Cliente.')
+      }
     } catch (error) {
       console.log(error)
     }
