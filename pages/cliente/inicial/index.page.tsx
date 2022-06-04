@@ -2,16 +2,25 @@ import { NextPage } from "next";
 import { Container, Content, TableContainer } from "./inicial";
 import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../services/index';
+import Image from "next/image";
+import BloomImg from '../../../assets/bloom.png'
+import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 
-interface LastOrderProps {
+interface PedidosProps {
   id: number;
   dataCriacao: string;
-  total: number;
+  valorTotal: number;
   status: string;
+  nome: string;
+  endereco: string;
+  cidade: string;
+  estado: string;
+  telefone: string;
 }
 
 const Inicial: NextPage = () => {
-  const [lastOrder, setLastOrder] = useState<LastOrderProps>({ id: 0, dataCriacao: '', total: 0, status: '' })
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   useEffect(() => {
     const fetchLastOrder = async () => {
@@ -22,7 +31,7 @@ const Inicial: NextPage = () => {
         console.log(data)
 
         if (!errors) {
-          setLastOrder(data.pedido)
+          setPedido(data.pedido)
         }
       } catch (error) {
         
@@ -32,51 +41,65 @@ const Inicial: NextPage = () => {
     fetchLastOrder()
   }, [])
 
+  const onRequestClose = async () => {
+    setIsModalOpen(false)
+  }
+
+  const viewOrderInfo = async (pedido: PedidosProps) => {
+    setPedido(pedido)
+    setIsModalOpen(true)
+  }
+
   return (
-    <Container>
-      <Content>
-        <h1>Último pedido feito!</h1>
-        <p>Estes são os dados do seu último pedido, clique em + para mais detalhes!</p>
+    <>
+      <Container>
+        <Content>
+          <h1>Último pedido feito!</h1>
+          <p>Caso exista, aqui apareceram os dados do seu último pedido, clique na Lupa para mais detalhes!</p>
 
-        <TableContainer>
-          {lastOrder ? 
-          <>
-            <table>
-              <thead>
-                <tr>
-                  <th>Nº</th>
-                  <th>Data Criação</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
+          <TableContainer>
+            {pedido ? 
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nº</th>
+                    <th>Data Criação</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr>
-                  <td>{lastOrder.id}</td>
-                  <td>
-                    {lastOrder.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
-                          .format(new Date(lastOrder.dataCriacao))}
-                  </td>
-                  <td>
-                    { new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }).format(lastOrder.total)}
-                  </td>
-                  <td>{lastOrder.status}</td>
-                  <td>+</td>
-                </tr>
-              </tbody>
-            </table>
-          </> : 
-          <>
-            <h1>Não existem pedidos feitos por você. Clique em Realizar Pedido!</h1>
-          </>}
-        </TableContainer>
-      </Content>
-    </Container>
+                <tbody>
+                  <tr>
+                    <td>{pedido.id}</td>
+                    <td>
+                      {pedido.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
+                            .format(new Date(pedido.dataCriacao))}
+                    </td>
+                    <td>
+                      { new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                      }).format(pedido.valorTotal)}
+                    </td>
+                    <td>{pedido.status}</td>
+                    <td>
+                      <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </> : 
+            <>
+              <h1>Não existem pedidos feitos por você. <br />Clique em Realizar Pedido!</h1>
+            </>}
+          </TableContainer>
+        </Content>
+      </Container>
+      <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
+    </>
   )
 }
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -15,7 +15,7 @@ export const Content = styled.div`
   background: var(--white);
   border-radius: 10px;
   width: 1100px;
-  height: 320px;
+  height: 170px;
   padding: 0 5px;
   
   h1 {
@@ -23,24 +23,45 @@ export const Content = styled.div`
   }
 `
 
+export const InputFilter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4rem;
+
+  input {
+    padding: 0 1.5rem;
+    margin: 0 1rem;
+    height: 4rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    font-weight: 400;
+    font-size: 1rem;
+    width: 1100px;
+
+    &::placeholder {
+      color: var(--gray-300);
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+  }
+`
+
 export const TableContainer = styled.div`
-  margin-top: 2rem;
-  padding: 0 2rem;
-  text-align: center;
+  margin-top: 10px;
 
   table {
-    width: 1000px;
+    width: 1100px;
     border-spacing: 0 0.5rem;
-    text-align: center;
+    text-align: left;
     margin-bottom: 1rem;
-    background: var(--gray-700);
-    border-radius: 10px;
     
     th {
-      color: var(--white);
+      color: var(--text-body);
       font-weight: 400;
       padding: 1rem 2rem;
-      text-align: center;
+      text-align: left;
       line-height: 1.5rem;
     }
 
@@ -56,10 +77,9 @@ export const TableContainer = styled.div`
       tr {
         td {
           font-size: 1rem;
-          color: var(--black);
 
           &:first-child {
-            text-align: center;
+            text-align: left;
           }
         }
       }
@@ -70,6 +90,11 @@ export const TableContainer = styled.div`
       border: 0;
       background: var(--white);
       color: var(--black);
+      border-radius: 0.25rem;
+
+      a {
+        margin: 0 5px;
+      }
     }
   }
 `

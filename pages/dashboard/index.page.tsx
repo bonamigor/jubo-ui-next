@@ -11,6 +11,7 @@ interface PedidosProps {
   id: number;
   dataCriacao: string;
   valorTotal: number;
+  status: string;
   nome: string;
   endereco: string;
   cidade: string;

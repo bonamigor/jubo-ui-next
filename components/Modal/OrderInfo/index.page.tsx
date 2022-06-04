@@ -153,13 +153,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       pageBreak: 'auto'
     })
 
-    const obs = 'Comi o cu de quem ta lendo'
+    doc.text(`Observação: _______________________________________________`, 14, 190)
+    doc.text(`Observação: _______________________________________________`, 154, 190)
 
-    doc.text(`Observação: ${obs}`, 14, 200)
-    doc.text(`Observação: ${obs}`, 154, 200)
-
-    doc.text(`Assinatura: _______________________________________________`, 14, 205)
-    doc.text(`Assinatura: _______________________________________________`, 154, 205)
+    doc.text(`Assinatura: _______________________________________________`, 14, 200)
+    doc.text(`Assinatura: _______________________________________________`, 154, 200)
 
 
     doc.save(`pedido-${pedido.id}.pdf`)

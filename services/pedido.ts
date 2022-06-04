@@ -39,6 +39,24 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  listarPedidosByCliente: async (clienteId: number) => {
+    const response = await httpClient.get(`/api/pedidos/cliente/${clienteId}`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
   listarPedidosDeAmanha: async () => {
     const response = await httpClient.get('/api/pedidos/amanha')
 

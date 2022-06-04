@@ -71,18 +71,8 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
             </Menu>
           ) : (
             <Menu>
-              <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'pedido'})}>REALIZAR PEDIDO</MenuItem>
-              <Dropdown>
-                <MenuItem isActive={isActive({route, item: 'cadastro'})}>RELATÓRIOS</MenuItem>
-                <nav>
-                  <div>
-                    <MenuItem onClick={() => {router.push('/dashboard')}} isActive={isActive({route, item: 'usuario'})}>USUÁRIO</MenuItem>|
-                    <MenuItem onClick={() => {router.push('/cadastro/cliente')}} isActive={isActive({route, item: 'cliente'})}>CLIENTE</MenuItem>|
-                    <MenuItem onClick={() => {router.push('/cadastro/produto')}} isActive={isActive({route, item: 'produto'})}>PRODUTO</MenuItem>|
-                    <MenuItem onClick={() => {router.push('/cadastro/estante')}} isActive={isActive({route, item: 'estante'})}>ESTANTE</MenuItem>
-                  </div>
-                </nav>
-              </Dropdown>
+              <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem>
+              <MenuItem onClick={() => {router.push('/cliente/pedidos')}} isActive={isActive({route, item: 'cliente/pedidos'})}>PEDIDOS</MenuItem>
               <LogginButton text={userName} />
             </Menu>
           )}
