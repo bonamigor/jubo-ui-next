@@ -3,13 +3,13 @@ import Image from "next/image";
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./produto";
 import EditImg from '../../../assets/edit.png'
 import DeleteImg from '../../../assets/delete.png'
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { produtoService } from '../../../services/index';
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../components/Modal/Delete/index.page";
-import jsPDF from "jspdf";
-import autoTable from 'jspdf-autotable';
+import { useQuery } from "react-query";
+import { Loading } from '@nextui-org/react';
 
 export interface ProdutoProps {
   id: number;
@@ -22,31 +22,12 @@ const CadastroProduto: NextPage = () => {
   const router = useRouter()
   const [isUpdate, setIsUpdate] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [produtos, setProdutos] = useState<ProdutoProps[]>([])
   const [id, setId] = useState(0)
   const [nome, setNome] = useState('')
   const [preco, setPreco] = useState('')
   const [unidade, setUnidade] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredprodutos, setFilteredprodutos] = useState<ProdutoProps[]>([])
-  
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const { data, errors } = await produtoService.listarTodosOsProdutos()
-      if (!errors) {
-        setProdutos(data.produtos)
-      }
-    }
-    fetchProducts()
-  }, [])
-
-  const handleFilterProdutoList = (event: any) => {
-    setFilter(event.toUpperCase())
-    setFilteredprodutos(produtos.filter(produto => {
-      return produto.nome.toUpperCase().includes(filter)
-    }))
-  }
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -64,6 +45,21 @@ const CadastroProduto: NextPage = () => {
       toast.error('Erro ao cadastra produto.')
       console.error(error)
     }
+  }
+
+  const { data, isLoading } = useQuery('produtos', () => produtoService.listarTodosOsProdutos())
+
+  let produtos: any;
+
+  if (data) {
+    produtos = data.produtos
+  }
+
+  const handleFilterProdutoList = (event: any) => {
+    setFilter(event.toUpperCase())
+    setFilteredprodutos(produtos.filter((produto: ProdutoProps) => {
+      return produto.nome.toUpperCase().includes(filter)
+    }))
   }
 
   const prepareUpdate = async (produto: ProdutoProps) => {
@@ -128,59 +124,65 @@ const CadastroProduto: NextPage = () => {
           <input type="text" placeholder="Filtre pelo nome do produto" onChange={event => handleFilterProdutoList(event.target.value)} />
         </InputFilter>
         <TableContainer>
-          <table id="products-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Unidade</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
+          {isLoading ? (
+            <div>
+              <Loading color="success" size="lg">Carregando Produtos</Loading>
+            </div>
+          ) : (
+            <table id="products-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Preço</th>
+                  <th>Unidade</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {filter.length > 1 ? (
-                filteredprodutos.map(produto => {
-                  return (
-                    <tr key={produto.id}>
-                      <td>{produto.nome}</td>
-                      <td>
-                      { new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(Number(produto.preco))}
-                      </td>
-                      <td>{produto.unidade}</td>
-                      <td>
-                        <a><Image onClick={() => prepareUpdate(produto)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => handleDeleteProduto(produto)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
-                      </td>
-                    </tr>
-                  )
-                })
-              ) : (
-                produtos.map(produto => {
-                  return (
-                    <tr key={produto.id}>
-                      <td>{produto.nome}</td>
-                      <td>
-                      { new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(Number(produto.preco))}
-                      </td>
-                      <td>{produto.unidade}</td>
-                      <td>
-                        <a><Image onClick={() => prepareUpdate(produto)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => handleDeleteProduto(produto)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
-                      </td>
-                    </tr>
-                  )
-                })
-              )}
-              
-            </tbody>
-          </table>
+              <tbody>
+                {filter.length > 1 ? (
+                  filteredprodutos.map(produto => {
+                    return (
+                      <tr key={produto.id}>
+                        <td>{produto.nome}</td>
+                        <td>
+                        { new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL'
+                          }).format(Number(produto.preco))}
+                        </td>
+                        <td>{produto.unidade}</td>
+                        <td>
+                          <a><Image onClick={() => prepareUpdate(produto)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                          <a><Image onClick={() => handleDeleteProduto(produto)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                        </td>
+                      </tr>
+                    )
+                  })
+                ) : (
+                  produtos.map((produto: ProdutoProps) => {
+                    return (
+                      <tr key={produto.id}>
+                        <td>{produto.nome}</td>
+                        <td>
+                        { new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL'
+                          }).format(Number(produto.preco))}
+                        </td>
+                        <td>{produto.unidade}</td>
+                        <td>
+                          <a><Image onClick={() => prepareUpdate(produto)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                          <a><Image onClick={() => handleDeleteProduto(produto)} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
+                
+              </tbody>
+            </table>
+          )}
         </TableContainer>
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Produto' id={id} />
       </Container>

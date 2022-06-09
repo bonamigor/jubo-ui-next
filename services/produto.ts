@@ -22,19 +22,7 @@ const ProdutoService = (httpClient: AxiosInstance) => ({
   listarTodosOsProdutos: async () => {
     const response = await httpClient.get('/api/produtos')
 
-    let errors = null
-
-    if (!response.data) {
-      errors = {
-        status: response.request.status,
-        statusText: response.request.statusText
-      }
-    }
-
-    return {
-      data: response.data,
-      errors
-    }
+    return response.data
   },
 
   cadastrarProduto: async ({ nome, precoCusto, unidadeMedida }: 

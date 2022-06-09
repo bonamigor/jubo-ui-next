@@ -6,6 +6,8 @@ import { Box, HomeStyle, LeftContent, LoginForm, RightContent } from './home';
 import { auth } from '../services/index';
 import { useUser } from '../hooks/useUser';
 import toast from 'react-hot-toast';
+import { useMutation } from 'react-query';
+import { Loading } from '@nextui-org/react';
 
 const Home: NextPage = () => {
   const [email, setEmail] = useState('')
@@ -13,47 +15,43 @@ const Home: NextPage = () => {
   const { receiveUser } = useUser()
   const router = useRouter()
 
+  const mutation = useMutation(auth.login)
+
   async function handleLogin(event: FormEvent) {
     event.preventDefault()
 
     try {
-      const { data, errors } = await auth.login({ email: email, senha: password })
-
-      if (!errors) {
-        if (data.user.admin === 1) {
-          window.localStorage.setItem('token', data.token)
-          window.sessionStorage.setItem('userId', data.user.id)
-          window.sessionStorage.setItem('userName', data.user.nome)
-          window.sessionStorage.setItem('userEmail', data.user.email)
-          window.sessionStorage.setItem('userAdmin', data.user.admin)
-          receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
-          toast.success('Logado com sucesso!')
-          router.push('/dashboard')
-        } else {
-          window.localStorage.setItem('token', data.token)
-          window.sessionStorage.setItem('userId', data.user.id)
-          window.sessionStorage.setItem('userName', data.user.nome)
-          window.sessionStorage.setItem('userEmail', data.user.email)
-          window.sessionStorage.setItem('userAdmin', data.user.admin)
-          window.sessionStorage.setItem('userClientId', data.user.clienteId)
-          receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin, clienteId: data.user.clienteId })
-          toast.success('Logado com sucesso!')
-          router.push('/cliente/inicial')
+      await mutation.mutateAsync({ email: email, senha: password }, {
+        onSuccess: async (data) => {
+          if (mutation.isLoading) {
+            return <h1>Carregando...</h1>
+          }
+          if (data.user.admin === 1) {
+            window.localStorage.setItem('token', data.token)
+            window.sessionStorage.setItem('userId', data.user.id)
+            window.sessionStorage.setItem('userName', data.user.nome)
+            window.sessionStorage.setItem('userEmail', data.user.email)
+            window.sessionStorage.setItem('userAdmin', data.user.admin)
+            receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
+            toast.success('Logado com sucesso!')
+            router.push('/dashboard')
+          } else {
+            window.localStorage.setItem('token', data.token)
+            window.sessionStorage.setItem('userId', data.user.id)
+            window.sessionStorage.setItem('userName', data.user.nome)
+            window.sessionStorage.setItem('userEmail', data.user.email)
+            window.sessionStorage.setItem('userAdmin', data.user.admin)
+            window.sessionStorage.setItem('userClientId', data.user.clienteId)
+            receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin, clienteId: data.user.clienteId })
+            toast.success('Logado com sucesso!')
+            router.push('/cliente/inicial')
+          }
+        },
+        onError: async (error) => {
+          toast.error('Erro ao realizar o login')
+          console.error(error)
         }
-        
-      }
-
-      if (errors?.status === 404) {
-        toast.error('Usuário não encontrado com os dados digitados.')
-      }
-      
-      if (errors?.status === 401) {
-        toast.error('E-mail/senha inválidos.')
-      }
-
-      if (errors?.status === 400) {
-        toast.error('Ocorreu um erro ao fazer o Login. Pintos')
-      }
+      })
       
     } catch (error) {
       toast.error('Erro ao realizar o login')
@@ -93,7 +91,13 @@ const Home: NextPage = () => {
               <h1>Login</h1>
               <input type="text" placeholder="E-mail" value={email} onChange={event => {setEmail(event.target.value)}} />
               <input type="password" placeholder="Senha" value={password} onChange={event => {setPassword(event.target.value)}} />
-              <button type="submit">Entrar</button>
+              {mutation.isLoading ? (
+                <div>
+                  <Loading color="success" size="md" type="points">Entrando</Loading>
+                </div>
+              ) : (
+                <button type="submit">Entrar</button>
+              )}
             </LoginForm>
           </RightContent>
         </Box>

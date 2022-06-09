@@ -85,6 +85,10 @@ export const LoginForm = styled.form`
   justify-content: center;
   align-items: center;
 
+  div {
+    margin-top: 1.5rem;
+  }
+
   h1 {
     color: var(--green-500);
     margin-bottom: 2rem;

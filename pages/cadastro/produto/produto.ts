@@ -173,6 +173,10 @@ export const TableContainer = styled.div`
     border-spacing: 0 0.5rem;
     text-align: left;
     margin-bottom: 1rem;
+
+    div {
+      margin-top: 1.5rem;
+    }
     
     th {
       color: var(--text-body);
