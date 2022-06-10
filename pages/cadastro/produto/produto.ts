@@ -168,15 +168,15 @@ export const InputFilter = styled.div`
 export const TableContainer = styled.div`
   margin-top: 10px;
 
+  div {
+    margin-top: 1.5rem;
+  }
+
   table {
     width: 1100px;
     border-spacing: 0 0.5rem;
     text-align: left;
     margin-bottom: 1rem;
-
-    div {
-      margin-top: 1.5rem;
-    }
     
     th {
       color: var(--text-body);

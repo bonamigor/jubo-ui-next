@@ -31,6 +31,7 @@ const PedidoProdutos: NextPage = () => {
   const router = useRouter()
   const { pedidoId, estanteId } = router.query
   const [produtoNaEstante, setProdutosNaEstante] = useState<ProdutoNaEstanteProps[]>([])
+  const [product, setProduct] = useState<ProdutoNoPedidoProps>({ itemPedidoId: '', produtoId: '', nome: '', unidade: '', precoVenda: 0, quantidade: 0, total: 0 })
   const [produtos, setProdutos] = useState<ProdutoNoPedidoProps[]>([])
   const [produtoId, setProdutoId] = useState('')
   const [quantidade, setQuantidade] = useState('')
@@ -104,6 +105,7 @@ const PedidoProdutos: NextPage = () => {
           total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
         }
         setProdutos([...produtos, newProduto])
+        setProduct(newProduto)
 
         toast.success('Produto adicionado no pedido!')
       }
@@ -196,7 +198,7 @@ const PedidoProdutos: NextPage = () => {
               <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
             </FormContent>
           </PedidoForm>
-          <ProductsInDemandTable prepareUpdate={prepareUpdate} />
+          <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
         <DecideButtons>
           <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
           <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>

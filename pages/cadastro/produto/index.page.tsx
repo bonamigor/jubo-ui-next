@@ -47,7 +47,7 @@ const CadastroProduto: NextPage = () => {
     }
   }
 
-  const { data, isLoading } = useQuery('produtos', () => produtoService.listarTodosOsProdutos())
+  const { data, isLoading, isSuccess, isError } = useQuery('produtos', produtoService.listarTodosOsProdutos, { staleTime: Infinity })
 
   let produtos: any;
 
@@ -124,11 +124,9 @@ const CadastroProduto: NextPage = () => {
           <input type="text" placeholder="Filtre pelo nome do produto" onChange={event => handleFilterProdutoList(event.target.value)} />
         </InputFilter>
         <TableContainer>
-          {isLoading ? (
-            <div>
-              <Loading color="success" size="lg">Carregando Produtos</Loading>
-            </div>
-          ) : (
+          {isError && <div><Loading color="success" size="lg">Erro ao carregar os Produtos.</Loading></div>}
+          {isLoading && <div><Loading color="success" size="lg">Carregando Produtos</Loading></div>}
+          {isSuccess && (
             <table id="products-table">
               <thead>
                 <tr>

@@ -12,8 +12,9 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 Modal.setAppElement('#__next')
 
+const queryClient = new QueryClient()
+
 function MyApp({ Component, pageProps }: AppProps) {
-  const queryClient = new QueryClient()
   const router = useRouter()
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false)
 

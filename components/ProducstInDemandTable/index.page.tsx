@@ -19,11 +19,22 @@ interface ProductsProps {
   total: number;
 }
 
-interface ProductsInDemandProps {
-  prepareUpdate: (product: ProductsProps) => void;
+interface ProdutoNoPedidoProps {
+  itemPedidoId?: string;
+  produtoId: string;
+  nome: string;
+  unidade: string;
+  precoVenda: number;
+  quantidade: number;
+  total: number;
 }
 
-const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate }: ProductsInDemandProps) => {
+interface ProductsInDemandProps {
+  prepareUpdate: (product: ProductsProps) => void;
+  product: ProdutoNoPedidoProps;
+}
+
+const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate, product }: ProductsInDemandProps) => {
   const router = useRouter()
   const { pedidoId, estanteId } = router.query
   const [products, setProducts] = useState<ProductsProps[]>([])
@@ -50,7 +61,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate 
 
     fetchProdutosNoPedido()
     fetchValorTotal()
-  }, [products])
+  }, [product])
 
   const handleDeleteItemPedido = (product: ProductsProps) => {
     setId(product.itemPedidoId)

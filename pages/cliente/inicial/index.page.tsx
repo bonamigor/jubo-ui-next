@@ -28,8 +28,6 @@ const Inicial: NextPage = () => {
         const clienteId = window.sessionStorage.getItem('userClientId')
         const { data, errors } = await pedidoService.listarUltimoPedidoByCliente(Number(clienteId))
 
-        console.log(data)
-
         if (!errors) {
           setPedido(data.pedido)
         }
