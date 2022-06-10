@@ -10,6 +10,7 @@ import Image from "next/image";
 import EditImg from '../../../../../assets/edit.png'
 import DeleteImg from '../../../../../assets/delete.png'
 import DeleteModal from "../../../../../components/Modal/Delete/index.page";
+import { useQuery } from "react-query";
 
 interface EstanteProdutoProps {
   produtoId: number;
@@ -25,10 +26,11 @@ const EstanteProduto: NextPage = () => {
   const { id } = router.query
 
   const [isUpdate, setIsUpdate] = useState(false)
-  const [produtos, setProdutos] = useState<ProdutoProps[]>([])
-  const [produtosNaEstante, setProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
+  
+  
   const [filter, setFilter] = useState('')
   const [filteredProdutosNaEstante, setFilteredProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
+  const [produtosNaEstante, setProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
   const [produtoId, setProdutoId] = useState('')
   const [estanteId, setEstanteId] = useState(id)
   const [precoVenda, setPrecoVenda] = useState('')
@@ -52,22 +54,24 @@ const EstanteProduto: NextPage = () => {
       }
     }
 
-    const fetchProducts = async () => {
-      const { data, errors } = await produtoService.listarTodosOsProdutos()
-      if (!errors) {
-        setProdutos(data.produtos)
-      }
-    }
-
-    fetchProducts()
     fetchProductsNaEstante()
-  }, [id, produtosNaEstante])
+  }, [id])
+
+  let produtos: Array<ProdutoProps> = [];
+  const produtosQuery = useQuery('produtos', produtoService.listarTodosOsProdutos)
+
+  // if (produtosQuery.isLoading) {
+  //   return <div>Carregando Produtos...</div>
+  // }
+
+  if (produtosQuery.isSuccess) {
+    produtos = produtosQuery.data.produtos
+  }
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
 
     try {
-      console.log(estanteId)
       const { errors } = await produtoEstanteService.cadastrarProdutoNaEstante({
         idEstante: Number(id),
         idProduto: Number(produtoId.split(' ')[0]),
@@ -130,24 +134,32 @@ const EstanteProduto: NextPage = () => {
         <Content>
           <h1>Adicionar produtos na Estante</h1>
           <FormItself onSubmit={handleSubmit}>
-            <input type="text" placeholder="Pesquise o Produto" 
-              list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
-              value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
-            <datalist id="produtos">
-              {produtos.map(produto => {
-                return (
-                <option key={produto.id} 
-                  value={`${produto.id} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(Number(produto.preco))}/${produto.unidade}`}
-                />)
-              })}
-            </datalist>
+            {produtosQuery.isLoading && <input type="text" placeholder="Carregando produtos..." />}
+            {produtosQuery.isSuccess && (
+              <>
+              <input type="text" placeholder="Pesquise o Produto" 
+                list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
+                value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
+              <datalist id="produtos">
+                {produtos.map(produto => {
+                  return (
+                  <option key={produto.id} 
+                    value={`${produto.id} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(Number(produto.preco))}/${produto.unidade}`}
+                  />)
+                })}
+              </datalist>
+              </>
+            )}
             <input type="text" placeholder="Preço" value={precoVenda} onChange={event => {setPrecoVenda(event.target.value)}} />
             <input type="text" placeholder="Quant." value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
             <FormSubmitButton type="submit" isUpdate={isUpdate}>Adicionar</FormSubmitButton>
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>
-        <TableContainer>
+        {produtosNaEstante.length < 1 ? (
+          <h2>Não há produtos nessa estante (...ainda!)</h2>
+        ) : (
+          <TableContainer>
           <table>
             <thead>
               <tr>
@@ -200,6 +212,8 @@ const EstanteProduto: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>
+        )}
+        
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ProdutoEstante' idArray={produtoNaEstanteId} />
       </Container>
     </>
