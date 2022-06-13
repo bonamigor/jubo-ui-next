@@ -9,6 +9,7 @@ interface Pedido {
   id: number;
   endereco: string;
   dataCriacao: string;
+  dataEntrega: string;
   valorTotal: number;
   nome: string;
   cidade: string;
@@ -60,7 +61,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           <div>
             <p>ID: {pedido.id}</p> -
             <p>Colégio: {pedido.nome}</p> -
-            <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p>
+            <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p> -
+            <p>Data Entrega: {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}</p>
           </div>
         </OrderHeader>
         <OrderItems>

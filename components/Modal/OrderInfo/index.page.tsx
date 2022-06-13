@@ -93,6 +93,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const generatePdf = () => {
     const doc = new jsPDF('l')
 
+    const data = dataEntrega.split('/')
+    const novaData = new Date(Number(data[2]), (Number(data[1]) - 1), Number(data[0]))
+    const dataFormatada = format(novaData, 'dd/MM/yyyy')
+
     products.forEach(product => {
       delete product['produtoId'];
     })
@@ -102,14 +106,16 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     //       style: 'currency',
     //       currency: 'BRL'
     //   }).format(Number(produto.precoVenda)))
+    //   produto.total = Number(new Intl.NumberFormat('pt-BR', {
+    //     style: 'currency',
+    //     currency: 'BRL'
+    // }).format(Number(produto.total)))
     //   return produto
     // })
 
     const newProdutosArray = products.map(produto => {
       return Object.values(produto)
     })
-
-    let pageWidth = doc.internal.pageSize.getWidth()
 
     let pageNumber = doc.internal.pages.length - 1
 
@@ -129,10 +135,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     doc.text(`Telefone: ${pedido.telefone}`, 14, 35)
     doc.text(`Telefone: ${pedido.telefone}`, 154, 35)
 
+    doc.text(`Data de Entrega: ${dataFormatada}`, 14, 40)
+    doc.text(`Data de Entrega: ${dataFormatada}`, 154, 40)
+
     autoTable(doc, {
       head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
       body: newProdutosArray,
-      startY: 40,
+      startY: 45,
       tableWidth: 130,
       showHead: 'firstPage',
       margin: { right: 125 },
@@ -145,7 +154,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     autoTable(doc, {
       head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
       body: newProdutosArray,
-      startY: 40,
+      startY: 45,
       tableWidth: 130,
       showHead: 'firstPage',
       margin: { left: 153 },
@@ -153,11 +162,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       pageBreak: 'auto'
     })
 
-    doc.text(`Observação: _______________________________________________`, 14, 190)
-    doc.text(`Observação: _______________________________________________`, 154, 190)
+    doc.text(`Observação: ____________________________________________________`, 14, 190)
+    doc.text(`Observação: ____________________________________________________`, 154, 190)
 
-    doc.text(`Assinatura: _______________________________________________`, 14, 200)
-    doc.text(`Assinatura: _______________________________________________`, 154, 200)
+    doc.text(`Assinatura: _____________________________________________________`, 14, 200)
+    doc.text(`Assinatura: _____________________________________________________`, 154, 200)
 
 
     doc.save(`pedido-${pedido.id}.pdf`)

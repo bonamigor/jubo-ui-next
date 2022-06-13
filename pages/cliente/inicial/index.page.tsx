@@ -9,6 +9,7 @@ import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 interface PedidosProps {
   id: number;
   dataCriacao: string;
+  dataEntrega: string;
   valorTotal: number;
   status: string;
   nome: string;
@@ -20,7 +21,7 @@ interface PedidosProps {
 
 const Inicial: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   useEffect(() => {
     const fetchLastOrder = async () => {

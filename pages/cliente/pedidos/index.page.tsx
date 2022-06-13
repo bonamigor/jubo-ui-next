@@ -9,6 +9,7 @@ import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 interface PedidosProps {
   id: number;
   dataCriacao: string;
+  dataEntrega: string;
   valorTotal: number;
   status: string;
   nome: string;
@@ -23,7 +24,7 @@ const Pedidos: NextPage = () => {
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   useEffect(() => {
     const fetchPedidos = async () => {
@@ -71,6 +72,7 @@ const Pedidos: NextPage = () => {
                 <th>Data Criação</th>
                 <th>Total</th>
                 <th>Status</th>
+                <th>Data Entrega</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -90,6 +92,9 @@ const Pedidos: NextPage = () => {
                         }).format(pedido.valorTotal)}</td>
                       <td>{pedido.status}</td>
                       <td>
+                        {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}
+                      </td>
+                      <td>
                         <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
                       </td>
                     </tr>
@@ -108,6 +113,9 @@ const Pedidos: NextPage = () => {
                         currency: 'BRL'
                         }).format(pedido.valorTotal)}</td>
                       <td>{pedido.status}</td>
+                      <td>
+                        {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}
+                      </td>
                       <td>
                         <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
                       </td>

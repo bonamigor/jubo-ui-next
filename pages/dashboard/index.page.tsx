@@ -10,6 +10,7 @@ import { pedidoService } from '../../services';
 interface PedidosProps {
   id: number;
   dataCriacao: string;
+  dataEntrega: string;
   valorTotal: number;
   status: string;
   nome: string;
