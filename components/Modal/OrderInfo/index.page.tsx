@@ -8,6 +8,8 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
+import { useQuery } from 'react-query';
+import { Loading } from '@nextui-org/react';
 
 interface Pedido {
   id: number;
@@ -38,20 +40,15 @@ interface OrderInfoModalProps {
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
-  const [products, setProducts] = useState<ProductsProps[]>([])
   const [dataEntrega, setDataEntrega] = useState('')
 
-  useEffect(() => {
-    const fetchProdutosNoPedido = async () => {
-      const { data, errors } = await pedidoService.listarProdutosByPedidoId(pedido.id)
+  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id))
 
-      if (!errors) {
-        setProducts(data.produtos)
-      }
-    }
+  let products: Array<ProductsProps> = [];
 
-    fetchProdutosNoPedido()
-  }, [pedido.id])
+  if (isSuccess) {
+    products = data.produtos
+  }
 
   const confirmOrder = async () => {
     const data = dataEntrega.split('/')
@@ -202,6 +199,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             </thead>
 
             <tbody>
+              {isLoading && (<div><Loading type='points'>Carregando produtos...</Loading></div>)}
               {
                 products.map(product => {
                   return (

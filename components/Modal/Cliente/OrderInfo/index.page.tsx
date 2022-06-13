@@ -1,9 +1,8 @@
 import { NextPage } from 'next';
 import {  Container, OrderHeader, OrderItems } from "./orderInfo";
 import Modal from 'react-modal'
-import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../../services';
-import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
 
 interface Pedido {
   id: number;
@@ -34,19 +33,24 @@ interface OrderInfoModalProps {
 }
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
-  const [products, setProducts] = useState<ProductsProps[]>([])
+  // useEffect(() => {
+  //   const fetchProdutosNoPedido = async () => {
+  //     const { data, errors } = await pedidoService.listarProdutosByPedidoId(pedido.id)
 
-  useEffect(() => {
-    const fetchProdutosNoPedido = async () => {
-      const { data, errors } = await pedidoService.listarProdutosByPedidoId(pedido.id)
+  //     if (!errors) {
+  //       setProducts(data.produtos)
+  //     }
+  //   }
 
-      if (!errors) {
-        setProducts(data.produtos)
-      }
-    }
+  //   fetchProdutosNoPedido()
+  // }, [pedido.id])
+  let products: Array<ProductsProps> = [];
 
-    fetchProdutosNoPedido()
-  }, [pedido.id])
+  const { data, error, isLoading, isError, isSuccess } = useQuery(['produtosNoPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id))
+
+  if (isSuccess) {
+    products = data.produtos
+  }
 
   return (
     <Modal
@@ -57,60 +61,72 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     >
       <Container>
         <OrderHeader>
-          <h1>Informações do Pedido</h1>
-          <div>
-            <p>ID: {pedido.id}</p> -
-            <p>Colégio: {pedido.nome}</p> -
-            <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p> -
-            <p>Data Entrega: {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}</p>
-          </div>
+          {pedido ? (
+            <>
+              <h1>Informações do Pedido</h1>
+              <div>
+                <p>ID: {pedido.id}</p> -
+                <p>Colégio: {pedido.nome}</p> -
+                <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p> -
+                <p>Data Entrega: {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}</p>
+              </div>
+            </>
+          ) : (
+            <h1>Não foi possível recuperar informações do pedido.</h1>
+          )}
         </OrderHeader>
         <OrderItems>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Unidade</th>
-                <th>Quantidade</th>
-                <th>Total</th>
-              </tr>
-            </thead>
+          {pedido ? (
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Unidade</th>
+                    <th>Quantidade</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
 
-            <tbody>
-              {
-                products.map(product => {
-                  return (
-                    <tr key={String(product.itemPedidoId)}>
-                      <td>{product.itemPedidoId}</td>
-                      <td>{product.nome}</td>
-                      <td>
-                        {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(product.precoVenda)}
-                      </td>
-                      <td>{product.unidade}</td>
-                      <td>{product.quantidade}</td>
-                      <td>
-                        {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(product.total)}
-                      </td>
-                    </tr>
-                  )
-                })
-              }
-            </tbody>
-          </table>
-          <h3>
-            Valor Total: {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(pedido.valorTotal)}
-          </h3>
+                <tbody>
+                  {
+                    products.map(product => {
+                      return (
+                        <tr key={String(product.itemPedidoId)}>
+                          <td>{product.itemPedidoId}</td>
+                          <td>{product.nome}</td>
+                          <td>
+                            {new Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }).format(product.precoVenda)}
+                          </td>
+                          <td>{product.unidade}</td>
+                          <td>{product.quantidade}</td>
+                          <td>
+                            {new Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }).format(product.total)}
+                          </td>
+                        </tr>
+                      )
+                    })
+                  }
+                </tbody>
+              </table>
+              <h3>
+                Valor Total: {new Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }).format(pedido.valorTotal)}
+              </h3>
+            </>
+          ) : (
+            <h1>Não foi possível recuperar informações dos produtos no pedido.</h1>
+          )}
         </OrderItems>
       </Container>
     </Modal>

@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { pedidoService } from '../../services';
 import DeleteModal from '../Modal/Delete/index.page';
 import { useRouter } from 'next/router';
+import { useQuery } from 'react-query';
 
 interface ProductsProps {
   itemPedidoId: string;
@@ -44,7 +45,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
 
   useEffect(() => {
     const fetchProdutosNoPedido = async () => {
-      const { data, errors } = await pedidoService.listarProdutosByPedidoId(Number(pedidoId))
+      const { data, errors } = await pedidoService.listarProdutosByPedidoIdOld(Number(pedidoId))
 
       if (!errors) {
         setProducts(data.produtos)

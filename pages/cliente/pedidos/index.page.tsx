@@ -35,7 +35,7 @@ const Pedidos: NextPage = () => {
       }
     }
     fetchPedidos()
-  }, [])
+  }, [pedido.id])
 
   const handleFilterProdutoList = (event: any) => {
     setFilter(event.toUpperCase())

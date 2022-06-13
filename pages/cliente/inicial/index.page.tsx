@@ -57,47 +57,56 @@ const Inicial: NextPage = () => {
           <p>Caso exista, aqui apareceram os dados do seu último pedido, clique na Lupa para mais detalhes!</p>
 
           <TableContainer>
-            {pedido ? 
-            <>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nº</th>
-                    <th>Data Criação</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
+            {pedido ? (
+              <>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nº</th>
+                      <th>Data Criação</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  <tr>
-                    <td>{pedido.id}</td>
-                    <td>
-                      {pedido.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
-                            .format(new Date(pedido.dataCriacao))}
-                    </td>
-                    <td>
-                      { new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                      }).format(pedido.valorTotal)}
-                    </td>
-                    <td>{pedido.status}</td>
-                    <td>
-                      <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </> : 
-            <>
-              <h1>Não existem pedidos feitos por você. <br />Clique em Realizar Pedido!</h1>
-            </>}
+                  <tbody>
+                    <tr>
+                      <td>{pedido.id}</td>
+                      <td>
+                        {pedido.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
+                              .format(new Date(pedido.dataCriacao))}
+                      </td>
+                      <td>
+                        { new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }).format(pedido.valorTotal)}
+                      </td>
+                      <td>{pedido.status}</td>
+                      <td>
+                        <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </>
+            ) : (
+              <>
+                <h2>Não existem pedidos feitos por você. <br />Clique em Realizar Pedido!</h2>
+              </>
+            )}
           </TableContainer>
         </Content>
       </Container>
-      <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
+      <>
+      {pedido ? (
+        <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
+      ) : (
+        <></>
+      )}
+      </>
+      
     </>
   )
 }
