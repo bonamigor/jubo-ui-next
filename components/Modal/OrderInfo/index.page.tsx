@@ -52,8 +52,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const confirmOrder = async () => {
     const data = dataEntrega.split('/')
-    const dataAoContrario = data.reverse().join('-')
-    const dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(dataAoContrario))
+    const dataFormatada = data.reverse().join('-')
     
     try {
       const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
@@ -92,8 +91,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const doc = new jsPDF('l')
 
     const data = dataEntrega.split('/')
-    const novaData = new Date(Number(data[2]), (Number(data[1]) - 1), Number(data[0]))
-    const dataFormatada = format(novaData, 'dd/MM/yyyy')
+    const dataAoContrario = data.reverse().join('-')
+    const dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(dataAoContrario))
 
     products.forEach(product => {
       delete product['produtoId'];
