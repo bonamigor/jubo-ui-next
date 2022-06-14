@@ -52,8 +52,9 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const confirmOrder = async () => {
     const data = dataEntrega.split('/')
-    const novaData = new Date(Number(data[2]), (Number(data[1]) - 1), Number(data[0]))
-    const dataFormatada = format(novaData, 'yyyy-MM-dd')
+    const dataAoContrario = data.reverse().join('-')
+    const dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(dataAoContrario))
+    
     try {
       const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
 
