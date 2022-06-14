@@ -68,7 +68,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 <p>ID: {pedido.id}</p> -
                 <p>Colégio: {pedido.nome}</p> -
                 <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p> -
-                <p>Data Entrega: {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}</p>
+                <p>Data Entrega: {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega)) : 'Sem Data'}</p>
               </div>
             </>
           ) : (

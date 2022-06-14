@@ -83,7 +83,7 @@ const Pedidos: NextPage = () => {
                   return (
                     <tr key={pedido.id}>
                       <td>{pedido.id}</td>
-                      <td>{ new Intl.DateTimeFormat('pt-BR')
+                      <td>{ new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
                           .format(new Date(pedido.dataCriacao)) 
                       }</td>
                       <td>{ new Intl.NumberFormat('pt-BR', {
@@ -92,7 +92,7 @@ const Pedidos: NextPage = () => {
                         }).format(pedido.valorTotal)}</td>
                       <td>{pedido.status}</td>
                       <td>
-                        {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}
+                        {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega)) : 'Sem Data'}
                       </td>
                       <td>
                         <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
@@ -105,7 +105,7 @@ const Pedidos: NextPage = () => {
                   return (
                     <tr key={pedido.id}>
                       <td>{pedido.id}</td>
-                      <td>{ new Intl.DateTimeFormat('pt-BR')
+                      <td>{ new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
                           .format(new Date(pedido.dataCriacao)) 
                       }</td>
                       <td>{ new Intl.NumberFormat('pt-BR', {
@@ -114,7 +114,7 @@ const Pedidos: NextPage = () => {
                         }).format(pedido.valorTotal)}</td>
                       <td>{pedido.status}</td>
                       <td>
-                        {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR').format(new Date(pedido.dataEntrega)) : 'Sem Data'}
+                        {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega)) : 'Sem Data'}
                       </td>
                       <td>
                         <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
