@@ -27,9 +27,9 @@ interface ProductsProps {
   produtoId?: string;
   nome: string;
   unidade: string;
-  precoVenda: number;
+  precoVenda: string;
   quantidade: number;
-  total: number;
+  total: string;
 }
 
 interface OrderInfoModalProps {
@@ -90,27 +90,28 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const generatePdf = () => {
     const doc = new jsPDF('l')
 
-    const data = dataEntrega.split('/')
-    const dataAoContrario = data.reverse().join('-')
-    const dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(dataAoContrario))
+    // const data = dataEntrega.split('/')
+    // const dataAoContrario = data.reverse().join('-')
+    // const dataTal = format(new Date(dataAoContrario), 'yyyy-MM-dd')
+    // const dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(dataAoContrario))
 
     products.forEach(product => {
       delete product['produtoId'];
     })
 
-    // const formatedPrices = products.map(produto => {
-    //   produto.precoVenda = Number(new Intl.NumberFormat('pt-BR', {
-    //       style: 'currency',
-    //       currency: 'BRL'
-    //   }).format(Number(produto.precoVenda)))
-    //   produto.total = Number(new Intl.NumberFormat('pt-BR', {
-    //     style: 'currency',
-    //     currency: 'BRL'
-    // }).format(Number(produto.total)))
-    //   return produto
-    // })
+    const formatedPrices = products.map(produto => {
+      produto.precoVenda = new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+      }).format(Number(produto.precoVenda))
+      produto.total = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(Number(produto.total))
+      return produto
+    })
 
-    const newProdutosArray = products.map(produto => {
+    const newProdutosArray = formatedPrices.map(produto => {
       return Object.values(produto)
     })
 
@@ -132,8 +133,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     doc.text(`Telefone: ${pedido.telefone}`, 14, 35)
     doc.text(`Telefone: ${pedido.telefone}`, 154, 35)
 
-    doc.text(`Data de Entrega: ${dataFormatada}`, 14, 40)
-    doc.text(`Data de Entrega: ${dataFormatada}`, 154, 40)
+    doc.text(`Data de Entrega: ${dataEntrega}`, 14, 40)
+    doc.text(`Data de Entrega: ${dataEntrega}`, 154, 40)
 
     autoTable(doc, {
       head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
@@ -159,11 +160,24 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       pageBreak: 'auto'
     })
 
-    doc.text(`Observação: ____________________________________________________`, 14, 190)
-    doc.text(`Observação: ____________________________________________________`, 154, 190)
+    const valorTotal = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(Number(pedido.valorTotal))
 
-    doc.text(`Assinatura: _____________________________________________________`, 14, 200)
-    doc.text(`Assinatura: _____________________________________________________`, 154, 200)
+    doc.text(`Valor Total: `, 14, 170)
+    doc.text(`${valorTotal}`, 125, 170)
+
+    doc.text(`Valor Total: `, 154, 170)
+    doc.text(`${valorTotal}`, 265, 170)
+
+    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 180)
+
+    doc.text(`Observação: _______________________________________________________`, 14, 190)
+    doc.text(`Observação: _______________________________________________________`, 154, 190)
+
+    doc.text(`Assinatura: ________________________________________________________`, 14, 200)
+    doc.text(`Assinatura: ________________________________________________________`, 154, 200)
 
 
     doc.save(`pedido-${pedido.id}.pdf`)
@@ -210,7 +224,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         {new Intl.NumberFormat('pt-BR', {
                             style: 'currency',
                             currency: 'BRL'
-                        }).format(product.precoVenda)}
+                        }).format(Number(product.precoVenda))}
                       </td>
                       <td>{product.unidade}</td>
                       <td>{product.quantidade}</td>
@@ -218,7 +232,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         {new Intl.NumberFormat('pt-BR', {
                             style: 'currency',
                             currency: 'BRL'
-                        }).format(product.total)}
+                        }).format(Number(product.total))}
                       </td>
                     </tr>
                   )
