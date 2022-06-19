@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { CancelSection, ConfirmSection, Container, OrderFooter, OrderHeader, OrderItems } from "./orderInfo";
+import { CancelSection, ConfirmSection, Container, OrderFooter, OrderHeader, OrderItems, GeneratePdf } from './orderInfo';
 import Modal from 'react-modal'
 import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../services';
@@ -16,6 +16,7 @@ interface Pedido {
   endereco: string;
   dataCriacao: string;
   valorTotal: number;
+  status: string;
   nome: string;
   cidade: string;
   estado: string;
@@ -234,18 +235,28 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           </h3>
         </OrderItems>
         <OrderFooter>
-          <ConfirmSection>
-            <h2>Deseja confirmar?</h2>
-            <div>
-              <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
-              <button onClick={confirmOrder}>Confirmar Pedido</button>
-              <button onClick={generatePdf}>Criar PDF</button>
-            </div>
-          </ConfirmSection>
-          <CancelSection>
-            <h2>Ou, deseja cancelar o pedido?</h2>
-            <button onClick={cancelOrder}>Cancelar Pedido</button>
-          </CancelSection>
+          {pedido.status === 'CRIADO' ? (
+            <>
+              <ConfirmSection>
+                <h2>Deseja confirmar?</h2>
+                <div>
+                  <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
+                  <button onClick={confirmOrder}>Confirmar Pedido</button>
+                  <button onClick={generatePdf}>Criar PDF</button>
+                </div>
+              </ConfirmSection>
+              <CancelSection>
+                <h2>Ou, deseja cancelar o pedido?</h2>
+                <button onClick={cancelOrder}>Cancelar Pedido</button>
+              </CancelSection>
+            </>
+          ) : (
+            <GeneratePdf>
+              <div>
+                <button onClick={generatePdf}>Criar PDF</button>
+              </div>
+            </GeneratePdf>
+          )}
         </OrderFooter>
       </Container>
     </Modal>

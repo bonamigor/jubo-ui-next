@@ -95,6 +95,32 @@ export const OrderFooter = styled.div`
   }
 `
 
+export const GeneratePdf = styled.div`
+  margin-top: -3rem;
+
+  div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  button {
+    width: 100%;
+    padding: 0 1.5rem;
+    margin-left: 1rem;
+    height: 3rem;
+    background: var(--green-500);
+    color: #FFF;
+    border-radius: 0.25rem;
+    border: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: filter 0.2s;
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+`
+
 export const ConfirmSection = styled.div`
   div {
     display: flex;

@@ -65,7 +65,7 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
                   </div>
                 </nav>
               </Dropdown>
-              <MenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDOS</MenuItem>
+              <MenuItem onClick={() => {router.push('/pedidos')}} isActive={isActive({route, item: 'pedido'})}>PEDIDOS</MenuItem>
               <MenuItem isActive={isActive({route, item: 'relatorio'})}>RELATÓRIOS</MenuItem>
               <LogginButton text={userName} />
             </Menu>

@@ -39,6 +39,13 @@ const ClienteService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  listarTodosOsClientesNew: async () => {
+    const response = await httpClient.get('/api/clientes', {
+    })
+
+    return response.data
+  },
+
   cadastrarCliente: async ({ nome, cnpj, endereco, email, cidade, estado, cep, telefone, ativo }:
     { nome: string, cnpj: string, endereco: string, email: string, cidade: string, estado: string, cep: string, telefone: string, ativo: string }) => {
     const response = await httpClient.post(
