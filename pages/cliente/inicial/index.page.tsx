@@ -74,7 +74,7 @@ const Inicial: NextPage = () => {
                     <tr>
                       <td>{pedido.id}</td>
                       <td>
-                        {pedido.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR')
+                        {pedido.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
                               .format(new Date(pedido.dataCriacao))}
                       </td>
                       <td>

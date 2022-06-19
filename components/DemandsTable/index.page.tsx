@@ -64,7 +64,7 @@ const PedidosTable: NextPage<DemandsProps> = ({ pedidos }) => {
                   <td>{pedido.nome}</td>
                   <td>{pedido.cidade} / {pedido.estado}</td>
                   <td>
-                    { new Intl.DateTimeFormat('pt-BR')
+                    { new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
                           .format(new Date(pedido.dataCriacao)) 
                       }
                   </td>

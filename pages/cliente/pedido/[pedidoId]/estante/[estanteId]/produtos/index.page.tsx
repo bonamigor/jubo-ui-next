@@ -169,7 +169,7 @@ const PedidoProdutos: NextPage = () => {
             <h2>Dados Pedido N° {pedidoId}</h2>
             <div>
               <p><span>Colégio:</span> {cliente.nome}</p>
-              <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR').format(new Date())}</p>
+              <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date())}</p>
               <p><span>Status:</span> {pedido.status}</p>
             </div>
           </PedidoData>
