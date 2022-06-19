@@ -1,7 +1,7 @@
 import { GlobalStyle } from '../styles/global'
 import type { AppProps } from 'next/app'
 import Navbar from '../components/Navbar/index.page'
-import { UserProvider, useUser } from '../hooks/useUser';
+import { UserProvider } from '../hooks/useUser';
 import toast, { Toaster } from 'react-hot-toast';
 import { ClienteProvider } from '../hooks/useClientes';
 import { PedidoProvider } from '../hooks/usePedido'
@@ -9,6 +9,7 @@ import Modal from 'react-modal'
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Head from 'next/head';
 
 Modal.setAppElement('#__next')
 

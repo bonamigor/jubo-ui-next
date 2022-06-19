@@ -11,6 +11,7 @@ import NumberFormat from "react-number-format";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../components/Modal/Delete/index.page";
 import toast from "react-hot-toast";
+import Head from "next/head";
 
 interface EstanteProps {
   id: number;
@@ -112,6 +113,9 @@ const CadastroEstante: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Cadastro de Estante</title>
+      </Head>
       <Container>
         <Content>
           <h1>Cadastro de Estante</h1>

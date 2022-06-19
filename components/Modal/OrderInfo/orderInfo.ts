@@ -53,6 +53,12 @@ export const OrderItems = styled.div`
     }
 
     tbody {
+      div {
+        display: flex;
+        align-items: center;
+        text-align: center;
+      }
+
       tr {
         td {
           background: var(--gray-250);

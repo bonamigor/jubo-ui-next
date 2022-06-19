@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import DeleteModal from "../../../components/Modal/Delete/index.page";
 import { useQuery } from "react-query";
 import { Loading } from '@nextui-org/react';
+import Head from "next/head";
 
 export interface ProdutoProps {
   id: number;
@@ -99,6 +100,9 @@ const CadastroProduto: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Cadastro de Produto</title>
+      </Head>
       <Container>
         <Content>
           <h1>Cadastro de Produto</h1>

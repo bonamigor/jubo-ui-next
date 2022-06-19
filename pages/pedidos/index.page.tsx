@@ -9,6 +9,7 @@ import { Loading } from '@nextui-org/react';
 import Image from "next/image";
 import BloomImg from '../../assets/bloom.png'
 import OrderInfo from '../../components/Modal/OrderInfo/index.page';
+import Head from 'next/head';
 
 interface Cliente {
   id: number;
@@ -79,6 +80,9 @@ const Pedidos: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Pedidos por Cliente</title>
+      </Head>
       <Container>
         <Content>
           <header>

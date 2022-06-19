@@ -11,6 +11,7 @@ import EditImg from '../../../../../assets/edit.png'
 import DeleteImg from '../../../../../assets/delete.png'
 import DeleteModal from "../../../../../components/Modal/Delete/index.page";
 import { useQuery } from "react-query";
+import Head from "next/head";
 
 interface EstanteProdutoProps {
   produtoId: number;
@@ -130,6 +131,9 @@ const EstanteProduto: NextPage = () => {
   
   return (
     <>
+      <Head>
+        <title>Produtos na Estante</title>
+      </Head>
       <Container>
         <Content>
           <h1>Adicionar produtos na Estante</h1>

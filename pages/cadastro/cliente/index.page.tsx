@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { clienteService } from "../../../services";
 import toast from 'react-hot-toast';
 import DeleteModal from "../../../components/Modal/Delete/index.page";
+import Head from "next/head";
 
 interface Cliente {
   id: number;
@@ -133,6 +134,9 @@ const CadastroCliente: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Cadastro de Cliente</title>
+      </Head>
       <Container>
         <Content>
           <h1>Cadastro de Cliente</h1>

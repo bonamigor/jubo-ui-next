@@ -6,6 +6,7 @@ import TruckImg from '../../assets/truck.png'
 import DemandsTable from '../../components/DemandsTable/index.page';
 import { useEffect, useState } from 'react';
 import { pedidoService } from '../../services';
+import Head from 'next/head';
 
 interface PedidosProps {
   id: number;
@@ -47,6 +48,9 @@ const Dashboard: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Dashboard</title>
+      </Head>
       <Container>
         <div>
           <LeftPanel>

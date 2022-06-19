@@ -6,6 +6,7 @@ import { produtoEstanteService, itemPedidoService, clienteService, pedidoService
 import toast from "react-hot-toast";
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
 import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
+import Head from "next/head";
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
@@ -161,51 +162,56 @@ const PedidoProdutos: NextPage = () => {
   }
 
   return (
-    <Container>
-      <Content>
-        <FormHeader>
-          <h1>Adicione Produtos ao Pedido!</h1>
-          <PedidoData>
-            <h2>Dados Pedido N° {pedidoId}</h2>
-            <div>
-              <p><span>Colégio:</span> {cliente.nome}</p>
-              <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date())}</p>
-              <p><span>Status:</span> {pedido.status}</p>
-            </div>
-          </PedidoData>
-        </FormHeader>
-        <h2>Selecione os produtos, digite a quantidade desejada e clique em Adicionar!</h2>
-          <PedidoForm onSubmit={handleSubmit}> 
-            <FormContent>
+    <>
+      <Head>
+        <title>Adicionar produtos</title>
+      </Head>    
+      <Container>
+        <Content>
+          <FormHeader>
+            <h1>Adicione Produtos ao Pedido!</h1>
+            <PedidoData>
+              <h2>Dados Pedido N° {pedidoId}</h2>
               <div>
-                <input type="text" placeholder="Pesquise o Produto" 
-                    list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
-                    value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
-                <datalist id="produtos">
-                  {produtoNaEstante.map(produto => {
-                    return (
-                    <option key={produto.produtoId} 
-                      value={`${produto.produtoId} ${produto.nome} - ${new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }).format(produto.precoVenda)} / ${produto.unidade}`}
-                    />)
-                  })}
-                </datalist>
+                <p><span>Colégio:</span> {cliente.nome}</p>
+                <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date())}</p>
+                <p><span>Status:</span> {pedido.status}</p>
               </div>
-              <input type="text" placeholder="Quantidade" value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
-              <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
-              <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
-            </FormContent>
-          </PedidoForm>
-          <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
-        <DecideButtons>
-          <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
-          <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
-        </DecideButtons>
-        <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Pedido' id={id} />
-      </Content>
-    </Container>
+            </PedidoData>
+          </FormHeader>
+          <h2>Selecione os produtos, digite a quantidade desejada e clique em Adicionar!</h2>
+            <PedidoForm onSubmit={handleSubmit}> 
+              <FormContent>
+                <div>
+                  <input type="text" placeholder="Pesquise o Produto" 
+                      list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
+                      value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
+                  <datalist id="produtos">
+                    {produtoNaEstante.map(produto => {
+                      return (
+                      <option key={produto.produtoId} 
+                        value={`${produto.produtoId} ${produto.nome} - ${new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                      }).format(produto.precoVenda)} / ${produto.unidade}`}
+                      />)
+                    })}
+                  </datalist>
+                </div>
+                <input type="text" placeholder="Quantidade" value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
+                <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+                <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
+              </FormContent>
+            </PedidoForm>
+            <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
+          <DecideButtons>
+            <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
+            <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
+          </DecideButtons>
+          <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Pedido' id={id} />
+        </Content>
+      </Container>
+    </>
   )
 }
 

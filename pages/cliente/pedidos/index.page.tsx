@@ -5,6 +5,7 @@ import { pedidoService } from '../../../services/index';
 import Image from "next/image";
 import BloomImg from '../../../assets/bloom.png'
 import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
+import Head from "next/head";
 
 interface PedidosProps {
   id: number;
@@ -55,6 +56,9 @@ const Pedidos: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Jubo Notas - Pedidos</title>
+      </Head>    
       <Container>
         <Content>
           <h1>Pedidos</h1>

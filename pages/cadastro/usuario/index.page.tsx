@@ -10,6 +10,7 @@ import { usuarioService } from "../../../services";
 import toast from "react-hot-toast";
 import DeleteModal from "../../../components/Modal/Delete/index.page";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 interface UserProps {
   id: number;
@@ -160,6 +161,9 @@ const CadastroUsuario: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Cadastro de Usuário</title>
+      </Head>
       <Container>
         <Forms>
           <Admin onSubmit={handleSubmitAdmin}>
