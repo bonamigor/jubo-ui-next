@@ -55,7 +55,7 @@ const Pedidos: NextPage = () => {
   const handleClientSelection = async () => {
     setIsOrdersLoading(true)
 
-    const idCliente: number = Number(clienteId.split('')[0])
+    const idCliente: number = Number(clienteId.split(' ')[0])
     
     const { data, errors } = await pedidoService.listarPedidosByCliente(idCliente)
 
