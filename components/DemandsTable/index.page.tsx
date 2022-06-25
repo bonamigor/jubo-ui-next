@@ -14,6 +14,7 @@ interface PedidosProps {
   dataCriacao: string;
   valorTotal: number;
   status: string;
+  observacao: string;
   nome: string;
   endereco: string;
   cidade: string;
@@ -29,7 +30,7 @@ const PedidosTable: NextPage<DemandsProps> = ({ pedidos }) => {
   const router = useRouter()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   const onRequestClose = async () => {
     setIsModalOpen(false)
