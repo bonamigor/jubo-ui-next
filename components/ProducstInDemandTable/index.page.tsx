@@ -77,7 +77,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
     <>
       {products.length < 1 ? (
         <div>
-            <h1>Não há products nesse pedido (ainda...!)</h1>
+            <h1>Não há produtos nesse pedido (ainda...!)</h1>
         </div>
       ) : (
         <>

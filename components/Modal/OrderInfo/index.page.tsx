@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { useQuery } from 'react-query';
-import { Loading } from '@nextui-org/react';
+import { Loading, Textarea } from '@nextui-org/react';
 
 interface Pedido {
   id: number;
@@ -17,6 +17,7 @@ interface Pedido {
   dataCriacao: string;
   valorTotal: number;
   status: string;
+  observacao: string;
   nome: string;
   cidade: string;
   estado: string;
@@ -174,8 +175,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 180)
 
-    doc.text(`Observação: _______________________________________________________`, 14, 190)
-    doc.text(`Observação: _______________________________________________________`, 154, 190)
+    doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+    doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
 
     doc.text(`Assinatura: ________________________________________________________`, 14, 200)
     doc.text(`Assinatura: ________________________________________________________`, 154, 200)
@@ -247,6 +248,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                             currency: 'BRL'
                         }).format(pedido.valorTotal)}
           </h3>
+          <Textarea readOnly initialValue={pedido.observacao ?? 'Sem observação'} css={{ mt: "1.5rem", w: "900px" }} />
         </OrderItems>
         <OrderFooter>
           {pedido.status === 'CRIADO' ? (

@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
 import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
+import { Textarea } from "@nextui-org/react";
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
@@ -36,6 +37,7 @@ const PedidoProdutos: NextPage = () => {
   const [produtos, setProdutos] = useState<ProdutoNoPedidoProps[]>([])
   const [produtoId, setProdutoId] = useState('')
   const [quantidade, setQuantidade] = useState('')
+  const [observacao, setObservacao] = useState('')
   const [cliente, setCliente] = useState({ 
     id: 0,
     nome: '',
@@ -147,7 +149,10 @@ const PedidoProdutos: NextPage = () => {
     }
   }
 
-  const handleFecharPedido = () => {
+  const handleFecharPedido = async () => {
+    if (observacao != '') {
+      await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
+    }
     toast.success('Pedido fechado!')
     router.push('/cliente/inicial')
   }
@@ -204,11 +209,12 @@ const PedidoProdutos: NextPage = () => {
               </FormContent>
             </PedidoForm>
             <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
-          <DecideButtons>
-            <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
-            <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
-          </DecideButtons>
-          <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Pedido' id={id} />
+            <Textarea placeholder="Deixe uma observação para o fornecedor." size="lg" css={{ mt: "1.5rem", w: "700px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
+            <DecideButtons>
+              <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
+              <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
+            </DecideButtons>
+            <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Pedido' id={id} />
         </Content>
       </Container>
     </>

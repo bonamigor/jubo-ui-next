@@ -14,6 +14,7 @@ interface PedidosProps {
   dataEntrega: string;
   valorTotal: number;
   status: string;
+  observacao: string;
   nome: string;
   endereco: string;
   cidade: string;

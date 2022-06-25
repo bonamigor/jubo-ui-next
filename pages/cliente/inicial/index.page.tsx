@@ -13,6 +13,7 @@ interface PedidosProps {
   dataEntrega: string;
   valorTotal: number;
   status: string;
+  observacao: string;
   nome: string;
   endereco: string;
   cidade: string;
@@ -22,7 +23,7 @@ interface PedidosProps {
 
 const Inicial: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   useEffect(() => {
     const fetchLastOrder = async () => {

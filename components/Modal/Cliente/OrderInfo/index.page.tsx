@@ -3,6 +3,7 @@ import {  Container, OrderHeader, OrderItems } from "./orderInfo";
 import Modal from 'react-modal'
 import { pedidoService } from '../../../../services';
 import { useQuery } from 'react-query';
+import { Textarea } from '@nextui-org/react';
 
 interface Pedido {
   id: number;
@@ -10,6 +11,7 @@ interface Pedido {
   dataCriacao: string;
   dataEntrega: string;
   valorTotal: number;
+  observacao: string;
   nome: string;
   cidade: string;
   estado: string;
@@ -127,6 +129,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           ) : (
             <h1>Não foi possível recuperar informações dos produtos no pedido.</h1>
           )}
+          <Textarea readOnly initialValue={pedido.observacao ?? 'Sem observação'} css={{ mt: "1.5rem", w: "900px" }} />
         </OrderItems>
       </Container>
     </Modal>
