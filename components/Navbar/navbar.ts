@@ -20,50 +20,6 @@ export const Menu = styled.div`
   justify-content: space-evenly;
 `
 
-export const Dropdown = styled.div`
-  position: relative;
-  display: inline-block;
-
-  nav {
-    display: none;
-    position: absolute;
-    background-color: transparent;
-    min-width: 160px;
-    z-index: 1;
-    padding: 10px 0;
-    border-radius: 10px;
-
-    a {
-      color: var(--black);
-
-      &:hover {
-        color: var(--white);
-      }
-    }
-  }
-
-  div {
-    display: none;
-    position: absolute;
-    background-color: var(--gray-250);
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    padding: 5px 5px;
-    border-radius: 10px;
-  }
-
-  &:hover {
-    nav {
-      display: block;
-    }
-
-    div {
-      display: block;
-    }
-  }
-`
-
 interface MenuItemProps {
   isActive?: boolean;
 }
@@ -80,6 +36,20 @@ export const MenuItem = styled.a<MenuItemProps>`
 
   &:hover {
     color: var(--black);
+  }
+`
+
+export const DropdownMenuItem = styled.a<MenuItemProps>`
+  color: var(--black);
+  text-decoration: ${(props) => props.isActive
+    ? 'underline'
+    : 'none'
+  };
+
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--gray-200);
   }
 `
 

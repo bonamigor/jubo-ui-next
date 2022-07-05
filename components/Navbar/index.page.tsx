@@ -2,13 +2,14 @@ import logoImg from '../../assets/logo.png'
 import Image from 'next/image';
 
 import { NextPage } from "next";
-import { Container, Content, Dropdown, Logo, Menu, MenuItem } from './navbar';
+import { Container, Content, DropdownMenuItem, Logo, Menu, MenuItem } from './navbar';
 import LogginButton from '../LoginButton/index.page';
 import { useRouter } from 'next/router';
 import { useUser } from '../../hooks/useUser';
 import { pedidoService } from '../../services';
 import { usePedido } from '../../hooks/usePedido';
-import { useEffect, useState } from 'react';
+import { Dropdown } from '@nextui-org/react';
+import Link from 'next/link';
 
 interface NavbarProps {
   isUserLoggedIn: boolean;
@@ -53,26 +54,66 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
           </Logo>
           {isAdmin ? (
             <Menu>
-              <MenuItem onClick={() => {router.push('/dashboard')}} isActive={isActive({route, item: 'dashboard'})}>DASHBOARD</MenuItem>
+              <Link href="/dashboard" passHref>
+                <MenuItem isActive={isActive({route, item: 'dashboard'})}>DASHBOARD</MenuItem>
+              </Link>
               <Dropdown>
-                <MenuItem isActive={isActive({route, item: 'cadastro'})}>CADASTROS</MenuItem>
-                <nav>
-                  <div>
-                    <MenuItem onClick={() => {router.push('/cadastro/usuario')}} isActive={isActive({route, item: 'usuario'})}>USUÁRIO</MenuItem>|
-                    <MenuItem onClick={() => {router.push('/cadastro/cliente')}} isActive={isActive({route, item: 'cliente'})}>CLIENTE</MenuItem>|
-                    <MenuItem onClick={() => {router.push('/cadastro/produto')}} isActive={isActive({route, item: 'produto'})}>PRODUTO</MenuItem>|
-                    <MenuItem onClick={() => {router.push('/cadastro/estante')}} isActive={isActive({route, item: 'estante'})}>ESTANTE</MenuItem>
-                  </div>
-                </nav>
+                <Dropdown.Trigger>
+                  <MenuItem isActive={isActive({route, item: 'cadastro'})}>CADASTROS</MenuItem>
+                </Dropdown.Trigger>
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    <Link href="/cadastro/usuario" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'usuario'})}>USUÁRIO</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link href="/cadastro/cliente" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'cliente'})}>CLIENTE</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link href="/cadastro/produto" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'produto'})}>PRODUTO</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link href="/cadastro/estante" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'estante'})}>ESTANTE</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
               </Dropdown>
-              <MenuItem onClick={() => {router.push('/pedidos')}} isActive={isActive({route, item: 'pedido'})}>PEDIDOS</MenuItem>
-              <MenuItem isActive={isActive({route, item: 'relatorio'})}>RELATÓRIOS</MenuItem>
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <MenuItem isActive={isActive({route, item: 'relatorio'})}>RELATÓRIOS</MenuItem>
+                </Dropdown.Trigger>
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    <Link href="/pedidos" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDOS</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link href="/pedidos" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'compras'})}>COMPRAS</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link href="/pedidos" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'clientes'})}>CLIENTES</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
               <LogginButton text={userName} />
             </Menu>
           ) : (
             <Menu>
               <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem>
-              <MenuItem onClick={() => {router.push('/cliente/pedidos')}} isActive={isActive({route, item: 'cliente/pedidos'})}>PEDIDOS</MenuItem>
+              <Link href="/cliente/pedidos" passHref>
+                <MenuItem isActive={isActive({route, item: 'cliente/pedidos'})}>PEDIDOS</MenuItem>
+              </Link>
               <LogginButton text={userName} />
             </Menu>
           )}
