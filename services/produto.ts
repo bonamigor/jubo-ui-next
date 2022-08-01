@@ -25,6 +25,14 @@ const ProdutoService = (httpClient: AxiosInstance) => ({
     return response.data
   },
 
+  listarProdutosParaComprar: async (
+    { dataInicial, dataFinal }: 
+    { dataInicial: string, dataFinal: string}) => {
+      const response = await httpClient.post('/api/produtos/compras', { dataInicial: dataInicial, dataFinal: dataFinal})
+
+      return response.data
+  },
+
   cadastrarProduto: async ({ nome, precoCusto, unidadeMedida }: 
     { nome: string, precoCusto: string, unidadeMedida: string }) => {
     const response = await httpClient.post(

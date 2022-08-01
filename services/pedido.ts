@@ -116,6 +116,12 @@ const PedidoService = (httpClient: AxiosInstance) => ({
 
     return response.data
   },
+  
+  gerarRelatorioPedidos: async ({ dataInicial, dataFinal }: { dataInicial: string, dataFinal: string }) => {
+    const response = await httpClient.post('/api/pedidos/relatorio-data', { dataInicial, dataFinal })
+
+    return response.data
+  },
 
   listarProdutosByPedidoIdOld: async (pedidoId: number ) => {
     const response = await httpClient.get(`/api/pedidos/${pedidoId}/produtos`)

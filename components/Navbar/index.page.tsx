@@ -90,18 +90,18 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
                 </Dropdown.Trigger>
                 <Dropdown.Menu>
                   <Dropdown.Item>
-                    <Link href="/pedidos" passHref>
-                      <DropdownMenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDOS</DropdownMenuItem>
+                    <Link href="/relatorios/pedidos" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'pedidos'})}>PEDIDOS</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/pedidos" passHref>
+                    <Link href="/relatorios/compras" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'compras'})}>COMPRAS</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/pedidos" passHref>
-                      <DropdownMenuItem isActive={isActive({route, item: 'clientes'})}>CLIENTES</DropdownMenuItem>
+                    <Link href="/relatorios/vendas" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'vendas'})}>VENDAS</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                 </Dropdown.Menu>
