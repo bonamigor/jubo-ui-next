@@ -12,6 +12,7 @@ import InputMask from "react-input-mask";
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { format } from "date-fns";
+import Head from "next/head";
 
 interface Produtos {
   nome: string;
@@ -53,55 +54,60 @@ const Compras: NextPage = () => {
   }
 
   return (
-    <Container>
-      <Content>
-        <h1>Relatório de Compras</h1>
-        <p>Selecione um período entre datas para ter o relatório.</p>
-        <Dates>
-          <div>
-            <label>Data Inicial</label>
-            <InputMask mask="99/99/9999" onChange={event => setDataInicial(event.target.value)} value={dataInicial} />
-          </div>
-          <div>
-            <label>Data Final</label>
-            <InputMask mask="99/99/9999" onChange={event => setDataFinal(event.target.value)} value={dataFinal} />
-          </div>
-        </Dates>
-        <SearchButton type="button" onClick={() => {showDates()}}>Pesquisar</SearchButton>
-        {produtos.length > 1 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
-      </Content>
-      {mutation.isLoading && <h1>Carregando produtos...</h1>}
+    <>
+      <Head>
+        <title>Relatório de Compras</title>
+      </Head>
+      <Container>
+        <Content>
+          <h1>Relatório de Compras</h1>
+          <p>Selecione um período entre datas para ter o relatório.</p>
+          <Dates>
+            <div>
+              <label>Data Inicial</label>
+              <InputMask mask="99/99/9999" onChange={event => setDataInicial(event.target.value)} value={dataInicial} />
+            </div>
+            <div>
+              <label>Data Final</label>
+              <InputMask mask="99/99/9999" onChange={event => setDataFinal(event.target.value)} value={dataFinal} />
+            </div>
+          </Dates>
+          <SearchButton type="button" onClick={() => {showDates()}}>Pesquisar</SearchButton>
+          {produtos.length > 1 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
+        </Content>
+        {mutation.isLoading && <h1>Carregando produtos...</h1>}
 
-      {produtos.length > 1 ? (
-        <TableContainer>
-          <table id="produtos">
-            <thead>
-              <tr>
-                <th>Nome do Produto</th>
-                <th>Unidade de Medida</th>
-                <th>Quantidade p/ compra</th>
-              </tr>
-            </thead>
+        {produtos.length > 1 ? (
+          <TableContainer>
+            <table id="produtos">
+              <thead>
+                <tr>
+                  <th>Nome do Produto</th>
+                  <th>Unidade de Medida</th>
+                  <th>Quantidade p/ compra</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {produtos.map(produto => {
-                  return (
-                    <tr key={produto.nome}>
-                      <td>{produto.nome}</td>
-                      <td>{produto.unidadeMedida}</td>
-                      <td>{produto.quantidade}</td>
-                    </tr>
-                  )
-                })}
-            </tbody>
-          </table>
-        </TableContainer>
-      ) : (
-        <EmptyTable>
-          <h1>Não há produtos para comprar nessa data.<br />Ou você não pesquisou ainda...</h1>
-        </EmptyTable>
-      )}
-    </Container>
+              <tbody>
+                {produtos.map(produto => {
+                    return (
+                      <tr key={produto.nome}>
+                        <td>{produto.nome}</td>
+                        <td>{produto.unidadeMedida}</td>
+                        <td>{produto.quantidade}</td>
+                      </tr>
+                    )
+                  })}
+              </tbody>
+            </table>
+          </TableContainer>
+        ) : (
+          <EmptyTable>
+            <h1>Não há produtos para comprar nessa data.<br />Ou você não pesquisou ainda...</h1>
+          </EmptyTable>
+        )}
+      </Container>
+    </>
   )
 }
 
