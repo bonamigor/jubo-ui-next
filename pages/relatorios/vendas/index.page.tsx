@@ -1,7 +1,7 @@
 import { NextPage } from "next";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 
-import { Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from './vendas';
+import { ButtonArea, Container, Content, Dates, EmptyTable, SearchButton, TableContainer } from './vendas';
 
 import { useMutation } from 'react-query';
 import { pedidoService, produtoService } from "../../../services";
@@ -12,6 +12,20 @@ import InputMask from "react-input-mask";
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { format } from "date-fns";
+import { clienteService } from '../../../services/index';
+
+interface Cliente {
+  id: number;
+  nome: string;
+  cnpj: string;
+  endereco: string;
+  cep: string;
+  email: string;
+  cidade: string;
+  estado: string;
+  telefone: string;
+  ativo: string;
+}
 
 interface Vendas {
   id: number;
@@ -22,26 +36,39 @@ interface Vendas {
 }
 
 const Vendas: NextPage = () => {
+  const [clientes, setClientes] = useState<Cliente[]>([])
+  const [clienteId, setClienteId] = useState('')
   const [dataInicial, setDataInicial] = useState('')
   const [dataFinal, setDataFinal] = useState('')
-  const [valorTotal, setValorTotal] = useState(0)
   const [vendas, setVendas] = useState<Vendas[]>([])
+  
+  useEffect(() => {
+    const fetchClientes = async () => {
+      const { data, errors } = await clienteService.listarTodosOsClientes()
+
+      if (!errors) {
+        setClientes(data.clientes)
+      }
+    }
+    fetchClientes()
+  }, [])
 
   const mutation = useMutation(pedidoService.gerarRelatorioPedidos)
 
+  const total = vendas.reduce((acumulador, numero) => {
+    return acumulador += numero.total
+  }, 0)
+
   const gerarRelatorio = async () => {
+    const idCliente = Number(clienteId.split(' ')[0])
     const dataInicialFormatada: string = `${dataInicial.split('/')[2]}-${dataInicial.split('/')[1]}-${dataInicial.split('/')[0]}`
     const dataFinalFormatada: string = `${dataFinal.split('/')[2]}-${dataFinal.split('/')[1]}-${dataFinal.split('/')[0]}`
-    await mutation.mutateAsync({ dataInicial: dataInicialFormatada, dataFinal: dataFinalFormatada }, {
+    await mutation.mutateAsync({ clienteId: idCliente, dataInicial: dataInicialFormatada, dataFinal: dataFinalFormatada }, {
       onSuccess: async (data) => {
-        setValorTotal(0)
         setVendas(data.vendas)
+        setClienteId('')
         setDataInicial('')
         setDataFinal('')
-        const total = vendas.reduce((acumulador, numero, indice, original) => {
-          return acumulador += numero.total
-        }, 0)
-        setValorTotal(total)
       },
       onError: async (error) => {
         toast.error('Erro ao pesquisar os pedidos nessa data.')
@@ -55,7 +82,7 @@ const Vendas: NextPage = () => {
 
     autoTable(doc, { html: '#vendas' })
 
-    doc.text(`Valor Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal)}`, 140, 290)
+    doc.text(`Valor Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`, 140, 290)
 
     const data = format(new Date(), 'dd-MM-yyyy')
 
@@ -67,18 +94,30 @@ const Vendas: NextPage = () => {
       <Content>
         <h1>Relatório de Vendas</h1>
         <p>Selecione um período entre datas para ter o relatório.</p>
+        <div>
+          <input required type="text" placeholder="Pesquise o Cliente" 
+              list="clientes" id="cliente-choice" name="cliente-choice" autoComplete="off"
+              value={clienteId} onChange={event => {setClienteId(event.target.value)}} />
+          <datalist id="clientes">
+            {clientes.map(cliente => {
+              return (<option key={cliente.id} value={`${cliente.id} - ${cliente.nome}`} />)
+            })}
+          </datalist>
+        </div>
         <Dates>
           <div>
             <label>Data Inicial</label>
-            <InputMask mask="99/99/9999" onChange={event => setDataInicial(event.target.value)} value={dataInicial} />
+            <InputMask required mask="99/99/9999" onChange={event => setDataInicial(event.target.value)} value={dataInicial} />
           </div>
           <div>
             <label>Data Final</label>
-            <InputMask mask="99/99/9999" onChange={event => setDataFinal(event.target.value)} value={dataFinal} />
+            <InputMask required mask="99/99/9999" onChange={event => setDataFinal(event.target.value)} value={dataFinal} />
           </div>
         </Dates>
-        <SearchButton type="button" onClick={() => {gerarRelatorio()}}>Pesquisar</SearchButton>
-        {vendas.length > 1 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
+        <ButtonArea>
+          <SearchButton type="button" onClick={() => {gerarRelatorio()}}>Pesquisar</SearchButton>
+          {vendas.length > 1 && <SearchButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</SearchButton>}
+        </ButtonArea>
       </Content>
       {mutation.isLoading && <h1>Carregando pedidos...</h1>}
 
@@ -111,7 +150,7 @@ const Vendas: NextPage = () => {
               </tbody>
             </table>
           </TableContainer>
-          <h1>Valor Total: { new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal) }</h1>
+          <h1>Valor Total: { new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total) }</h1>
         </>
       ) : (
         <EmptyTable>
