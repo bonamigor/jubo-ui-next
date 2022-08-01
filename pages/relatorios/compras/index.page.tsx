@@ -9,11 +9,6 @@ import toast from 'react-hot-toast';
 
 import InputMask from "react-input-mask";
 
-import { registerLocale } from  "react-datepicker";
-import ptBR from 'date-fns/locale/pt-BR';
-registerLocale('pt-BR', ptBR)
-
-import "react-datepicker/dist/react-datepicker.css";
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { format } from "date-fns";
