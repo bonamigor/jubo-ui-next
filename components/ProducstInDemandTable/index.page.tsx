@@ -62,7 +62,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
 
     fetchProdutosNoPedido()
     fetchValorTotal()
-  }, [product])
+  }, [product, products])
 
   const handleDeleteItemPedido = (product: ProductsProps) => {
     setId(product.itemPedidoId)
@@ -88,10 +88,8 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>Nome</th>
-                  <th>Preço</th>
-                  <th>Unidade</th>
+                  <th>Preço / Unidade</th>
                   <th>Quantidade</th>
                   <th>Total</th>
                   <th>Ações</th>
@@ -103,15 +101,13 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
                   products.map(product => {
                     return (
                       <tr key={String(product.itemPedidoId)}>
-                        <td>{product.itemPedidoId}</td>
                         <td>{product.nome}</td>
                         <td>
                           {new Intl.NumberFormat('pt-BR', {
                               style: 'currency',
                               currency: 'BRL'
-                          }).format(product.precoVenda)}
+                          }).format(product.precoVenda)} / {product.unidade}
                         </td>
-                        <td>{product.unidade}</td>
                         <td>{product.quantidade}</td>
                         <td>
                           {new Intl.NumberFormat('pt-BR', {

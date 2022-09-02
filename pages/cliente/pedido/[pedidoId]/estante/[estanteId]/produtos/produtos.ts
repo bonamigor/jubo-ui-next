@@ -15,7 +15,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1100px;
+  width: 1200px;
   height: 100%;
   padding: 0 5px;
   
@@ -29,29 +29,14 @@ export const Content = styled.div`
 
 `
 
-export const TableBorder = styled.div`
-  border: 1px solid var(--gray-200);
-  border-radius: 10px;
-  margin: 1rem;
-  padding-left: 1rem;
-  padding-right:  1rem;
-  padding-bottom: 1rem;
-`
-
 export const PedidoForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 1rem;
+  width: 1000px;
 `
-
-export const FormHeader = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-` 
 
 export const FormContent = styled.div`
   display: flex;
@@ -59,10 +44,10 @@ export const FormContent = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
-
-  width: 600px;
+  width: 1000px;
 
   div {
+    
     input {
       width: 400px;
       padding: 0 1.5rem;
@@ -122,6 +107,44 @@ export const FormContent = styled.div`
   }
 `
 
+export const FormHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 1000px;
+` 
+
+export const PedidoData = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 2rem 0;
+  background: var(--gray-300);
+  border-radius: 10px;
+  padding: 1rem;
+  width: 1000px;
+
+  h2 {
+    text-align: center;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2rem;
+  }
+
+  span {
+    text-decoration: underline;
+    font-weight: 400;
+  }
+`
+
+
+
 interface FormButtonProps {
   isUpdate?: boolean;
 }
@@ -150,7 +173,7 @@ export const FormButton = styled.button<FormButtonProps>`
   display: ${(props) => props.isUpdate
     ? 'block'
     : 'none'};
-  width: 200px;
+  width: 150px;
   padding: 0 1rem;
   height: 3rem;
   background: var(--green-500);
@@ -164,116 +187,6 @@ export const FormButton = styled.button<FormButtonProps>`
   &:hover {
     filter: brightness(0.9);
   }
-`
-
-export const PedidoData = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: 2rem 0;
-  background: var(--gray-300);
-  width: 940px;
-  border-radius: 10px;
-  padding: 1rem;
-
-  h2 {
-    text-align: center;
-  }
-
-  div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 2rem;
-  }
-
-  span {
-    text-decoration: underline;
-    font-weight: 400;
-  }
-`
-
-export const TableContainer = styled.div`
-  margin-top: 4rem 0;
-  padding-bottom: 4rem;
-  text-align: center;
-
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 2rem;
-    span {
-      
-      text-align: center;
-    }
-  }
-
-  h2 {
-    font-weight: 400;
-    margin-top: 4rem;
-  }
-
-  table {
-    width: 900px;
-    border-spacing: 0 0.5rem;
-    margin-bottom: 1rem;
-    
-    th {
-      color: var(--text-body);
-      font-weight: 400;
-      padding: 1rem 2rem;
-      line-height: 1.5rem;
-    }
-
-    thead {
-      background: var(--gray-700);
-      tr {
-        &:first-child {
-          color: var(--white);
-        }
-      }
-    }
-
-    tbody {
-      tr {
-        td {
-          background: var(--gray-200);
-          font-size: 1rem;
-        }
-      }
-    }
-
-    td {
-      padding: 1rem 2rem;
-      border: 0;
-      background: var(--white);
-      color: var(--black);
-
-      a {
-        margin: 0 5px;
-      }
-    }
-  }
-`
-
-export const TableTitle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2rem;
-`
-
-export const TableFooter = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: -4rem;
-  padding: 1rem 0;
 `
 
 export const DecideButtons = styled.div`
@@ -307,7 +220,7 @@ export const CancelButton = styled.button`
   padding: 0 1.5rem;
   height: 4rem;
   margin: 0 1rem;
-  background: red;
+  background: #cc0000;
   color: #FFF;
   border-radius: 0.25rem;
   border: 0;
@@ -315,6 +228,6 @@ export const CancelButton = styled.button`
   font-weight: 600;
   transition: filter 0.2s;
   &:hover {
-    filter: brightness(0.9);
+    filter: opacity(0.9);
   }
 `

@@ -110,6 +110,9 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
             </Menu>
           ) : (
             <Menu>
+              <Link href="/cliente/inicial" passHref>
+                <MenuItem isActive={isActive({route, item: 'cliente/inicial'})}>INÍCIO</MenuItem>
+              </Link>
               <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem>
               <Link href="/cliente/pedidos" passHref>
                 <MenuItem isActive={isActive({route, item: 'cliente/pedidos'})}>PEDIDOS</MenuItem>

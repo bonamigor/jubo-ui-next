@@ -6,7 +6,7 @@ export const TableContainer = styled.div`
   text-align: center;
 
   table {
-    width: 900px;
+    width: 1000px;
     border-spacing: 0 0.5rem;
     margin-bottom: 1rem;
     
@@ -20,8 +20,10 @@ export const TableContainer = styled.div`
     thead {
       background: var(--gray-700);
       tr {
-        &:first-child {
-          color: var(--white);
+        color: var(--white);
+
+        th:first-of-type {
+          text-align: left;
         }
       }
     }
@@ -31,6 +33,10 @@ export const TableContainer = styled.div`
         td {
           background: var(--gray-200);
           font-size: 1rem;
+        }
+
+        td:first-of-type {
+          text-align: left;
         }
       }
     }

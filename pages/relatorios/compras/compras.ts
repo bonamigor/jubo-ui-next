@@ -14,7 +14,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1500px;
+  width: 1200px;
   height: 300px;
   padding: 1.5rem 5px;
 
@@ -57,7 +57,7 @@ export const SearchButton = styled.button`
   display: block;
   width: 200px;
   padding: 0 1.5rem;
-  height: 4rem;
+  height: 3rem;
   background: var(--green-500);
   color: #FFF;
   border-radius: 0.25rem;
@@ -75,7 +75,7 @@ export const GeneratePdfButton = styled.button`
   display: block;
   width: 200px;
   padding: 0 1.5rem;
-  height: 4rem;
+  height: 3rem;
   background: var(--green-500);
   color: #FFF;
   border-radius: 0.25rem;
@@ -93,7 +93,7 @@ export const TableContainer = styled.div`
   margin: 10px 0;
 
   table {
-    width: 1100px;
+    width: 1200px;
     border-spacing: 0 0.5rem;
     margin-bottom: 1rem;
     
@@ -146,4 +146,14 @@ export const EmptyTable = styled.section`
   align-items: center;
   margin-top: 2rem;
   text-align: center;
+`
+
+export const Buttons = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    margin: 2rem 1rem;
+  }
 `

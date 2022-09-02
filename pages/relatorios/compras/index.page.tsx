@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useState } from "react";
 
-import { Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from './compras';
+import { Buttons, Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from './compras';
 
 import { useMutation } from 'react-query';
 import { produtoService } from "../../../services";
@@ -72,8 +72,10 @@ const Compras: NextPage = () => {
               <InputMask mask="99/99/9999" onChange={event => setDataFinal(event.target.value)} value={dataFinal} />
             </div>
           </Dates>
-          <SearchButton type="button" onClick={() => {showDates()}}>Pesquisar</SearchButton>
-          {produtos.length > 1 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
+          <Buttons>
+            <SearchButton type="button" onClick={() => {showDates()}}>Pesquisar</SearchButton>
+            {produtos.length > 1 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
+          </Buttons>
         </Content>
         {mutation.isLoading && <h1>Carregando produtos...</h1>}
 

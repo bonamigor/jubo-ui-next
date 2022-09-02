@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { CancelButton, ConfirmButton, Container, Content, DecideButtons, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm, TableBorder, TableContainer, TableFooter, TableTitle } from "./produtos";
+import { CancelButton, ConfirmButton, Container, Content, DecideButtons, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm } from "./produtos";
 import { useState, useEffect, FormEvent } from 'react';
 import { produtoEstanteService, itemPedidoService, clienteService, pedidoService } from '../../../../../../../services/index';
 import toast from "react-hot-toast";
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
-import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
+  import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
 import { Textarea } from "@nextui-org/react";
 
@@ -209,7 +209,7 @@ const PedidoProdutos: NextPage = () => {
               </FormContent>
             </PedidoForm>
             <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
-            <Textarea placeholder="Deixe uma observação para o fornecedor." size="lg" css={{ mt: "1.5rem", w: "700px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
+            <Textarea placeholder="Deixe uma observação para o fornecedor." size="lg" css={{ mt: "1.5rem", w: "1000px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
             <DecideButtons>
               <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
               <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>

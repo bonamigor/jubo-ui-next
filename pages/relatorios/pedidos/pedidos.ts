@@ -19,7 +19,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1500px;
+  width: 1200px;
   height: 270px;
   padding: 0 5px;
 
@@ -81,7 +81,7 @@ export const Orderless = styled.div`
   justify-content: center;
   background: transparent;
   border-radius: 10px;
-  width: 1500px;
+  width: 1200px;
   height: 200px;
   padding: 0 5px;
 `
@@ -94,7 +94,7 @@ export const LoadingOrders = styled.div`
   background: transparent;
   margin-top: -2rem;
   border-radius: 10px;
-  width: 1500px;
+  width: 1200px;
   height: 200px;
   padding: 0 5px;
 `
@@ -103,16 +103,15 @@ export const TableContainer = styled.div`
   margin-top: 10px;
 
   table {
-    width: 1500px;
+    width: 1200px;
     border-spacing: 0 0.5rem;
-    text-align: left;
+    text-align: center;
     margin-bottom: 1rem;
     
     th {
       color: var(--text-body);
       font-weight: 400;
       padding: 1rem 2rem;
-      text-align: left;
       line-height: 1.5rem;
     }
 
@@ -127,11 +126,7 @@ export const TableContainer = styled.div`
     tbody {
       tr {
         td {
-          font-size: 1rem;
-
-          &:last-child {
-            text-align: center;
-          }
+          font-size: 0.8rem;
         }
       }
     }

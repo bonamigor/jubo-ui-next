@@ -14,7 +14,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1100px;
+  width: 1200px;
   height: 170px;
   padding: 0 5px;
   
@@ -52,16 +52,15 @@ export const TableContainer = styled.div`
   margin-top: 10px;
 
   table {
-    width: 1100px;
+    width: 1200px;
     border-spacing: 0 0.5rem;
-    text-align: left;
     margin-bottom: 1rem;
+    text-align: center;
     
     th {
       color: var(--text-body);
       font-weight: 400;
       padding: 1rem 2rem;
-      text-align: left;
       line-height: 1.5rem;
     }
 
@@ -77,10 +76,6 @@ export const TableContainer = styled.div`
       tr {
         td {
           font-size: 1rem;
-
-          &:first-child {
-            text-align: left;
-          }
         }
       }
     }
