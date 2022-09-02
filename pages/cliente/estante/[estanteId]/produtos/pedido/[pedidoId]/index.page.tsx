@@ -5,7 +5,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { produtoEstanteService, itemPedidoService, clienteService, pedidoService } from '../../../../../../../services/index';
 import toast from "react-hot-toast";
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
-  import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
+import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
 import { Textarea } from "@nextui-org/react";
 
