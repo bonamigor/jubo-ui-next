@@ -29,21 +29,6 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
     return route.includes(item)
   }
 
-  const criarPedido = async () => {
-    const clienteId: number = Number(window.sessionStorage.getItem('userClientId'))
-
-    try {
-      const { data, errors } = await pedidoService.criarPedido(clienteId)
-
-      if (!errors) {
-        receivePedido({ id: Number(data.pedido.pedidoId), status: String(data.pedido.status), dataCriacao: String(data.pedido.dataCriacao), clienteId: Number(data.pedido.clienteId) })
-        router.push(`/cliente/pedido/${data.pedido.pedidoId}/estante`)
-      }
-    } catch (error) {
-      
-    }
-  }
-
   return isUserLoggedIn ? (
     <>
       <Container>
@@ -113,7 +98,10 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
               <Link href="/cliente/inicial" passHref>
                 <MenuItem isActive={isActive({route, item: 'cliente/inicial'})}>INÍCIO</MenuItem>
               </Link>
-              <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem>
+              <Link href="/cliente/estante" passHref>
+                <MenuItem isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem>
+              </Link>
+              {/* <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem> */}
               <Link href="/cliente/pedidos" passHref>
                 <MenuItem isActive={isActive({route, item: 'cliente/pedidos'})}>PEDIDOS</MenuItem>
               </Link>
