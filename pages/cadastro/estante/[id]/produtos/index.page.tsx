@@ -28,7 +28,6 @@ const EstanteProduto: NextPage = () => {
 
   const [isUpdate, setIsUpdate] = useState(false)
   
-  
   const [filter, setFilter] = useState('')
   const [filteredProdutosNaEstante, setFilteredProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
   const [produtosNaEstante, setProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
@@ -36,6 +35,7 @@ const EstanteProduto: NextPage = () => {
   const [estanteId, setEstanteId] = useState(id)
   const [precoVenda, setPrecoVenda] = useState('')
   const [quantidade, setQuantidade] = useState('')
+  const [qtdProdutosEstante, setQtdProdutosEstante] = useState(0)
 
   const [produtoNaEstanteId, setProdutoNaEstanteId] = useState<number[]>([])
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -56,7 +56,7 @@ const EstanteProduto: NextPage = () => {
     }
 
     fetchProductsNaEstante()
-  }, [id])
+  }, [id, qtdProdutosEstante])
 
   let produtos: Array<ProdutoProps> = [];
   const produtosQuery = useQuery('produtos', produtoService.listarTodosOsProdutos)
@@ -82,7 +82,7 @@ const EstanteProduto: NextPage = () => {
 
       if (!errors) {
         toast.success('Produto adicionado com sucesso!')
-        router.reload()
+        setQtdProdutosEstante(qtdProdutosEstante + 1)
       }
     } catch (error) {
       toast.error('Erro ao adicionar o produto na estante.')
