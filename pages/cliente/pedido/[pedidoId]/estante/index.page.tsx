@@ -3,7 +3,7 @@ import { Container, Content, InputFilter, TableContainer } from "./estante";
 import { useState, useEffect, FormEvent } from 'react';
 import { estanteService } from "../../../../../services";
 import Image from "next/image";
-import AddImg from '../../../../../../assets/add.png'
+import AddImg from '../../../../../assets/add.png'
 import { useRouter } from 'next/router';
 import Head from "next/head";
 

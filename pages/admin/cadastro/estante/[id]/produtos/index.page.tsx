@@ -83,6 +83,9 @@ const EstanteProduto: NextPage = () => {
       if (!errors) {
         toast.success('Produto adicionado com sucesso!')
         setQtdProdutosEstante(qtdProdutosEstante + 1)
+        setPrecoVenda('')
+        setQuantidade('')
+        setProdutoId('')
       }
     } catch (error) {
       toast.error('Erro ao adicionar o produto na estante.')

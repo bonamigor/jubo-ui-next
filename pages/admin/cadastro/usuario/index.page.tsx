@@ -239,7 +239,7 @@ const CadastroUsuario: NextPage = () => {
                   )
                 })
               ) : (
-                usuariosPaginados.map(usuario => {
+                data.users.map((usuario: UserProps) => {
                   return (
                     <tr key={usuario.id}>
                       <td>{usuario.nome}</td>
