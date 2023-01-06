@@ -11,7 +11,11 @@ import ItemPedidoService from './item-pedido'
 
 const API_ENVS = {
   local: 'http://localhost:3001',
+<<<<<<< HEAD
   production: 'https://jubo-api-production.up.railway.app'
+=======
+  production: 'https://jubo-api.fly.dev'
+>>>>>>> ed95972ad17f8c7d93618c72a79112025ffd483b
 }
 
 const httpClient = axios.create({
