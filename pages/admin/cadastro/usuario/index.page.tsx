@@ -3,16 +3,19 @@ import Image from "next/image";
 import { useState, useEffect, FormEvent } from 'react';
 
 import { Admin, Container, FormButton, Forms, FormSubmitButton, InputFilter, TableContainer, User } from './usuario';
-import EditImg from '../../../assets/edit.png'
-import DeleteImg from '../../../assets/delete.png'
-import { useClientes } from '../../../hooks/useClientes';
-import { usuarioService } from "../../../services";
+import EditImg from '../../../../assets/edit.png'
+import DeleteImg from '../../../../assets/delete.png'
+import { useClientes } from '../../../../hooks/useClientes';
+import { usuarioService } from "../../../../services";
 import toast from "react-hot-toast";
-import DeleteModal from "../../../components/Modal/Delete/index.page";
+import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Pagination from "../../../../components/Pagination/index.page";
+import { useQuery } from "react-query";
+import { Loading } from "@nextui-org/react";
 
-interface UserProps {
+export interface UserProps {
   id: number;
   nome: string;
   email: string;
@@ -43,21 +46,33 @@ const CadastroUsuario: NextPage = () => {
   const [admin, setAdmin] = useState('')
   const [clienteId, setClienteId] = useState('')
   const [usuarios, setUsuarios] = useState<UserProps[]>([])
+  const [usuariosPaginados, setUsuariosPaginados] = useState<UserProps[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postPerPage, setPostsPerPage] = useState(5)
+
+  const lastIndex = currentPage * postPerPage;
+  const firstIndex = lastIndex - postPerPage;
+
+  const { data, isLoading, isSuccess, isError } = useQuery('getUsuarios', usuarioService.listarTodosOsUsuarios, { staleTime: Infinity })
+
+  console.log(data)
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const { data, errors } = await usuarioService.listarTodosOsUsuarios()
-      if (!errors) {
-        setUsuarios(data.users)
-      }
+    if (data) {
+      setUsuarios(data.users)
     }
-    fetchUsers()
   }, [])
 
   useEffect(() => {
     populateClienteArray()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (usuarios) {
+      setUsuariosPaginados(usuarios.slice(firstIndex, lastIndex))
+    }
+  }, [currentPage, firstIndex, lastIndex, postPerPage, usuarios])
 
   const handleFilterUserList = (event: any) => {
     setFilter(event.toUpperCase())
@@ -194,7 +209,8 @@ const CadastroUsuario: NextPage = () => {
         <InputFilter>
         <input type="text" placeholder="Filtre pelo nome do usuário" onChange={event => handleFilterUserList(event.target.value)} />
         </InputFilter>
-        <TableContainer>
+        {isLoading && <div><Loading color="success" size="lg">Carregando Usuários</Loading></div>}
+        {isSuccess && <TableContainer>
           <table>
             <thead>
               <tr>
@@ -223,7 +239,7 @@ const CadastroUsuario: NextPage = () => {
                   )
                 })
               ) : (
-                usuarios.map(usuario => {
+                usuariosPaginados.map(usuario => {
                   return (
                     <tr key={usuario.id}>
                       <td>{usuario.nome}</td>
@@ -240,7 +256,8 @@ const CadastroUsuario: NextPage = () => {
               )}
             </tbody>
           </table>
-        </TableContainer>
+        </TableContainer>}
+        {usuarios && <Pagination totalPosts={usuarios.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Usuario' id={id} />
       </Container>
     </>

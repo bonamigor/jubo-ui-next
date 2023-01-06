@@ -1,15 +1,15 @@
 import { NextPage } from "next";
 import Image from "next/image";
-import EditImg from '../../../assets/edit.png'
-import DeleteImg from '../../../assets/delete.png'
-import AddImg from '../../../assets/add.png'
+import EditImg from '../../../../assets/edit.png'
+import DeleteImg from '../../../../assets/delete.png'
+import AddImg from '../../../../assets/add.png'
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estante";
 import { useState, useEffect, FormEvent, SetStateAction } from 'react';
-import { estanteService } from '../../../services/index';
-import { useClientes } from '../../../hooks/useClientes';
+import { estanteService } from '../../../../services/index';
+import { useClientes } from '../../../../hooks/useClientes';
 import NumberFormat from "react-number-format";
 import { useRouter } from "next/router";
-import DeleteModal from "../../../components/Modal/Delete/index.page";
+import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import toast from "react-hot-toast";
 import Head from "next/head";
 
@@ -179,7 +179,7 @@ const CadastroEstante: NextPage = () => {
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
-                        <a><Image onClick={() => router.push(`/cadastro/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
+                        <a><Image onClick={() => router.push(`admin/cadastro/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )

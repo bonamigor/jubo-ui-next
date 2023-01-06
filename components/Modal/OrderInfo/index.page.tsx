@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { Loading, Textarea } from '@nextui-org/react';
 
 interface Pedido {
@@ -42,9 +42,10 @@ interface OrderInfoModalProps {
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
 
-  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id))
+  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { staleTime: 60 * 10 * 10, refetchOnWindowFocus: false, enabled: isOpen })
 
   let products: Array<ProductsProps> = [];
 
@@ -77,9 +78,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       const { data, errors } = await pedidoService.cancelarPedidoById(pedido.id)
 
       if (!errors) {
+        queryClient.setQueryData('getPedidosForDashboard', { pedidos: [] })
+        queryClient.invalidateQueries('getPedidosForDashboard')
         toast.success(data.message)
         onRequestClose()
-        router.reload()
+        // router.reload()
       } else {
         toast.error('Não foi possível cancelar o pedido, verifique!')
       }

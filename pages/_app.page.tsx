@@ -9,6 +9,7 @@ import Modal from 'react-modal'
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools'
 import Head from 'next/head';
 
 Modal.setAppElement('#__next')
@@ -21,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const userId = window.sessionStorage.getItem('userId')
+    const userAdmin = window.sessionStorage.getItem('userAdmin')
     const clienteId = window.sessionStorage.getItem('userClientId')
 
     if (!userId) {
@@ -36,7 +38,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       window.sessionStorage.clear()
     }
 
-  }, [router.pathname])
+    // if (!router.pathname.includes('admin') && userAdmin) {
+    //   toast.error('Você não possui acesso para esta página! Te redirecionamos para a página de Login')
+    //   router.push('/')
+    //   window.localStorage.clear()
+    //   window.sessionStorage.clear()
+    // }
+
+  }, [router, router.pathname])
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -52,6 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </PedidoProvider>
         </ClienteProvider>
       </UserProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }

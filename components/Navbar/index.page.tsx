@@ -39,7 +39,7 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
           </Logo>
           {isAdmin ? (
             <Menu>
-              <Link href="/dashboard" passHref>
+              <Link href="/admin/dashboard" passHref>
                 <MenuItem isActive={isActive({route, item: 'dashboard'})}>DASHBOARD</MenuItem>
               </Link>
               <Dropdown>
@@ -48,22 +48,22 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
                 </Dropdown.Trigger>
                 <Dropdown.Menu>
                   <Dropdown.Item>
-                    <Link href="/cadastro/usuario" passHref>
+                    <Link href="/admin/cadastro/usuario" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'usuario'})}>USUÁRIO</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/cadastro/cliente" passHref>
+                    <Link href="/admin/cadastro/cliente" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'cliente'})}>CLIENTE</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/cadastro/produto" passHref>
+                    <Link href="/admin/cadastro/produto" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'produto'})}>PRODUTO</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/cadastro/estante" passHref>
+                    <Link href="/admin/cadastro/estante" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'estante'})}>ESTANTE</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
@@ -75,17 +75,17 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
                 </Dropdown.Trigger>
                 <Dropdown.Menu>
                   <Dropdown.Item>
-                    <Link href="/relatorios/pedidos" passHref>
+                    <Link href="/admin/relatorios/pedidos" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'pedidos'})}>PEDIDOS</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/relatorios/compras" passHref>
+                    <Link href="/admin/relatorios/compras" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'compras'})}>COMPRAS</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
-                    <Link href="/relatorios/vendas" passHref>
+                    <Link href="/admin/relatorios/vendas" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'vendas'})}>VENDAS</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ButtonArea, Container, Content, Dates, EmptyTable, SearchButton, TableContainer } from './vendas';
 
 import { useMutation } from 'react-query';
-import { pedidoService, produtoService } from "../../../services";
+import { pedidoService, produtoService } from "../../../../services";
 import toast from 'react-hot-toast';
 
 import InputMask from "react-input-mask";
@@ -12,7 +12,7 @@ import InputMask from "react-input-mask";
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { format } from "date-fns";
-import { clienteService } from '../../../services/index';
+import { clienteService } from '../../../../services/index';
 import Head from "next/head";
 
 interface Cliente {

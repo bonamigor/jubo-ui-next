@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Buttons, Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from './compras';
 
 import { useMutation } from 'react-query';
-import { produtoService } from "../../../services";
+import { produtoService } from "../../../../services";
 import toast from 'react-hot-toast';
 
 import InputMask from "react-input-mask";

@@ -15,13 +15,13 @@ const Home: NextPage = () => {
   const { receiveUser } = useUser()
   const router = useRouter()
 
-  const mutation = useMutation(auth.login)
+  const mutation = useMutation(({ email, senha }: { email: string, senha: string }) => auth.login({ email, senha }))
 
   async function handleLogin(event: FormEvent) {
     event.preventDefault()
 
     try {
-      await mutation.mutateAsync({ email: email, senha: password }, {
+      mutation.mutate({ email: email, senha: password }, {
         onSuccess: async (data) => {
           if (mutation.isLoading) {
             return <h1>Carregando...</h1>
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
             window.sessionStorage.setItem('userAdmin', data.user.admin)
             receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
             toast.success('Logado com sucesso!')
-            router.push('/dashboard')
+            router.push('/admin/dashboard')
           } else {
             window.localStorage.setItem('token', data.token)
             window.sessionStorage.setItem('userId', data.user.id)

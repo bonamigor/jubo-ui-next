@@ -1,14 +1,14 @@
 import { NextPage } from 'next';
 import { useQuery } from 'react-query';
-import { clienteService } from '../../../services';
+import { clienteService } from '../../../../services';
 import { Container, Content, Orderless, TableContainer, LoadingOrders } from './pedidos';
 import { useState } from 'react';
-import { pedidoService } from '../../../services/index';
+import { pedidoService } from '../../../../services/index';
 import toast from 'react-hot-toast';
 import { Loading } from '@nextui-org/react';
 import Image from "next/image";
-import BloomImg from '../../../assets/bloom.png'
-import OrderInfo from '../../../components/Modal/OrderInfo/index.page';
+import BloomImg from '../../../../assets/bloom.png'
+import OrderInfo from '../../../../components/Modal/OrderInfo/index.page';
 import Head from 'next/head';
 
 interface Cliente {

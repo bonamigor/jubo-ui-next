@@ -11,7 +11,7 @@ import ItemPedidoService from './item-pedido'
 
 const API_ENVS = {
   local: 'http://localhost:3001',
-  production: 'https://jubo-api.herokuapp.com'
+  production: 'https://jubo-api-production.up.railway.app'
 }
 
 const httpClient = axios.create({

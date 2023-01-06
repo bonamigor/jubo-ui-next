@@ -1,16 +1,17 @@
 import { NextPage } from "next";
 import Image from "next/image";
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./produto";
-import EditImg from '../../../assets/edit.png'
-import DeleteImg from '../../../assets/delete.png'
-import { useState, FormEvent } from 'react';
-import { produtoService } from '../../../services/index';
+import EditImg from '../../../../assets/edit.png'
+import DeleteImg from '../../../../assets/delete.png'
+import { useState, FormEvent, useEffect } from 'react';
+import { produtoService } from '../../../../services/index';
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import DeleteModal from "../../../components/Modal/Delete/index.page";
+import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import { useQuery } from "react-query";
 import { Loading } from '@nextui-org/react';
 import Head from "next/head";
+import Pagination from "../../../../components/Pagination/index.page";
 
 export interface ProdutoProps {
   id: number;
@@ -29,6 +30,11 @@ const CadastroProduto: NextPage = () => {
   const [unidade, setUnidade] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredprodutos, setFilteredprodutos] = useState<ProdutoProps[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postPerPage, setPostsPerPage] = useState(5)
+
+  const lastIndex = currentPage * postPerPage;
+  const firstIndex = lastIndex - postPerPage;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -51,10 +57,18 @@ const CadastroProduto: NextPage = () => {
   const { data, isLoading, isSuccess, isError } = useQuery('produtos', produtoService.listarTodosOsProdutos, { staleTime: Infinity })
 
   let produtos: any;
+  let produtosPaginados: any;
 
   if (data) {
     produtos = data.produtos
+    produtosPaginados = produtos.slice(firstIndex, lastIndex);  
   }
+
+  useEffect(() => {
+    if (produtos) {
+      produtosPaginados = produtos.slice(firstIndex, lastIndex);
+    }
+  }, [currentPage, postPerPage])
 
   const handleFilterProdutoList = (event: any) => {
     setFilter(event.toUpperCase())
@@ -165,7 +179,7 @@ const CadastroProduto: NextPage = () => {
                     )
                   })
                 ) : (
-                  produtos.map((produto: ProdutoProps) => {
+                  produtosPaginados.map((produto: ProdutoProps) => {
                     return (
                       <tr key={produto.id}>
                         <td>{produto.nome}</td>
@@ -189,6 +203,7 @@ const CadastroProduto: NextPage = () => {
             </table>
           )}
         </TableContainer>
+        {produtos && <Pagination totalPosts={produtos.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Produto' id={id} />
       </Container>
     </>

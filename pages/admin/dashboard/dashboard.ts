@@ -67,15 +67,78 @@ export const RightPanel = styled.div`
   }
 `
 
-export const Table = styled.div`
+export const LoadingDiv = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-
+  
   div {
     display: flex;
     flex-direction: column;
-    margin-top: 4rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
   }
 `
+
+export const NoContent = styled.div`
+  display: flex;
+  
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+`
+
+export const TableContainer = styled.div`
+  display: flex;
+  margin-top: 4rem;
+
+  table {
+    width: 1055px;
+    border-spacing: 0 0.5rem;
+    text-align: center;
+    
+    th {
+      color: var(--text-body);
+      font-weight: 400;
+      padding: 1rem 2rem;
+      text-align: left;
+      line-height: 1.5rem;
+    }
+
+    thead {
+      tr {
+        &:first-child {
+          color: var(--gray-700);
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          font-size: 1rem;
+
+          &:first-child {
+            text-align: left;
+          }
+        }
+      }
+    }
+
+    td {
+      padding: 1rem 2rem;
+      border: 0;
+      background: var(--white);
+      color: var(--black);
+      border-radius: 0.25rem;
+
+      a {
+        margin: 0 5px;
+      }
+    }
+  }
+`
+

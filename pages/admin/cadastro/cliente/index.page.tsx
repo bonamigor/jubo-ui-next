@@ -1,14 +1,14 @@
 import { NextPage } from "next";
 import { FormEvent, useState, useEffect } from 'react';
 import Image from "next/image";
-import EditImg from '../../../assets/edit.png'
-import DeleteImg from '../../../assets/delete.png'
+import EditImg from '../../../../assets/edit.png'
+import DeleteImg from '../../../../assets/delete.png'
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from './cliente';
-import { useClientes } from '../../../hooks/useClientes'
+import { useClientes } from '../../../../hooks/useClientes'
 import { useRouter } from "next/router";
-import { clienteService } from "../../../services";
+import { clienteService } from "../../../../services";
 import toast from 'react-hot-toast';
-import DeleteModal from "../../../components/Modal/Delete/index.page";
+import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
 
 interface Cliente {

@@ -8,6 +8,7 @@ import ProductsInDemandTable from "../../../../../../../components/ProducstInDem
 import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
 import { Textarea } from "@nextui-org/react";
+import { useQueryClient } from "react-query";
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
@@ -31,6 +32,7 @@ interface ProdutoNoPedidoProps {
 
 const PedidoProdutos: NextPage = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { pedidoId, estanteId } = router.query
   const [produtoNaEstante, setProdutosNaEstante] = useState<ProdutoNaEstanteProps[]>([])
   const [product, setProduct] = useState<ProdutoNoPedidoProps>({ itemPedidoId: '', produtoId: '', nome: '', unidade: '', precoVenda: 0, quantidade: 0, total: 0 })
@@ -96,6 +98,7 @@ const PedidoProdutos: NextPage = () => {
       })
 
       if (!errors) {
+        queryClient.invalidateQueries("getPedidosForDashboard")
         setProdutoId('')
         setQuantidade('')
 
@@ -154,6 +157,7 @@ const PedidoProdutos: NextPage = () => {
       await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
     }
     toast.success('Pedido fechado!')
+    queryClient.invalidateQueries("getPedidosForDashboard")
     router.push('/cliente/inicial')
   }
 

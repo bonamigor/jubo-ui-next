@@ -1,5 +1,23 @@
 import { AxiosInstance } from 'axios';
 
+export interface PedidosProps {
+  id: number;
+  dataCriacao: string;
+  dataEntrega: string;
+  valorTotal: number;
+  status: string;
+  observacao: string;
+  nome: string;
+  endereco: string;
+  cidade: string;
+  estado: string;
+  telefone: string;
+}
+
+export interface PedidosObject {
+  pedidos: Array<PedidosProps>;
+}
+
 const PedidoService = (httpClient: AxiosInstance) => ({
   criarPedido: async (clienteId: number) => {
     const response = await httpClient.post(
@@ -21,22 +39,10 @@ const PedidoService = (httpClient: AxiosInstance) => ({
       }
   },
 
-  listarPedidos: async () => {
+  listarPedidos: async ():Promise<PedidosObject> => {
     const response = await httpClient.get('/api/pedidos')
 
-    let errors = null
-
-    if (!response.data) {
-      errors = {
-        status: response.request.status,
-        statusText: response.request.statusText
-      }
-    }
-
-    return {
-      data: response.data,
-      errors
-    }
+    return response.data
   },
 
   listarPedidosByCliente: async (clienteId: number) => {
@@ -57,22 +63,10 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  listarPedidosDeAmanha: async () => {
+  listarPedidosDeAmanha: async ():Promise<PedidosObject> => {
     const response = await httpClient.get('/api/pedidos/amanha')
 
-    let errors = null
-
-    if (!response.data) {
-      errors = {
-        status: response.request.status,
-        statusText: response.request.statusText
-      }
-    }
-
-    return {
-      data: response.data,
-      errors
-    }
+    return response.data
   },
 
   listarPedidoById: async (pedidoId: number) => {
