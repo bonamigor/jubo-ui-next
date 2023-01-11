@@ -38,10 +38,11 @@ const CadastroProduto: NextPage = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    console.log
     try {
       const { errors } = await produtoService.cadastrarProduto({
         nome: nome,
-        precoCusto: String(preco),
+        precoCusto: preco.replace(',','.'),
         unidadeMedida: unidade
       })
       if (!errors) {

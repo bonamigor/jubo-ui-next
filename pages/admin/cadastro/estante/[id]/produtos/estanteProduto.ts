@@ -18,7 +18,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1100px;
+  width: 1200px;
   height: 250px;
   padding: 0 5px;
   
@@ -145,6 +145,8 @@ export const InputFilter = styled.div`
   position: relative;
   justify-content: center;
   align-items: center;
+  margin-top: 2rem;
+  width: 1200px;
 
   input {
     padding: 0 1.5rem;
@@ -154,7 +156,7 @@ export const InputFilter = styled.div`
     background: var(--gray-100);
     font-weight: 400;
     font-size: 1rem;
-    width: 500px;
+    width: 100%;
 
     &::placeholder {
       color: var(--gray-300);
@@ -175,7 +177,7 @@ export const TableContainer = styled.div`
   margin-top: 10px;
 
   table {
-    width: 1100px;
+    width: 1200px;
     border-spacing: 0 0.5rem;
     text-align: left;
     margin-bottom: 1rem;

@@ -12,6 +12,7 @@ import DeleteImg from '../../../../../../assets/delete.png'
 import DeleteModal from "../../../../../../components/Modal/Delete/index.page";
 import { useQuery } from "react-query";
 import Head from "next/head";
+import Pagination from "../../../../../../components/Pagination/index.page";
 
 interface EstanteProdutoProps {
   produtoId: number;
@@ -30,40 +31,31 @@ const EstanteProduto: NextPage = () => {
   
   const [filter, setFilter] = useState('')
   const [filteredProdutosNaEstante, setFilteredProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
-  const [produtosNaEstante, setProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
   const [produtoId, setProdutoId] = useState('')
   const [estanteId, setEstanteId] = useState(id)
   const [precoVenda, setPrecoVenda] = useState('')
   const [quantidade, setQuantidade] = useState('')
   const [qtdProdutosEstante, setQtdProdutosEstante] = useState(0)
-
   const [produtoNaEstanteId, setProdutoNaEstanteId] = useState<number[]>([])
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postPerPage, setPostsPerPage] = useState(5)
+  const lastIndex = currentPage * postPerPage;
+  const firstIndex = lastIndex - postPerPage;
 
-  const handleFilterProdutoList = (event: any) => {
-    setFilter(event.toUpperCase())
-    setFilteredProdutosNaEstante(produtosNaEstante.filter(produto => {
-      return produto.nome.toUpperCase().includes(filter)
-    }))
+  let produtosNaEstante: Array<EstanteProdutoProps> = [];
+  let produtosNaEstantePaginados: Array<EstanteProdutoProps> = [];
+
+  const { data: produtosNaEstanteResponse } = useQuery(['getAllProdutosNaEstante', id], () => produtoEstanteService.listarProdutosNaEstanteReactQuery(Number(id)), { staleTime: 1000 * 60 * 60 * 24 } ) 
+
+  if (produtosNaEstanteResponse) {
+    console.log(produtosNaEstanteResponse)
+    produtosNaEstante = produtosNaEstanteResponse.estante.produtos
+    produtosNaEstantePaginados = produtosNaEstanteResponse.estante.produtos.slice(firstIndex, lastIndex);
   }
 
-  useEffect(() => {
-    const fetchProductsNaEstante = async () => {
-      const { data, errors } = await produtoEstanteService.listarProdutosNaEstante(Number(id))
-      if (!errors) {
-        setProdutosNaEstante(data.estante.produtos)
-      }
-    }
-
-    fetchProductsNaEstante()
-  }, [id, qtdProdutosEstante])
-
   let produtos: Array<ProdutoProps> = [];
-  const produtosQuery = useQuery('produtos', produtoService.listarTodosOsProdutos)
-
-  // if (produtosQuery.isLoading) {
-  //   return <div>Carregando Produtos...</div>
-  // }
+  const produtosQuery = useQuery('produtos', produtoService.listarTodosOsProdutos, { staleTime: 1000 * 60 * 60 * 24 })
 
   if (produtosQuery.isSuccess) {
     produtos = produtosQuery.data.produtos
@@ -76,7 +68,7 @@ const EstanteProduto: NextPage = () => {
       const { errors } = await produtoEstanteService.cadastrarProdutoNaEstante({
         idEstante: Number(id),
         idProduto: Number(produtoId.split(' ')[0]),
-        precoVenda: precoVenda,
+        precoVenda: precoVenda.replace(',','.'),
         quantidade: quantidade
       })
 
@@ -131,6 +123,13 @@ const EstanteProduto: NextPage = () => {
   const onRequestClose = () => {
     setIsDeleteModalOpen(false)
   }
+
+  const handleFilterProdutosList = (event: any) => {
+    setFilter(event.toUpperCase())
+    setFilteredProdutosNaEstante(produtosNaEstante.filter((produto: EstanteProdutoProps) => {
+      return produto.nome.toUpperCase().includes(filter)
+    }))
+  }
   
   return (
     <>
@@ -163,6 +162,9 @@ const EstanteProduto: NextPage = () => {
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>
+        <InputFilter>
+          <input type="text" placeholder="Filtre pelo nome do Produto" onChange={event => handleFilterProdutosList(event.target.value)} />
+        </InputFilter>
         {produtosNaEstante.length < 1 ? (
           <h2>Não há produtos nessa estante (...ainda!)</h2>
         ) : (
@@ -199,7 +201,7 @@ const EstanteProduto: NextPage = () => {
                   )
                 })
               ) : (
-                produtosNaEstante.map(produto => {
+                produtosNaEstantePaginados.map(produto => {
                   return (
                     <tr key={produto.produtoId}>
                       <td>{produto.produtoId}</td>
@@ -220,7 +222,7 @@ const EstanteProduto: NextPage = () => {
           </table>
         </TableContainer>
         )}
-        
+        {produtosNaEstante && <Pagination totalPosts={produtosNaEstante.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ProdutoEstante' idArray={produtoNaEstanteId} />
       </Container>
     </>

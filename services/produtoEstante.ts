@@ -63,6 +63,12 @@ const ProdutoEstanteService = (httpClient: AxiosInstance) => ({
       }
     },
 
+    listarProdutosNaEstanteReactQuery: async (idEstante: number) => {
+      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade`)
+
+      return response.data
+    },
+
     deletarProdutoDaEstante: async ({ idEstante, idProduto }: { idEstante: Number, idProduto: number }) => {
       const response = await httpClient.delete(`api/estantes/${idEstante}/produtos/${idProduto}`)
 
