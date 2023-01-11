@@ -29,7 +29,7 @@ const Dashboard: NextPage = () => {
 
   const { data: pedidosObject, isLoading: isPedidosObjectLoading, isSuccess, isFetching } = useQuery<PedidosObject, Error>('getPedidosForDashboard', pedidoService.listarPedidos, { staleTime: 1000 * 60 * 15, refetchOnWindowFocus: true })
   const { data: tomorrowPedidosObject } = useQuery<PedidosObject, Error>('getTomorrowPedidosForDashboard', pedidoService.listarPedidosDeAmanha, { staleTime: 1000 * 60 * 15 })
-
+  
   const handleFilterPedidosByCliente = (event: any) => {
     setFilter(event.toUpperCase())
     setFilteredPedidos(pedidosObject!.pedidos.filter((pedido: PedidosProps) => {
@@ -105,7 +105,7 @@ const Dashboard: NextPage = () => {
                       return (
                         <tr key={pedido.id.toString()}>
                           <td>{pedido.nome}</td>
-                          <td>{pedido.cidade}/{pedido.estado}</td>
+                          <td>{pedido.cidade} / {pedido.estado}</td>
                           <td>
                             { new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
                                   .format(new Date(pedido.dataCriacao)) 

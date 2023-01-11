@@ -1,10 +1,9 @@
 import { NextPage } from "next";
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import Image from "next/image";
 import EditImg from '../../../../assets/edit.png'
 import DeleteImg from '../../../../assets/delete.png'
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from './cliente';
-import { useClientes } from '../../../../hooks/useClientes'
 import { useRouter } from "next/router";
 import { clienteService } from "../../../../services";
 import toast from 'react-hot-toast';
@@ -49,7 +48,7 @@ const CadastroCliente: NextPage = () => {
 
   if (clienteResponse) {
     clientes = clienteResponse.clientes
-    clientesPaginados = clientes.slice(firstIndex, lastIndex);  
+    clientesPaginados = clienteResponse.clientes.slice(firstIndex, lastIndex);  
   }
 
   const handleFilterClienteList = (event: any) => {

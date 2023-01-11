@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 import Navbar from '../components/Navbar/index.page'
 import { UserProvider } from '../hooks/useUser';
 import toast, { Toaster } from 'react-hot-toast';
-import { ClienteProvider } from '../hooks/useClientes';
 import { PedidoProvider } from '../hooks/usePedido'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router';
@@ -50,16 +49,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <ClienteProvider>
-          <PedidoProvider>
-            <Navbar isUserLoggedIn={isUserLoggedIn} />
-            <Toaster
-              position="top-right"
-              reverseOrder={false}/>
-            <Component {...pageProps} />
-            <GlobalStyle />
-          </PedidoProvider>
-        </ClienteProvider>
+        <PedidoProvider>
+          <Navbar isUserLoggedIn={isUserLoggedIn} />
+          <Toaster
+            position="top-right"
+            reverseOrder={false}/>
+          <Component {...pageProps} />
+          <GlobalStyle />
+        </PedidoProvider>
       </UserProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

@@ -63,14 +63,8 @@ const CadastroProduto: NextPage = () => {
 
   if (data) {
     produtos = data.produtos
-    produtosPaginados = produtos.slice(firstIndex, lastIndex);  
+    produtosPaginados = data.produtos.slice(firstIndex, lastIndex);  
   }
-
-  useEffect(() => {
-    if (produtos) {
-      produtosPaginados = produtos.slice(firstIndex, lastIndex);
-    }
-  }, [currentPage, postPerPage])
 
   const handleFilterProdutoList = (event: any) => {
     setFilter(event.toUpperCase())

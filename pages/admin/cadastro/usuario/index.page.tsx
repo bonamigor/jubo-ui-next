@@ -1,12 +1,11 @@
 import type { NextPage } from "next"
 import Image from "next/image";
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 
 import { Admin, Container, FormButton, Forms, FormSubmitButton, InputFilter, TableContainer, User } from './usuario';
 import EditImg from '../../../../assets/edit.png'
 import DeleteImg from '../../../../assets/delete.png'
-import { useClientes } from '../../../../hooks/useClientes';
-import { usuarioService } from "../../../../services";
+import { clienteService, usuarioService } from "../../../../services";
 import toast from "react-hot-toast";
 import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import Head from "next/head";
 import Pagination from "../../../../components/Pagination/index.page";
 import { useQuery } from "react-query";
 import { Loading } from "@nextui-org/react";
+import { Cliente } from "../cliente/index.page";
 
 export interface UserProps {
   id: number;
@@ -27,7 +27,6 @@ const CadastroUsuario: NextPage = () => {
   const router = useRouter()
   const [isUpdateAdmin, setIsUpdateAdmin] = useState(false)
   const [isUpdate, setIsUpdate] = useState(false)
-  const { clientes, populateClienteArray } = useClientes()
   const [filter, setFilter] = useState('')
   const [filteredUsers, setFilteredUsers] = useState<UserProps[]>([])
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -45,34 +44,24 @@ const CadastroUsuario: NextPage = () => {
   const [senha, setSenha] = useState('')
   const [admin, setAdmin] = useState('')
   const [clienteId, setClienteId] = useState('')
-  const [usuarios, setUsuarios] = useState<UserProps[]>([])
-  const [usuariosPaginados, setUsuariosPaginados] = useState<UserProps[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostsPerPage] = useState(5)
 
   const lastIndex = currentPage * postPerPage;
   const firstIndex = lastIndex - postPerPage;
 
-  const { data, isLoading, isSuccess, isError } = useQuery('getUsuarios', usuarioService.listarTodosOsUsuarios, { staleTime: Infinity })
+  const { data, isLoading, isSuccess, isError } = useQuery('getUsuarios', usuarioService.listarTodosOsUsuarios, { staleTime: 1000 * 60 * 60 * 24 })
+  const { data: clienteResponse } = useQuery('getClientes', clienteService.listarTodosOsClientesReactQuery, { staleTime: 1000 * 60 * 60 * 24 })
 
-  console.log(data)
+  let usuarios: Array<UserProps> = [];
+  let usuariosPaginados: Array<UserProps> = [];
+  let clientes: Array<Cliente> = [];
 
-  useEffect(() => {
-    if (data) {
-      setUsuarios(data.users)
-    }
-  }, [])
-
-  useEffect(() => {
-    populateClienteArray()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (usuarios) {
-      setUsuariosPaginados(usuarios.slice(firstIndex, lastIndex))
-    }
-  }, [currentPage, firstIndex, lastIndex, postPerPage, usuarios])
+  if (data && clienteResponse) {
+    usuarios = data.users
+    usuariosPaginados = data.users.slice(firstIndex, lastIndex);
+    clientes= clienteResponse.clientes
+  }
 
   const handleFilterUserList = (event: any) => {
     setFilter(event.toUpperCase())
@@ -198,7 +187,7 @@ const CadastroUsuario: NextPage = () => {
               list="clientes" id="cliente-choice" name="cliente-choice" autoComplete="off"
               value={clienteId} onChange={event => {setClienteId(event.target.value)}} />
             <datalist id="clientes">
-              {clientes.map(cliente => {
+              {clientes.map((cliente: Cliente) => {
                 return (<option key={cliente.id} value={`${cliente.id} - ${cliente.nome}`} />)
               })}
             </datalist>
@@ -239,7 +228,7 @@ const CadastroUsuario: NextPage = () => {
                   )
                 })
               ) : (
-                data.users.map((usuario: UserProps) => {
+                usuariosPaginados.map((usuario: UserProps) => {
                   return (
                     <tr key={usuario.id}>
                       <td>{usuario.nome}</td>

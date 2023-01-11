@@ -4,9 +4,8 @@ import EditImg from '../../../../assets/edit.png'
 import DeleteImg from '../../../../assets/delete.png'
 import AddImg from '../../../../assets/add.png'
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estante";
-import { useState, useEffect, FormEvent, SetStateAction } from 'react';
+import { useState, FormEvent, SetStateAction } from 'react';
 import { clienteService, estanteService } from '../../../../services/index';
-import { useClientes } from '../../../../hooks/useClientes';
 import NumberFormat from "react-number-format";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../../components/Modal/Delete/index.page";
@@ -54,7 +53,7 @@ const CadastroEstante: NextPage = () => {
   if (estanteResponse && clienteResponse) {
     estantes = estanteResponse.estantes
     clientes = clienteResponse.clientes
-    estantesPaginadas = estantes.slice(firstIndex, lastIndex);
+    estantesPaginadas = estanteResponse.estantes.slice(firstIndex, lastIndex);
   }
 
   const handleFilterEstanteList = (event: any) => {
