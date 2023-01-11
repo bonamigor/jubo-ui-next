@@ -17,6 +17,36 @@ export const Container = styled.div`
   }
 `
 
+export const Filter = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+export const InputFilter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 4rem;
+
+  input {
+    padding: 0 1.5rem;
+    margin: 0 1rem;
+    height: 4rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d7d7d7;
+    background: var(--gray-100);
+    font-weight: 400;
+    font-size: 1rem;
+    width: 585px;
+
+    &::placeholder {
+      color: var(--gray-300);
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+  }
+`
+
 export const LeftPanel = styled.div`
   display: flex;
   flex-direction: row;
@@ -93,10 +123,10 @@ export const NoContent = styled.div`
 
 export const TableContainer = styled.div`
   display: flex;
-  margin-top: 4rem;
+  margin-top: 2rem 0;
 
   table {
-    width: 1055px;
+    width: 1200px;
     border-spacing: 0 0.5rem;
     text-align: center;
     
@@ -104,8 +134,12 @@ export const TableContainer = styled.div`
       color: var(--text-body);
       font-weight: 400;
       padding: 1rem 2rem;
-      text-align: left;
+      text-align: center;
       line-height: 1.5rem;
+
+      &:first-child {
+        text-align: left;
+      }
     }
 
     thead {
@@ -119,7 +153,7 @@ export const TableContainer = styled.div`
     tbody {
       tr {
         td {
-          font-size: 1rem;
+          font-size: 0.85rem;
 
           &:first-child {
             text-align: left;
@@ -134,6 +168,7 @@ export const TableContainer = styled.div`
       background: var(--white);
       color: var(--black);
       border-radius: 0.25rem;
+      text-align: center;
 
       a {
         margin: 0 5px;

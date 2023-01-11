@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { FormEvent, useState, useEffect } from 'react';
+import { FormEvent, useState } from 'react';
 import Image from "next/image";
 import EditImg from '../../../../assets/edit.png'
 import DeleteImg from '../../../../assets/delete.png'
@@ -10,8 +10,10 @@ import { clienteService } from "../../../../services";
 import toast from 'react-hot-toast';
 import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
+import { useQuery, useQueryClient } from "react-query";
+import Pagination from "../../../../components/Pagination/index.page";
 
-interface Cliente {
+export interface Cliente {
   id: number;
   nome: string;
   cnpj: string;
@@ -28,23 +30,34 @@ type ClienteInput = Omit<Cliente, 'id'>
 
 const CadastroCliente: NextPage = () => {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [isUpdate, setIsUpdate] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredClients, setFilteredClients] = useState<Cliente[]>([])
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const { clientes, populateClienteArray, createCliente } = useClientes()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postPerPage, setPostsPerPage] = useState(5)
+  const lastIndex = currentPage * postPerPage;
+  const firstIndex = lastIndex - postPerPage;
+
+  const VINTE_E_QUATRO_HORAS = (60 *  1000) * 60 * 24
+
+  const { data: clienteResponse, isLoading } = useQuery('getAllClientes', clienteService.listarTodosOsClientesReactQuery, { staleTime: VINTE_E_QUATRO_HORAS })
+
+  let clientes: Array<Cliente> = [];
+  let clientesPaginados: Array<Cliente> = [];
+
+  if (clienteResponse) {
+    clientes = clienteResponse.clientes
+    clientesPaginados = clientes.slice(firstIndex, lastIndex);  
+  }
 
   const handleFilterClienteList = (event: any) => {
     setFilter(event.toUpperCase())
-    setFilteredClients(clientes.filter(client => {
+    setFilteredClients(clienteResponse.clientes.filter((client: Cliente) => {
       return client.nome.toUpperCase().includes(filter)
     }))
   }
-
-  useEffect(() => {
-    populateClienteArray()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
   
   const [id, setId] = useState(0)
   const [nome, setNome] = useState('')
@@ -68,9 +81,9 @@ const CadastroCliente: NextPage = () => {
       const { errors } = await clienteService.cadastrarCliente(newCliente)
 
       if (!errors) {
-        populateClienteArray()
+        queryClient.invalidateQueries('getAllClientes')
         toast.success('Cliente cadastrado com sucesso.')
-        router.reload()
+        cleanFields()
       } else {
         toast.error('Erro ao adicionar o Cliente.')
       }
@@ -97,7 +110,7 @@ const CadastroCliente: NextPage = () => {
     const newCliente: Cliente = {
       id, nome, cnpj, email, endereco, cep, cidade, estado, telefone, ativo
     }
-    console.log(newCliente)
+
     const { errors } = await clienteService.atualizarCliente(newCliente)
 
     if (!errors) {
@@ -164,55 +177,56 @@ const CadastroCliente: NextPage = () => {
         </Content>
         <InputFilter>
           <input type="text" placeholder="Filtre pelo nome do Cliente" onChange={event => handleFilterClienteList(event.target.value)} />
-          </InputFilter>
-          <TableContainer>
-            <table>
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Cidade/Estado</th>
-                  <th>E-mail</th>
-                  <th>Telefone</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
+        </InputFilter>
+        <TableContainer>
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Cidade/Estado</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                {filter.length > 1 ? (
-                  filteredClients.map(client => {
-                    return (
-                      <tr key={client.id.toString()}>
-                        <td>{client.nome}</td>
-                        <td>{client.cidade}/{client.estado}</td>
-                        <td>{client.email}</td>
-                        <td>{client.telefone}</td>
-                        <td>
-                          <a><Image onClick={() => prepareUpdate(client)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                          <a><Image onClick={() => {deleteCliente(client)}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
-                        </td>
-                      </tr>
-                    )
-                  })
-                ) : (
-                  clientes.map(cliente => {
-                    return (
-                      <tr key={String(cliente.id)}>
-                        <td>{cliente.nome}</td>
-                        <td>{cliente.cidade}/{cliente.estado}</td>
-                        <td>{cliente.email}</td>
-                        <td>{cliente.telefone}</td>
-                        <td>
-                          <a><Image onClick={() => prepareUpdate(cliente)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                          <a><Image onClick={() => {deleteCliente(cliente)}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
-                        </td>
-                      </tr>
-                    )
-                  })
-                )}
-              </tbody>
-            </table>
-          </TableContainer>
-          <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Cliente' id={id} />
+            <tbody>
+              {filter.length > 1 ? (
+                filteredClients.map(client => {
+                  return (
+                    <tr key={client.id.toString()}>
+                      <td>{client.nome}</td>
+                      <td>{client.cidade}/{client.estado}</td>
+                      <td>{client.email}</td>
+                      <td>{client.telefone}</td>
+                      <td>
+                        <a><Image onClick={() => prepareUpdate(client)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {deleteCliente(client)}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              ) : (
+                clientesPaginados.map((cliente: Cliente) => {
+                  return (
+                    <tr key={String(cliente.id)}>
+                      <td>{cliente.nome}</td>
+                      <td>{cliente.cidade}/{cliente.estado}</td>
+                      <td>{cliente.email}</td>
+                      <td>{cliente.telefone}</td>
+                      <td>
+                        <a><Image onClick={() => prepareUpdate(cliente)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
+                        <a><Image onClick={() => {deleteCliente(cliente)}} src={DeleteImg} alt="Confirmar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </TableContainer>
+        {clientes && <Pagination totalPosts={clientes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Cliente' id={id} />
       </Container>
     </>
   )

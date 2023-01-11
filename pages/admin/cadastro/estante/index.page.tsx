@@ -5,13 +5,16 @@ import DeleteImg from '../../../../assets/delete.png'
 import AddImg from '../../../../assets/add.png'
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estante";
 import { useState, useEffect, FormEvent, SetStateAction } from 'react';
-import { estanteService } from '../../../../services/index';
+import { clienteService, estanteService } from '../../../../services/index';
 import { useClientes } from '../../../../hooks/useClientes';
 import NumberFormat from "react-number-format";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../../components/Modal/Delete/index.page";
 import toast from "react-hot-toast";
 import Head from "next/head";
+import { useQuery } from "react-query";
+import { Cliente } from "../cliente/index.page";
+import Pagination from "../../../../components/Pagination/index.page";
 
 interface EstanteProps {
   id: number;
@@ -28,28 +31,31 @@ const CadastroEstante: NextPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredEstantes, setFilteredEstantes] = useState<EstanteProps[]>([])
-  const [estantes, setEstantes] = useState<EstanteProps[]>([])
-  const { clientes, populateClienteArray } = useClientes()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postPerPage, setPostsPerPage] = useState(5)
+
+  const lastIndex = currentPage * postPerPage;
+  const firstIndex = lastIndex - postPerPage;
 
   const [id, setId] = useState(0)
   const [cliente, setCliente] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [observacao, setObservacao] = useState('')
 
-  useEffect(() => {
-    const fetchEstantes = async () => {
-      const { data, errors } = await estanteService.listarTodosAsEstantes()
-      if (!errors) {
-        setEstantes(data.estantes)
-      }
-    }
-    fetchEstantes()
-  }, [])
+  const VINTE_E_QUATRO_HORAS = (60 *  1000) * 60 * 24
 
-  useEffect(() => {
-    populateClienteArray()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { data: estanteResponse, isLoading: isLoadingEstantes } = useQuery('getAllEstantes', estanteService.listarTodosAsEstantesReactQuery, { staleTime: VINTE_E_QUATRO_HORAS }) 
+  const { data: clienteResponse, isLoading: isLoadingClientes } = useQuery('getAllClientes', clienteService.listarTodosOsClientesReactQuery, { staleTime: VINTE_E_QUATRO_HORAS })
+
+  let estantes: Array<EstanteProps> = [];
+  let clientes: Array<any> = [];
+  let estantesPaginadas: Array<EstanteProps> = [];
+
+  if (estanteResponse && clienteResponse) {
+    estantes = estanteResponse.estantes
+    clientes = clienteResponse.clientes
+    estantesPaginadas = estantes.slice(firstIndex, lastIndex);
+  }
 
   const handleFilterEstanteList = (event: any) => {
     setFilter(event.toUpperCase())
@@ -125,7 +131,8 @@ const CadastroEstante: NextPage = () => {
                 list="clientes" id="cliente-choice" name="cliente-choice" autoComplete="off"
                 value={cliente} onChange={event => {setCliente(event.target.value)}} />
               <datalist id="clientes">
-                {clientes.map(cliente => {
+                {isLoadingClientes && <h1>Carregando clientes...</h1>}
+                {clientes.map((cliente: Cliente) => {
                   return (<option key={cliente.id} value={`${cliente.id} - ${cliente.nome}`} />)
                 })}
               </datalist>
@@ -170,7 +177,7 @@ const CadastroEstante: NextPage = () => {
                   )
                 })
               ) : (
-                estantes.map(estante => {
+                estantesPaginadas.map(estante => {
                   return (
                     <tr key={estante.id}>
                       <td>{`${estante.clienteId} - ${estante.cliente}`}</td>
@@ -188,6 +195,7 @@ const CadastroEstante: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>
+        {estantes && <Pagination totalPosts={estantes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Estante' id={id} />
       </Container>
     </>

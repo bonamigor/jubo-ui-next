@@ -39,6 +39,12 @@ const ClienteService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  listarTodosOsClientesReactQuery: async () => {
+    const response = await httpClient.get('/api/clientes')
+
+    return response.data
+  },
+
   listarTodosOsClientesNew: async () => {
     const response = await httpClient.get('/api/clientes', {
     })

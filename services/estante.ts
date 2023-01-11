@@ -37,6 +37,12 @@ const EstanteService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  listarTodosAsEstantesReactQuery: async () => {
+    const response = await httpClient.get('/api/estantes')
+
+    return response.data
+  },
+
   listarEstantesDoCliente: async (id: number) => {
     const response = await httpClient.get(`/api/cliente/${id}/estantes`)
 
