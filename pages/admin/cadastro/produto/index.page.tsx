@@ -200,7 +200,7 @@ const CadastroProduto: NextPage = () => {
             </table>
           )}
         </TableContainer>
-        {produtosPaginados.length > 1 && <Pagination totalPosts={produtos.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        {produtosPaginados && <Pagination totalPosts={produtos.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Produto' id={id} />
       </Container>
     </>
