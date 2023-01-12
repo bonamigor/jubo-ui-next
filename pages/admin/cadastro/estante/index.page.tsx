@@ -194,7 +194,7 @@ const CadastroEstante: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>
-        {estantesPaginadas.length > 1 && <Pagination totalPosts={estantes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        {estantesPaginadas.length > 0 && <Pagination totalPosts={estantes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Estante' id={id} />
       </Container>
     </>

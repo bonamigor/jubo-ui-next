@@ -49,7 +49,6 @@ const EstanteProduto: NextPage = () => {
   const { data: produtosNaEstanteResponse } = useQuery(['getAllProdutosNaEstante', id], () => produtoEstanteService.listarProdutosNaEstanteReactQuery(Number(id)), { staleTime: 1000 * 60 * 60 * 24 } ) 
 
   if (produtosNaEstanteResponse) {
-    console.log(produtosNaEstanteResponse)
     produtosNaEstante = produtosNaEstanteResponse.estante.produtos
     produtosNaEstantePaginados = produtosNaEstanteResponse.estante.produtos.slice(firstIndex, lastIndex);
   }
@@ -212,7 +211,7 @@ const EstanteProduto: NextPage = () => {
                       <td>{produto.quantidade}</td>
                       <td>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => {handleDeleteProdutoNaEstante(produto)}} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
+                        <a><Image onClick={() => {handleDeleteProdutoNaEstante(produto)}} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
@@ -222,7 +221,7 @@ const EstanteProduto: NextPage = () => {
           </table>
         </TableContainer>
         )}
-        {produtosNaEstantePaginados.length > 1 && <Pagination totalPosts={produtosNaEstante.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        {produtosNaEstantePaginados.length > 0 && <Pagination totalPosts={produtosNaEstante.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ProdutoEstante' idArray={produtoNaEstanteId} />
       </Container>
     </>
