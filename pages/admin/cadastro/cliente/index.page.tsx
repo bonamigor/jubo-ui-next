@@ -224,7 +224,7 @@ const CadastroCliente: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>
-        {clientes && <Pagination totalPosts={clientes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        {clientesPaginados.length > 1 && <Pagination totalPosts={clientes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Cliente' id={id} />
       </Container>
     </>

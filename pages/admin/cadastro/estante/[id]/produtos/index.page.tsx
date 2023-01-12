@@ -222,7 +222,7 @@ const EstanteProduto: NextPage = () => {
           </table>
         </TableContainer>
         )}
-        {produtosNaEstante && <Pagination totalPosts={produtosNaEstante.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        {produtosNaEstantePaginados.length > 1 && <Pagination totalPosts={produtosNaEstante.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ProdutoEstante' idArray={produtoNaEstanteId} />
       </Container>
     </>

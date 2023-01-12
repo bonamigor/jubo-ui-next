@@ -246,7 +246,7 @@ const CadastroUsuario: NextPage = () => {
             </tbody>
           </table>
         </TableContainer>}
-        {usuarios && <Pagination totalPosts={usuarios.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
+        {usuariosPaginados.length > 1 && <Pagination totalPosts={usuarios.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Usuario' id={id} />
       </Container>
     </>
