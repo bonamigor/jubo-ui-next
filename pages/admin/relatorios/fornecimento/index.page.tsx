@@ -53,11 +53,11 @@ const Fornecimento: NextPage = () => {
 
     autoTable(doc, { html: '#pedidos' })
 
-    doc.text(`Valor Total: `, 14, 170)
+    doc.text(`Valor Total: `, 14, 110)
     doc.text(`${new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(Number(valorTotal))}`, 125, 170)
+    }).format(Number(valorTotal))}`, 150, 110)
 
     const dataInicialFormatada = dataInicial.split('/').reverse().join('-')
     const dataFinalFormatada = dataFinal.split('/').reverse().join('-')
