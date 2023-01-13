@@ -28,8 +28,9 @@ const Compras: NextPage = () => {
   const mutation = useMutation(produtoService.listarProdutosParaComprar)
 
   const showDates = async () => {
-    const dataInicialFormatada: string = `${dataInicial.split('/')[2]}-${dataInicial.split('/')[1]}-${dataInicial.split('/')[0]}`
-    const dataFinalFormatada: string = `${dataFinal.split('/')[2]}-${dataFinal.split('/')[1]}-${dataFinal.split('/')[0]}`
+    const dataInicialFormatada = dataInicial.split('/').reverse().join('-')
+    const dataFinalFormatada = dataFinal.split('/').reverse().join('-')
+    
     await mutation.mutateAsync({ dataInicial: dataInicialFormatada, dataFinal: dataFinalFormatada }, {
       onSuccess: async (data) => {
         setProdutos(data.produtos)

@@ -45,6 +45,13 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     return response.data
   },
 
+  listarPedidosEntreDatas: async ({ dataInicial, dataFinal }: 
+    { dataInicial: string, dataFinal: string}) => {
+    const response = await httpClient.get(`/api/pedidos/relatorio/datas/${dataInicial}/to/${dataFinal}`, {  })
+
+    return response.data
+  },
+
   listarPedidosByCliente: async (clienteId: number) => {
     const response = await httpClient.get(`/api/pedidos/cliente/${clienteId}`)
 
