@@ -40,10 +40,57 @@ interface OrderInfoModalProps {
   pedido: Pedido;
 }
 
+interface EmpresaProps {
+  nome: string;
+  cnpj: string;
+  endereco: string;
+  cidade: string;
+  estado: string;
+}
+
+const empresas: Array<EmpresaProps> = [
+  {
+    nome: 'Comercial Mendes',
+    cnpj: '26.669.899/0001-23',
+    endereco: 'Rua Pinheiro Chagas, Vila Nova Canaã',
+    cidade: 'Goiânia',
+    estado: 'Goiás'
+  },
+  {
+    nome: 'COPERAL',
+    cnpj: '46.258.870/0001-66',
+    endereco: 'Rua 26 de setembro, nº 21, lt. 23, Setor Estrela Dalva',
+    cidade: 'Goiânia',
+    estado: 'Goiás'
+  },
+  {
+    nome: 'COOPASSEN',
+    cnpj: '36.070.538/0001-10',
+    endereco: 'R. Padre Alcides Spolidoro, S/N, Q. I4 L. 11/12, Dist Ind Santa Edwiges',
+    cidade: 'Senador Canedo',
+    estado: 'Goiás'
+  },
+  {
+    nome: 'COOPACO',
+    cnpj: '33.507.873/0001-44',
+    endereco: 'Rua 03, QD. 07, LT. 13, Sala 03, Recanto das Emboabas',
+    cidade: 'Aparecida de Goiânia',
+    estado: 'Goiás'
+  },
+  {
+    nome: 'COMPAF',
+    cnpj: '29.119.413/0001-71',
+    endereco: 'ROD GO-320 KM 10.5 n 100, LT. 11 QD. 03, RES BOA ESPERANCA',
+    cidade: 'Goiatuba',
+    estado: 'Goiás'
+  },
+]
+
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
+  const [empresa, setEmpresa] = useState(0)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { staleTime: 60 * 10 * 10, refetchOnWindowFocus: false, enabled: isOpen })
 
@@ -95,11 +142,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const generatePdf = () => {
     const doc = new jsPDF('l')
 
-    // const data = dataEntrega.split('/')
-    // const dataAoContrario = data.reverse().join('-')
-    // const dataTal = format(new Date(dataAoContrario), 'yyyy-MM-dd')
-    // const dataFormatada = new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(dataAoContrario))
-
     products.forEach(product => {
       delete product['produtoId'];
     })
@@ -122,29 +164,44 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     let pageNumber = doc.internal.pages.length - 1
 
-    doc.text(`Pedido ${pedido.id}`, 14, 15)
-    doc.text(`Pedido ${pedido.id}`, 154, 15)
+    doc.text(`${empresas[empresa].nome}`, 14, 15)
+    doc.text(`${empresas[empresa].nome}`, 154, 15)
 
     doc.setFontSize(10)
-    doc.text(`Cliente: ${pedido.nome}`, 14, 20)
-    doc.text(`Cliente: ${pedido.nome}`, 154, 20)
+    doc.text(`Empresa: ${empresas[empresa].cnpj}`, 14, 20)
+    doc.text(`Empresa: ${empresas[empresa].cnpj}`, 154, 20)
 
-    doc.text(`Endereço: ${pedido.endereco}`, 14, 25)
-    doc.text(`Endereço: ${pedido.endereco}`, 154, 25)
+    doc.text(`Endereço: ${empresas[empresa].endereco}`, 14, 25)
+    doc.text(`Endereço: ${empresas[empresa].endereco}`, 154, 25)
 
-    doc.text(`Cidade/Estado: ${pedido.cidade} / ${pedido.estado}`, 14, 30)
-    doc.text(`Cidade/Estado: ${pedido.cidade} / ${pedido.estado}`, 154, 30)
+    doc.text(`Cidade / Estado: ${empresas[empresa].cidade} / ${empresas[empresa].estado}`, 14, 30)
+    doc.text(`Cidade / Estado: ${empresas[empresa].cidade} / ${empresas[empresa].estado}`, 154, 30)
 
-    doc.text(`Telefone: ${pedido.telefone}`, 14, 35)
-    doc.text(`Telefone: ${pedido.telefone}`, 154, 35)
+    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 32.5)
 
-    doc.text(`Data de Entrega: ${dataEntrega}`, 14, 40)
-    doc.text(`Data de Entrega: ${dataEntrega}`, 154, 40)
+    doc.text(`Pedido ${pedido.id}`, 14, 40)
+    doc.text(`Pedido ${pedido.id}`, 154, 40)
+
+    doc.setFontSize(10)
+    doc.text(`Cliente: ${pedido.nome}`, 14, 45)
+    doc.text(`Cliente: ${pedido.nome}`, 154, 45)
+
+    doc.text(`Endereço: ${pedido.endereco}`, 14, 50)
+    doc.text(`Endereço: ${pedido.endereco}`, 154, 50)
+
+    doc.text(`Cidade/Estado: ${pedido.cidade} / ${pedido.estado}`, 14, 55)
+    doc.text(`Cidade/Estado: ${pedido.cidade} / ${pedido.estado}`, 154, 55)
+
+    doc.text(`Telefone: ${pedido.telefone}`, 14, 60)
+    doc.text(`Telefone: ${pedido.telefone}`, 154, 60)
+
+    doc.text(`Data de Entrega: ${dataEntrega}`, 14, 65)
+    doc.text(`Data de Entrega: ${dataEntrega}`, 154, 65)
 
     autoTable(doc, {
       head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
       body: newProdutosArray,
-      startY: 45,
+      startY: 70,
       tableWidth: 130,
       showHead: 'firstPage',
       margin: { right: 125 },
@@ -157,7 +214,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     autoTable(doc, {
       head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
       body: newProdutosArray,
-      startY: 45,
+      startY: 70,
       tableWidth: 130,
       showHead: 'firstPage',
       margin: { left: 153 },
@@ -170,22 +227,48 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
         currency: 'BRL'
     }).format(Number(pedido.valorTotal))
 
-    doc.text(`Valor Total: `, 14, 170)
-    doc.text(`${valorTotal}`, 125, 170)
+    doc.text(`Valor Total: `, 14, 165)
+    doc.text(`${valorTotal}`, 125, 165)
 
-    doc.text(`Valor Total: `, 154, 170)
-    doc.text(`${valorTotal}`, 265, 170)
+    doc.text(`Valor Total: `, 154, 165)
+    doc.text(`${valorTotal}`, 265, 165)
 
-    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 180)
+    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
 
-    doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-    doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    
+    const linhas1: Array<string> = [];
 
-    doc.text(`Assinatura: ________________________________________________________`, 14, 200)
-    doc.text(`Assinatura: ________________________________________________________`, 154, 200)
-
+    if (pedido.observacao) {
+      if (pedido.observacao.length > 65) {
+        let contadorInicial: number = 0;
+        let contadorFinal: number = 65;
+        const numeroDeLinhas = pedido.observacao.length / 65;
+        for (let i = 0; i <= numeroDeLinhas; i++) {
+          linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+          contadorInicial = contadorInicial + 65
+          contadorFinal = contadorFinal + 65
+        }
+        doc.text('Observação: ', 14, 180)
+        doc.text('Observação: ', 154, 180)
+        doc.text(linhas1, 35, 180)
+        doc.text(linhas1, 175, 180)
+      } else {
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+      }
+    } else {
+      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    }
+    
+    doc.text(`Assinatura: ________________________________________________________`, 14, 205)
+    doc.text(`Assinatura: ________________________________________________________`, 154, 205)
 
     doc.save(`pedido-${pedido.id}.pdf`)
+  }
+
+  const handleOptionEmpresa = (event: any) => {
+    setEmpresa(event.target.value)
   }
 
   return (
@@ -262,6 +345,28 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
                   <button onClick={confirmOrder}>Confirmar Pedido</button>
                   <button onClick={generatePdf}>Criar PDF</button>
+                </div>
+                <div id='empresa'>
+                  <label htmlFor="mendes">
+                    <input type="radio" name="mendes" id="mendes"  value="0" onChange={handleOptionEmpresa} />
+                    Mendes
+                  </label>
+                  <label htmlFor="coperal">
+                    <input type="radio" name="coperal" id="coperal" value="1" onChange={handleOptionEmpresa}/>
+                    COPERAL
+                  </label>
+                  <label htmlFor="coopassen">
+                    <input type="radio" name="coopassen" id="coopassen" value="2" onChange={handleOptionEmpresa}/>
+                    COOPASSEN
+                  </label>
+                  <label htmlFor="coopaco">
+                    <input type="radio" name="coopaco" id="coopaco" value="3" onChange={handleOptionEmpresa}/>
+                    COOPACO
+                  </label>
+                  <label htmlFor="compaf">
+                    <input type="radio" name="compaf" id="compaf" value="4" onChange={handleOptionEmpresa}/>
+                    COMPAF
+                  </label>
                 </div>
               </ConfirmSection>
               <CancelSection>
