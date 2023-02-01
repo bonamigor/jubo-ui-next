@@ -9,7 +9,6 @@ import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
 import { Loading, Textarea } from '@nextui-org/react';
-import { Tooltip } from '@chakra-ui/react'
 
 interface Pedido {
   id: number;
