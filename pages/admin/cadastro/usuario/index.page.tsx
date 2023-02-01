@@ -1,6 +1,6 @@
 import type { NextPage } from "next"
 import Image from "next/image";
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 
 import { Admin, Container, FormButton, Forms, FormSubmitButton, InputFilter, TableContainer, User } from './usuario';
 import EditImg from '../../../../assets/edit.png'
@@ -30,6 +30,8 @@ const CadastroUsuario: NextPage = () => {
   const [filter, setFilter] = useState('')
   const [filteredUsers, setFilteredUsers] = useState<UserProps[]>([])
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isValidAdmin, setIsValidAdmin] = useState(false)
+  const [isValidUser, setIsValidUser] = useState(false)
 
   const onRequestClose = () => {
     setIsDeleteModalOpen(false)
@@ -46,6 +48,19 @@ const CadastroUsuario: NextPage = () => {
   const [clienteId, setClienteId] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostsPerPage] = useState(5)
+
+  const validateAdmin = () => nomeAdmin.length > 0 && emailAdmin.length > 0 && senhaAdmin.length > 0;
+  const validateUser = () => nome.length > 0 && email.length > 0 && senha.length > 0 && clienteId.length > 0;
+
+  useEffect(() => {
+    const isValidAdmin = validateAdmin();
+    setIsValidAdmin(isValidAdmin);
+  }, [nomeAdmin, emailAdmin, senhaAdmin])
+
+  useEffect(() => {
+    const isValidUser = validateUser();
+    setIsValidUser(isValidUser)
+  }, [nome, email, senha, clienteId])
 
   const lastIndex = currentPage * postPerPage;
   const firstIndex = lastIndex - postPerPage;
@@ -175,7 +190,7 @@ const CadastroUsuario: NextPage = () => {
             <input type="text" placeholder="Nome" value={nomeAdmin} onChange={event => {setNomeAdmin(event.target.value)}} />
             <input type="email" placeholder="E-mail" value={emailAdmin} onChange={event => {setEmailAdmin(event.target.value)}} />
             <input type="password" placeholder="Senha" value={senhaAdmin} onChange={event => {setSenhaAdmin(event.target.value)}} />
-            <FormSubmitButton type="submit" id="button" isUpdate={isUpdateAdmin}>Cadastrar</FormSubmitButton>
+            <FormSubmitButton type="submit" id="button" isUpdate={isUpdateAdmin} disabled={!isValidAdmin}>Cadastrar</FormSubmitButton>
             <FormButton type="button" id="button" isUpdate={isUpdateAdmin} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </Admin>
           <User onSubmit={handleSubmitUser}>
@@ -191,7 +206,7 @@ const CadastroUsuario: NextPage = () => {
                 return (<option key={cliente.id} value={`${cliente.id} - ${cliente.nome}`} />)
               })}
             </datalist>
-            <FormSubmitButton type="submit" id="button" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+            <FormSubmitButton type="submit" id="button" isUpdate={isUpdate} disabled={!isValidUser}>Cadastrar</FormSubmitButton>
             <FormButton type="button" id="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </User>
         </Forms>

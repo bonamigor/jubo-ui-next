@@ -4,7 +4,7 @@ import EditImg from '../../../../assets/edit.png'
 import DeleteImg from '../../../../assets/delete.png'
 import AddImg from '../../../../assets/add.png'
 import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estante";
-import { useState, FormEvent, SetStateAction } from 'react';
+import { useState, FormEvent, SetStateAction, useEffect } from 'react';
 import { clienteService, estanteService } from '../../../../services/index';
 import NumberFormat from "react-number-format";
 import { useRouter } from "next/router";
@@ -32,6 +32,7 @@ const CadastroEstante: NextPage = () => {
   const [filteredEstantes, setFilteredEstantes] = useState<EstanteProps[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostsPerPage] = useState(5)
+  const [isValid, setIsValid] = useState(false)
 
   const lastIndex = currentPage * postPerPage;
   const firstIndex = lastIndex - postPerPage;
@@ -40,6 +41,13 @@ const CadastroEstante: NextPage = () => {
   const [cliente, setCliente] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [observacao, setObservacao] = useState('')
+
+  const validate = () => cliente.length > 0 && periodo.length > 0 && observacao.length > 0 
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [cliente, periodo, observacao])
 
   const VINTE_E_QUATRO_HORAS = (60 *  1000) * 60 * 24
 
@@ -141,7 +149,7 @@ const CadastroEstante: NextPage = () => {
               />
               <input type="text" placeholder="Observação" value={observacao} onChange={event => {setObservacao(event.target.value)}} />
             </div>
-            <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+            <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>Cadastrar</FormSubmitButton>
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>

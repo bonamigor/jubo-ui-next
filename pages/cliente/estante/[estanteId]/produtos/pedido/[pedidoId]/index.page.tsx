@@ -56,6 +56,7 @@ const PedidoProdutos: NextPage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [id, setId] = useState(0)
   const [isUpdate, setIsUpdate] = useState(false)
+  const [isValid, setIsValid] = useState(false)
 
   useEffect(() => {
     const fetchProdutos = async () => {
@@ -86,6 +87,13 @@ const PedidoProdutos: NextPage = () => {
     fetchCliente()
     fetchPedido()
   }, [estanteId, pedidoId, produtos])
+
+  const validate = () => produtoId.length > 0 && quantidade.length > 0
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [produtoId, quantidade])
   
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -208,14 +216,14 @@ const PedidoProdutos: NextPage = () => {
                   </datalist>
                 </div>
                 <input type="text" placeholder="Quantidade" value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
-                <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+                <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>Cadastrar</FormSubmitButton>
                 <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
               </FormContent>
             </PedidoForm>
             <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
             <Textarea placeholder="Deixe uma observação para o fornecedor." size="lg" css={{ mt: "1.5rem", w: "1000px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
             <DecideButtons>
-              <ConfirmButton onClick={handleFecharPedido}>Fechar Pedido</ConfirmButton>
+              <ConfirmButton onClick={handleFecharPedido} disabled={!(produtos.length > 0)}>Fechar Pedido</ConfirmButton>
               <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
             </DecideButtons>
             <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Pedido' id={id} />

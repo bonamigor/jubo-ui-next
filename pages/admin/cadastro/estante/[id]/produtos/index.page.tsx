@@ -10,7 +10,7 @@ import Image from "next/image";
 import EditImg from '../../../../../../assets/edit.png'
 import DeleteImg from '../../../../../../assets/delete.png'
 import DeleteModal from "../../../../../../components/Modal/Delete/index.page";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import Head from "next/head";
 import Pagination from "../../../../../../components/Pagination/index.page";
 
@@ -26,6 +26,7 @@ interface EstanteProdutoProps {
 const EstanteProduto: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
+  const queryClient = useQueryClient()
 
   const [isUpdate, setIsUpdate] = useState(false)
   
@@ -60,6 +61,17 @@ const EstanteProduto: NextPage = () => {
     produtos = produtosQuery.data.produtos
   }
 
+  const [isValid, setIsValid] = useState(false)
+
+  const validate = () => {
+    return produtoId.length > 0 && quantidade.length > 0 && precoVenda.length > 0
+  }
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [produtoId, quantidade, precoVenda])
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
 
@@ -72,6 +84,7 @@ const EstanteProduto: NextPage = () => {
       })
 
       if (!errors) {
+        queryClient.invalidateQueries('getAllProdutosNaEstante')
         toast.success('Produto adicionado com sucesso!')
         setQtdProdutosEstante(qtdProdutosEstante + 1)
         setPrecoVenda('')
@@ -142,22 +155,22 @@ const EstanteProduto: NextPage = () => {
             {produtosQuery.isLoading && <input type="text" placeholder="Carregando produtos..." />}
             {produtosQuery.isSuccess && (
               <>
-              <input type="text" placeholder="Pesquise o Produto" 
-                list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
-                value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
-              <datalist id="produtos">
-                {produtos.map(produto => {
-                  return (
-                  <option key={produto.id} 
-                    value={`${produto.id} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(Number(produto.preco))}/${produto.unidade}`}
-                  />)
-                })}
-              </datalist>
+                <input type="text" placeholder="Pesquise o Produto" 
+                  list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
+                  value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
+                <datalist id="produtos">
+                  {produtos.map(produto => {
+                    return (
+                    <option key={produto.id} 
+                      value={`${produto.id} - ${produto.nome} - ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(Number(produto.preco))}/${produto.unidade}`}
+                    />)
+                  })}
+                </datalist>
               </>
             )}
             <input type="text" placeholder="Preço" value={precoVenda} onChange={event => {setPrecoVenda(event.target.value)}} />
             <input type="text" placeholder="Quant." value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
-            <FormSubmitButton type="submit" isUpdate={isUpdate}>Adicionar</FormSubmitButton>
+            <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>Adicionar</FormSubmitButton>
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>

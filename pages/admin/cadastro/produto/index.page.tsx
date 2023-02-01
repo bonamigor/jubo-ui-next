@@ -32,9 +32,17 @@ const CadastroProduto: NextPage = () => {
   const [filteredprodutos, setFilteredprodutos] = useState<ProdutoProps[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostsPerPage] = useState(5)
+  const [isValid, setIsValid] = useState(false)
 
   const lastIndex = currentPage * postPerPage;
   const firstIndex = lastIndex - postPerPage;
+
+  const validate = () => nome.length > 0 && preco.length > 0 && unidade.length > 0
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [nome, preco, unidade])
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -134,7 +142,7 @@ const CadastroProduto: NextPage = () => {
                 <option value="PLT">PLT</option>
               </select>
             </div>
-            <FormSubmitButton type="submit" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+            <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>Cadastrar</FormSubmitButton>
             <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>

@@ -68,6 +68,14 @@ const CadastroCliente: NextPage = () => {
   const [estado, setEstado] = useState('')
   const [telefone, setTelefone] = useState('')
   const [ativo, setAtivo] = useState('')
+  const [isValid, setIsValid] = useState(false)
+
+  const validate = () => nome.length > 0 && cnpj.length > 0 && email.length > 0 && endereco.length > 0 && cep.length > 0 && cidade.length > 0 && estado.length > 0 && telefone.length > 0
+
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [nome, cnpj, email, endereco, cep, cidade, estado, telefone])
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -170,7 +178,7 @@ const CadastroCliente: NextPage = () => {
             <input type="text" id="phone" placeholder="Telefone" 
               value={telefone} onChange={(event) => {setTelefone(event.target.value)}} />
 
-            <FormSubmitButton type="submit" id="button" isUpdate={isUpdate}>Cadastrar</FormSubmitButton>
+            <FormSubmitButton type="submit" id="button" isUpdate={isUpdate} disabled={!isValid}>Cadastrar</FormSubmitButton>
             <FormButton type="button" id="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
           </FormItself>
         </Content>

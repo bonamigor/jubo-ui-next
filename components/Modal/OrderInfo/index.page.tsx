@@ -3,13 +3,13 @@ import { CancelSection, ConfirmSection, Container, OrderFooter, OrderHeader, Ord
 import Modal from 'react-modal'
 import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../services';
-import { format } from 'date-fns'
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
 import { Loading, Textarea } from '@nextui-org/react';
+import { Tooltip } from '@chakra-ui/react'
 
 interface Pedido {
   id: number;
@@ -91,6 +91,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
   const [empresa, setEmpresa] = useState(0)
+  const [isValid, setIsValid] = useState(false)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { staleTime: 60 * 10 * 10, refetchOnWindowFocus: false, enabled: isOpen })
 
@@ -271,6 +272,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     setEmpresa(event.target.value)
   }
 
+  const validate = () => dataEntrega.length > 0
+  
+  useEffect(() => {
+    const isValid = validate();
+    setIsValid(isValid);
+  }, [dataEntrega])
+
   return (
     <Modal
       isOpen={isOpen}
@@ -343,8 +351,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 <h2>Deseja confirmar?</h2>
                 <div>
                   <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
-                  <button onClick={confirmOrder}>Confirmar Pedido</button>
-                  <button onClick={generatePdf}>Criar PDF</button>
+                  <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>
+                  <button onClick={generatePdf} disabled={!isValid}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
                   <label htmlFor="mendes">
