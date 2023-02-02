@@ -27,14 +27,14 @@ interface Pedido {
 const Pedidos: NextPage = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedidoId, setPedidoId] = useState(0)
   const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedidoId, setPedidoId] = useState(0)
 
-  const mutation = useMutation(pedidoService.listarPedidoByIdRq)
+  const mutation = useMutation((pedidoId: number) => pedidoService.listarPedidoByIdRq(pedidoId))
   
   const handlePedidoByIdSearch = async () => {
     setIsOrdersLoading(true)
-    await mutation.mutateAsync(pedidoId , {
+    mutation.mutate(pedidoId , {
       onSuccess: async (data) => {
         setIsOrdersLoading(false)
         console.log(data.pedido[0])
@@ -105,20 +105,18 @@ const Pedidos: NextPage = () => {
                   </tr>
                 </thead>
 
-                <tbody>            
-                  {pedido && 
-                    <tr key={pedido.id}>
-                      <td>{pedido.id}</td>
-                      <td>{pedido.nome}</td>
-                      <td>{pedido.dataCriacao}</td>
-                      <td>{pedido.status}</td>
-                      <td>{pedido.dataEntrega ? pedido.dataEntrega : 'Sem Data'}</td>
-                      <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
-                      <td>
-                        <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                      </td>
-                    </tr>
-                  }
+                <tbody>        
+                  <tr key={pedido.id}>
+                    <td>{pedido.id}</td>
+                    <td>{pedido.nome}</td>
+                    <td>{new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataCriacao))}</td>
+                    <td>{pedido.status}</td>
+                    <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega)) : 'Sem Data'}</td>
+                    <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
+                    <td>
+                      <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </TableContainer>
