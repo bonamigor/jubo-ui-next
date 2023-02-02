@@ -37,6 +37,7 @@ const Pedidos: NextPage = () => {
     await mutation.mutateAsync(pedidoId , {
       onSuccess: async (data) => {
         setIsOrdersLoading(false)
+        console.log(data.pedido[0])
         setPedido(data.pedido[0])
       },
       onError: async (error) => {
