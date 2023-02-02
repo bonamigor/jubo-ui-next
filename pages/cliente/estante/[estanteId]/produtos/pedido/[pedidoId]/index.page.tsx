@@ -1,14 +1,11 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { CancelButton, ConfirmButton, Container, Content, DecideButtons, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm } from "./produtos";
+import { Container, Content, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm } from "./produtos";
 import { useState, useEffect, FormEvent } from 'react';
 import { produtoEstanteService, itemPedidoService, clienteService, pedidoService } from '../../../../../../../services/index';
 import toast from "react-hot-toast";
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
-import DeleteModal from "../../../../../../../components/Modal/Delete/index.page";
 import Head from "next/head";
-import { Textarea } from "@nextui-org/react";
-import { useQueryClient } from "react-query";
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
@@ -32,14 +29,12 @@ interface ProdutoNoPedidoProps {
 
 const PedidoProdutos: NextPage = () => {
   const router = useRouter()
-  const queryClient = useQueryClient()
   const { pedidoId, estanteId } = router.query
   const [produtoNaEstante, setProdutosNaEstante] = useState<ProdutoNaEstanteProps[]>([])
   const [product, setProduct] = useState<ProdutoNoPedidoProps>({ itemPedidoId: '', produtoId: '', nome: '', unidade: '', precoVenda: 0, quantidade: 0, total: 0 })
   const [produtos, setProdutos] = useState<ProdutoNoPedidoProps[]>([])
   const [produtoId, setProdutoId] = useState('')
   const [quantidade, setQuantidade] = useState('')
-  const [observacao, setObservacao] = useState('')
   const [cliente, setCliente] = useState({ 
     id: 0,
     nome: '',
@@ -53,8 +48,6 @@ const PedidoProdutos: NextPage = () => {
     ativo: ''}
   )
   const [pedido, setPedido] = useState({ id: 0, status: '', dataCriacao: '', dataConfirmacao: '', dataCancelamento: '', dataEntrega: '', valorTotal: 0, clienteId: 0});
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [id, setId] = useState(0)
   const [isUpdate, setIsUpdate] = useState(false)
   const [isValid, setIsValid] = useState(false)
 
@@ -101,12 +94,12 @@ const PedidoProdutos: NextPage = () => {
       const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
         estanteId: String(estanteId),
         produtoId: produtoId.split(' ')[0],
+        precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
         quantidade: Number(quantidade),
         pedidoId: String(pedidoId)
       })
 
       if (!errors) {
-        queryClient.invalidateQueries("getPedidosForDashboard")
         setProdutoId('')
         setQuantidade('')
 
@@ -114,11 +107,10 @@ const PedidoProdutos: NextPage = () => {
           produtoId: produtoId.split(' ')[0],
           nome: produtoId.split(' ')[1],
           unidade: produtoId.split(' ')[5],
-          precoVenda: Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')),
+          precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
           quantidade: Number(quantidade),
           total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
         }
-        setProdutos([...produtos, newProduto])
         setProduct(newProduto)
 
         toast.success('Produto adicionado no pedido!')
@@ -145,7 +137,8 @@ const PedidoProdutos: NextPage = () => {
         produtoId: Number(idProduto),
         pedidoId: Number(pedidoId),
         itemPedidoId: Number(itemPedidoId),
-        quantidade: quantidade
+        precoVenda: Number(produtoId.split('-')[2].split('/')[0].trim().substring(3).replaceAll(',','.')),
+        quantidade: Number(quantidade)
       })
 
       if (!errors) {
@@ -153,29 +146,21 @@ const PedidoProdutos: NextPage = () => {
         setProdutoId('')
         setQuantidade('')
         setIsUpdate(false)
+
+        const newProduto: ProdutoNoPedidoProps = {
+          produtoId: produtoId.split(' ')[0],
+          nome: produtoId.split(' ')[1],
+          unidade: produtoId.split(' ')[5],
+          precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
+          quantidade: Number(quantidade),
+          total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
+        }
+        setProduct(newProduto)
       }
     } catch (error) {
       toast.error('Erro ao atualizar Item do Pedido.')
       console.error(error)
     }
-  }
-
-  const handleFecharPedido = async () => {
-    if (observacao != '') {
-      await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
-    }
-    toast.success('Pedido fechado!')
-    queryClient.invalidateQueries("getPedidosForDashboard")
-    router.push('/cliente/inicial')
-  }
-
-  const handleDeletePedido = () => {
-    setId(Number(pedidoId))
-    setIsDeleteModalOpen(true)
-  }
-
-  const onRequestClose = () => {
-    setIsDeleteModalOpen(false)
   }
 
   return (
@@ -221,12 +206,6 @@ const PedidoProdutos: NextPage = () => {
               </FormContent>
             </PedidoForm>
             <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
-            <Textarea placeholder="Deixe uma observação para o fornecedor." size="lg" css={{ mt: "1.5rem", w: "1000px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
-            <DecideButtons>
-              <ConfirmButton onClick={handleFecharPedido} disabled={!(produtos.length > 0)}>Fechar Pedido</ConfirmButton>
-              <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
-            </DecideButtons>
-            <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Pedido' id={id} />
         </Content>
       </Container>
     </>

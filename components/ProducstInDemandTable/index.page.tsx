@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { NextPage } from 'next';
-import { TableContainer, TableFooter, TableTitle } from './productsInDemand';
+import { CancelButton, ConfirmButton, DecideButtons, TableContainer, TableFooter, TableTitle } from './productsInDemand';
 import Image from "next/image";
 import EditImg from '../../assets/edit.png'
 import DeleteImg from '../../assets/delete.png'
@@ -9,6 +9,8 @@ import { pedidoService } from '../../services';
 import DeleteModal from '../Modal/Delete/index.page';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
+import { Textarea } from '@nextui-org/react';
+import toast from 'react-hot-toast';
 
 interface ProductsProps {
   itemPedidoId: string;
@@ -40,8 +42,11 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
   const { pedidoId, estanteId } = router.query
   const [products, setProducts] = useState<ProductsProps[]>([])
   const [valorTotal, setValorTotal] = useState(0)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [id, setId] = useState('')
+  const [isDeletePedidoModalOpen, setIsDeletePedidoModalOpen] = useState(false)
+  const [isDeleteItemPedidoModalOpen, setIsDeleteItemPedidoModalOpen] = useState(false)
+  const [idItemPedido, setIdItemPedido] = useState('')
+  const [idPedido, setIdPedido] = useState('')
+  const [observacao, setObservacao] = useState('')
 
   useEffect(() => {
     const fetchProdutosNoPedido = async () => {
@@ -52,6 +57,10 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
       }
     }
 
+    fetchProdutosNoPedido()
+  }, [product])
+
+  useEffect(() => {
     const fetchValorTotal = async () => {
       const { data, errors } = await pedidoService.valorTotalPedidoByPedidoId(Number(pedidoId))
 
@@ -59,20 +68,38 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
         setValorTotal(data.totalPedido)
       }
     }
-
-    fetchProdutosNoPedido()
     fetchValorTotal()
-  }, [product, products])
+  }, [product, valorTotal])
 
-  const handleDeleteItemPedido = (product: ProductsProps) => {
-    setId(product.itemPedidoId)
-    setIsDeleteModalOpen(true)
+  const handleDeleteItemPedido = (produtoParaDeletar: ProductsProps) => {
+    setIdItemPedido(`${produtoParaDeletar.itemPedidoId} ${pedidoId}`)
+    const index = products.findIndex(product => product.itemPedidoId === produtoParaDeletar.itemPedidoId)
+    delete products[index]
+    setIsDeleteItemPedidoModalOpen(true)
   }
 
-  const onRequestClose = () => {
-    setIsDeleteModalOpen(false)
+  const onRequestClosePedidoModal = () => {
+    setIsDeletePedidoModalOpen(false)
   }
-  
+
+  const onRequestCloseItemPedidoModal = () => {
+    setIsDeleteItemPedidoModalOpen(false)
+    setValorTotal(0)
+  }
+
+  const handleFecharPedido = async () => {
+    if (observacao != '') {
+      await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
+    }
+    toast.success('Pedido fechado!')
+    router.push('/cliente/inicial')
+  }
+
+  const handleDeletePedido = () => {
+    setIdPedido(String(pedidoId))
+    setIsDeletePedidoModalOpen(true)
+  }
+
   return (
     <>
       {products.length < 1 ? (
@@ -134,7 +161,13 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
                 }).format(valorTotal)}
             </h4>
           </TableFooter>
-          <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ItemPedido' id={Number(id)} />
+          <Textarea placeholder="Deixe uma observação para o fornecedor." size="lg" css={{ mt: "1.5rem", w: "1000px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
+          <DecideButtons>
+            <ConfirmButton onClick={handleFecharPedido} disabled={!(products.length > 0)}>Fechar Pedido</ConfirmButton>
+            <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
+          </DecideButtons>
+          <DeleteModal isOpen={isDeletePedidoModalOpen} onRequestClose={onRequestClosePedidoModal} entity='Pedido' id={idPedido} />
+          <DeleteModal isOpen={isDeleteItemPedidoModalOpen} onRequestClose={onRequestCloseItemPedidoModal} entity='ItemPedido' id={String(idItemPedido)} />
         </>
       )}
     </>

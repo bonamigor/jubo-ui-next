@@ -70,3 +70,45 @@ export const TableFooter = styled.div`
   margin-top: -4rem;
   padding: 1rem 0;
 `
+export const DecideButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  margin-top: 1rem;
+`
+
+export const ConfirmButton = styled.button`
+  width: 200px;
+  padding: 0 1.5rem;
+  height: 4rem;
+  margin: 0 1rem;
+  background: var(--green-500);
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: brightness(0.9);
+  }
+`
+
+export const CancelButton = styled.button`
+  width: 200px;
+  padding: 0 1.5rem;
+  height: 4rem;
+  margin: 0 1rem;
+  background: #cc0000;
+  color: #FFF;
+  border-radius: 0.25rem;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: filter 0.2s;
+  &:hover {
+    filter: opacity(0.9);
+  }
+`

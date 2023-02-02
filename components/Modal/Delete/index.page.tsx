@@ -12,7 +12,7 @@ interface DeleteModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   entity: string;
-  id?: number;
+  id?: number | string;
   idArray?: Array<number>;
 }
 
@@ -23,7 +23,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
   const handleDelete = async () => {
     switch(entity) {
       case 'Cliente':
-        const { clienteErrors } = await clienteService.deletarCliente(id)
+        const { clienteErrors } = await clienteService.deletarCliente(Number(id))
 
         if(!clienteErrors) {
           onRequestClose()
@@ -34,7 +34,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
         }
         break;
       case 'Usuario':
-        const { userErrors } = await usuarioService.deletarUsuario(id)
+        const { userErrors } = await usuarioService.deletarUsuario(Number(id))
 
         if(!userErrors) {
           onRequestClose()
@@ -55,7 +55,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
         break;
       
       case 'Produto':
-        const { produtoErrors } = await produtoService.deletarProduto(id)
+        const { produtoErrors } = await produtoService.deletarProduto(Number(id))
         if (!produtoErrors) {
           onRequestClose()
           toast.success('Produto excluído com sucesso!')
@@ -66,7 +66,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
         break;
 
       case 'Estante':
-        const { estanteErrors } = await estanteService.deletarEstante(id)
+        const { estanteErrors } = await estanteService.deletarEstante(Number(id))
         if (!estanteErrors) {
           onRequestClose()
           toast.success('Estante excluída com sucesso!')
@@ -77,7 +77,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
         break;
 
       case 'Pedido':
-        const { pedidoErrors } = await pedidoService.deletarPedidoById(id)
+        const { pedidoErrors } = await pedidoService.deletarPedidoById(Number(id))
         if (!pedidoErrors) {
           onRequestClose()
           toast.success('Pedido excluído com sucesso!')
@@ -88,7 +88,7 @@ const DeleteModal: NextPage<DeleteModalProps> = ({ isOpen, onRequestClose, entit
         break;
 
       case 'ItemPedido':
-        const { itemPedidoErrors } = await itemPedidoService.deletarProdutoDoPedidoById(id)
+        const { itemPedidoErrors } = await itemPedidoService.deletarProdutoDoPedidoById(String(id))
         if (!itemPedidoErrors) {
           onRequestClose()
           toast.success('Item excluído do Pedido com sucesso!')

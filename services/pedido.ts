@@ -160,6 +160,12 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  valorTotalPedidoByPedidoIdRq: async (pedidoId: number) => {
+    const response = await httpClient.get(`/api/pedidos/${pedidoId}/valorTotal`)
+
+    return response.data
+  },
+
   deletarPedidoById: async (pedidoId: number) => {
     const response = await httpClient.delete(`/api/pedidos/${pedidoId}`)
 

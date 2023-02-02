@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router, router.pathname])
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient} contextSharing={true}>
       <UserProvider>
         <PedidoProvider>
           <Navbar isUserLoggedIn={isUserLoggedIn} />

@@ -2,11 +2,11 @@ import { AxiosInstance } from "axios";
 
 const ItemPedidoService = (httpClient: AxiosInstance) => ({
   adicionarProdutoNoPedido: async (
-    { estanteId, produtoId, quantidade, pedidoId }: 
-    { estanteId: string, produtoId: string, quantidade: number, pedidoId: string }) => {
+    { estanteId, produtoId, precoVenda, quantidade, pedidoId }: 
+    { estanteId: string, produtoId: string, precoVenda: number, quantidade: number, pedidoId: string }) => {
     const response = await httpClient.post(
       `/api/pedido/${pedidoId}/adicionar`, 
-      { estanteId, produtoId, quantidade }
+      { estanteId, produtoId, precoVenda, quantidade }
     )
 
     let errors = null
@@ -25,12 +25,12 @@ const ItemPedidoService = (httpClient: AxiosInstance) => ({
   },
 
   atualizarItemDoPedido: async (
-    { estanteId, produtoId, pedidoId, itemPedidoId, quantidade }:
-    { estanteId: number, produtoId: number, pedidoId: number, itemPedidoId: number, quantidade: string }) => {
+    { estanteId, produtoId, pedidoId, itemPedidoId, precoVenda, quantidade }:
+    { estanteId: number, produtoId: number, pedidoId: number, itemPedidoId: number, precoVenda: number, quantidade: number }) => {
 
     const response = await httpClient.put(
       `/api/pedido/${pedidoId}/atualizar/${itemPedidoId}`,
-      { estanteId, produtoId, quantidade })
+      { estanteId, produtoId, precoVenda, quantidade })
 
     let errors = null
 
@@ -47,8 +47,8 @@ const ItemPedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  deletarProdutoDoPedidoById: async (itemPedidoId: number) => {
-    const response = await httpClient.delete(`/api/pedido/item-pedido/${itemPedidoId}`)
+  deletarProdutoDoPedidoById: async (id: string) => {
+    const response = await httpClient.delete(`/api/pedido/${id.split(' ')[1]}/item-pedido/${id.split(' ')[0]}`)
 
     let itemPedidoErrors = null
 
