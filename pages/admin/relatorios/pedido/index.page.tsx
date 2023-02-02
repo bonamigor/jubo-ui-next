@@ -105,17 +105,19 @@ const Pedidos: NextPage = () => {
                 </thead>
 
                 <tbody>            
-                  <tr key={pedido.id}>
-                    <td>{pedido.id}</td>
-                    <td>{pedido.nome}</td>
-                    <td>{new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataCriacao.split('T')[0]))}</td>
-                    <td>{pedido.status}</td>
-                    <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega.split('T')[0])) : 'Sem Data'}</td>
-                    <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
-                    <td>
-                      <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                    </td>
-                  </tr>
+                  {pedido && 
+                    <tr key={pedido.id}>
+                      <td>{pedido.id}</td>
+                      <td>{pedido.nome}</td>
+                      <td>{new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataCriacao.split('T')[0]))}</td>
+                      <td>{pedido.status}</td>
+                      <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega.split('T')[0])) : 'Sem Data'}</td>
+                      <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
+                      <td>
+                        <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
             </TableContainer>
