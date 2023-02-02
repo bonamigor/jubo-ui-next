@@ -26,8 +26,8 @@ interface Cliente {
 
 interface Pedido {
   id: number;
-  dataCriacao: Date;
-  dataEntrega: Date;
+  dataCriacao: string;
+  dataEntrega: string;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -43,7 +43,7 @@ const Pedidos: NextPage = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([])
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: new Date(), dataEntrega: new Date(), valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
 
   let clientes: Array<Cliente> = [];
