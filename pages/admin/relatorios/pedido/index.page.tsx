@@ -44,7 +44,7 @@ const Pedidos: NextPage = () => {
   
   const handlePedidoByIdSearch = async () => {
     setIsOrdersLoading(true)
-    mutation.mutate(pedidoId , {
+    await mutation.mutate(pedidoId , {
       onSuccess: async (data) => {
         data.pedido[0].dataCriacao = data.pedido[0].dataCriacao.split('T')[0]
         if (data.pedido[0].dataEntrega !== null) {
