@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import { useMutation } from 'react-query';
 import { Container, Content, Orderless, TableContainer, LoadingOrders } from './pedido';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { pedidoService } from '../../../../services/index';
 import toast from 'react-hot-toast';
 import { Loading } from '@nextui-org/react';
@@ -30,12 +30,26 @@ const Pedidos: NextPage = () => {
   const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [pedidoId, setPedidoId] = useState(0)
 
+  // useEffect(() => {
+  //   const fetchEstantes = async () => {
+  //     const { data, errors } = await pedidoService.listarPedidoById(pedidoId)
+  //     if (!errors) {
+  //       setPedido(data.pedido[0])
+  //     }
+  //   }
+  //   fetchEstantes()
+  // }, [])
+
   const mutation = useMutation((pedidoId: number) => pedidoService.listarPedidoByIdRq(pedidoId))
   
   const handlePedidoByIdSearch = async () => {
     setIsOrdersLoading(true)
     mutation.mutate(pedidoId , {
       onSuccess: async (data) => {
+        data.pedido[0].dataCriacao = data.pedido[0].dataCriacao.split('T')[0]
+        if (data.pedido[0].dataEntrega !== null) {
+          data.pedido[0].dataEntrega = data.pedido[0].dataEntrega.split('T')[0]
+        }
         setIsOrdersLoading(false)
         console.log(data.pedido[0])
         setPedido(data.pedido[0])
