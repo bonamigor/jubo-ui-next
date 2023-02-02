@@ -1,6 +1,5 @@
 import { NextPage } from 'next';
-import { useMutation, useQuery } from 'react-query';
-import { clienteService } from '../../../../services';
+import { useMutation } from 'react-query';
 import { Container, Content, Orderless, TableContainer, LoadingOrders } from './pedido';
 import { useState } from 'react';
 import { pedidoService } from '../../../../services/index';
@@ -10,7 +9,6 @@ import Image from "next/image";
 import BloomImg from '../../../../assets/bloom.png'
 import OrderInfo from '../../../../components/Modal/OrderInfo/index.page';
 import Head from 'next/head';
-import { format } from 'date-fns';
 
 interface Pedido {
   id: number;
@@ -35,9 +33,10 @@ const Pedidos: NextPage = () => {
   const mutation = useMutation(pedidoService.listarPedidoByIdRq)
   
   const handlePedidoByIdSearch = async () => {
+    setIsOrdersLoading(true)
     await mutation.mutateAsync(pedidoId , {
       onSuccess: async (data) => {
-        console.log(data.pedido[0].dataCriacao)
+        setIsOrdersLoading(false)
         setPedido(data.pedido[0])
       },
       onError: async (error) => {

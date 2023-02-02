@@ -378,7 +378,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
               </ConfirmSection>
               <CancelSection>
                 <h2>Ou, deseja cancelar o pedido?</h2>
-                <button onClick={cancelOrder}>Cancelar Pedido</button>
+                <button onClick={cancelOrder} disabled={!(pedido.status === 'CRIADO')}>Cancelar Pedido</button>
               </CancelSection>
             </>
           ) : (
