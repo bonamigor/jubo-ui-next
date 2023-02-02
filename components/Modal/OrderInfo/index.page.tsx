@@ -239,14 +239,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const linhas1: Array<string> = [];
 
     if (pedido.observacao) {
-      if (pedido.observacao.length > 65) {
+      if (pedido.observacao.length > 58) {
         let contadorInicial: number = 0;
-        let contadorFinal: number = 65;
-        const numeroDeLinhas = pedido.observacao.length / 65;
+        let contadorFinal: number = 58;
+        const numeroDeLinhas = pedido.observacao.length / 58;
         for (let i = 0; i <= numeroDeLinhas; i++) {
           linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-          contadorInicial = contadorInicial + 65
-          contadorFinal = contadorFinal + 65
+          contadorInicial = contadorInicial + 58
+          contadorFinal = contadorFinal + 58
         }
         doc.text('Observação: ', 14, 180)
         doc.text('Observação: ', 154, 180)
