@@ -14,8 +14,8 @@ import { format } from 'date-fns';
 
 interface Pedido {
   id: number;
-  dataCriacao: Date;
-  dataEntrega: Date;
+  dataCriacao: string;
+  dataEntrega: string;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -30,13 +30,14 @@ const Pedidos: NextPage = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [pedidoId, setPedidoId] = useState(0)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: new Date(), dataEntrega: new Date(), valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   const mutation = useMutation(pedidoService.listarPedidoByIdRq)
   
   const handlePedidoByIdSearch = async () => {
     await mutation.mutateAsync(pedidoId , {
       onSuccess: async (data) => {
+        console.log(data.pedido[0].dataCriacao)
         setPedido(data.pedido[0])
       },
       onError: async (error) => {
@@ -108,9 +109,9 @@ const Pedidos: NextPage = () => {
                   <tr key={pedido.id}>
                     <td>{pedido.id}</td>
                     <td>{pedido.nome}</td>
-                    <td>{format(new Date(pedido.dataCriacao), 'dd/MM/yyyy')}</td>
+                    <td>{new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataCriacao.split('T')[0]))}</td>
                     <td>{pedido.status}</td>
-                    <td>{pedido.dataEntrega ? format(new Date(pedido.dataEntrega), 'dd/MM/yyyy') : 'Sem Data'}</td>
+                    <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega.split('T')[0])) : 'Sem Data'}</td>
                     <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
                     <td>
                       <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>

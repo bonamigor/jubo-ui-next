@@ -13,7 +13,7 @@ import { PedidosObject, PedidosProps } from '../../../services/pedido';
 import { Loading } from '@nextui-org/react';
 
 const Dashboard: NextPage = () => {
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: new Date(), dataEntrega: new Date(), valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
