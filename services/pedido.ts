@@ -94,6 +94,12 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  listarPedidoByIdRq: async (pedidoId: number) => {
+    const response = await httpClient.get(`/api/pedidos/${pedidoId}`)
+
+    return response.data
+  },
+
   listarUltimoPedidoByCliente: async (clienteId: number) => {
     const response = await httpClient.get(`/api/pedidos/ultimo/${clienteId}`)
 

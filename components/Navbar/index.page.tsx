@@ -80,6 +80,11 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
                     </Link>
                   </Dropdown.Item>
                   <Dropdown.Item>
+                    <Link href="/admin/relatorios/pedido" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'pedido'})}>PEDIDO POR ID</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item>
                     <Link href="/admin/relatorios/compras" passHref>
                       <DropdownMenuItem isActive={isActive({route, item: 'compras'})}>COMPRAS</DropdownMenuItem>
                     </Link>

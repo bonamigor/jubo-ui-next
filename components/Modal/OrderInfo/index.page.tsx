@@ -13,7 +13,7 @@ import { Loading, Textarea } from '@nextui-org/react';
 interface Pedido {
   id: number;
   endereco: string;
-  dataCriacao: string;
+  dataCriacao: Date;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -344,13 +344,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           <Textarea readOnly initialValue={pedido.observacao ?? 'Sem observação'} css={{ mt: "1.5rem", w: "900px" }} />
         </OrderItems>
         <OrderFooter>
-          {pedido.status === 'CRIADO' ? (
+          {pedido.status === 'CRIADO' || pedido.status === 'CONFIRMADO' ? (
             <>
               <ConfirmSection>
-                <h2>Deseja confirmar?</h2>
+                <h2>Deseja {pedido.status === 'CRIADO' ? 'confirmar?' : 'gerar PDF?'}</h2>
                 <div>
                   <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
-                  <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>
+                  {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>}
                   <button onClick={generatePdf} disabled={!isValid}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
