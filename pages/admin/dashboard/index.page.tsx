@@ -13,7 +13,7 @@ import { PedidosObject, PedidosProps } from '../../../services/pedido';
 import { Loading } from '@nextui-org/react';
 
 const Dashboard: NextPage = () => {
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: new Date(), dataEntrega: new Date(), valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
@@ -40,7 +40,7 @@ const Dashboard: NextPage = () => {
   const handleFilterPedidosByData = (event: any) => {
     setFilter(event.toUpperCase())
     setFilteredPedidos(pedidosObject!.pedidos.filter((pedido: PedidosProps) => {
-      return pedido.dataCriacao.toUpperCase().includes(filter)
+      return pedido.dataCriacao
     }))
   }
 
