@@ -24,7 +24,7 @@ interface Pedido {
   telefone: string;
 }
 
-const Pedidos: NextPage = () => {
+const Pedido: NextPage = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
@@ -120,4 +120,4 @@ const Pedidos: NextPage = () => {
   )
 }
 
-export default Pedidos
+export default Pedido
