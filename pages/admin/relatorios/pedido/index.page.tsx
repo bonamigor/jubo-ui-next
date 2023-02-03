@@ -12,8 +12,8 @@ import Head from 'next/head';
 
 interface Pedido {
   id: number;
-  dataCriacao: Date;
-  dataEntrega: Date;
+  dataCriacao: number;
+  dataEntrega: number;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -27,13 +27,14 @@ interface Pedido {
 const Pedido: NextPage = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: new Date(), dataEntrega: new Date(), valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [pedidoId, setPedidoId] = useState(0)
   
   const handlePedidoByIdSearch = async () => {
     setIsOrdersLoading(true)
     const { data, errors } = await pedidoService.listarPedidoById(pedidoId)
     if (!errors) {
+      console.log(data.pedido[0])
       setPedido(data.pedido[0])
       setIsOrdersLoading(false)
     }

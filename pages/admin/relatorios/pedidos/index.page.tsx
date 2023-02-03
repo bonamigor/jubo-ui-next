@@ -26,8 +26,8 @@ interface Cliente {
 
 interface Pedido {
   id: number;
-  dataCriacao: Date;
-  dataEntrega: Date;
+  dataCriacao: number;
+  dataEntrega: number;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -43,7 +43,7 @@ const Pedidos: NextPage = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([])
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: new Date(), dataEntrega: new Date(), valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
 
   let clientes: Array<Cliente> = [];
@@ -63,6 +63,7 @@ const Pedidos: NextPage = () => {
 
     if (!errors) {
       setIsOrdersLoading(false)
+      console.log(data.pedidos)
       setPedidos(data.pedidos)
       setClienteId('')
     } else {
@@ -148,7 +149,7 @@ const Pedidos: NextPage = () => {
                         <td>{pedido.nome}</td>
                         <td>{new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(pedido.dataCriacao)}</td>
                         <td>{pedido.status}</td>
-                        <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format((pedido.dataEntrega)) : 'Sem Data'}</td>
+                        <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(pedido.dataEntrega) : 'Sem Data'}</td>
                         <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
                         <td>
                           <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>

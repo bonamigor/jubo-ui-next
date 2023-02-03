@@ -2,8 +2,8 @@ import { AxiosInstance } from 'axios';
 
 export interface PedidosProps {
   id: number;
-  dataCriacao: Date;
-  dataEntrega: Date;
+  dataCriacao: number;
+  dataEntrega: number;
   valorTotal: number;
   status: string;
   observacao: string;

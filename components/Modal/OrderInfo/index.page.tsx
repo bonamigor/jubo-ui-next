@@ -13,7 +13,7 @@ import { Loading, Textarea } from '@nextui-org/react';
 interface Pedido {
   id: number;
   endereco: string;
-  dataCriacao: Date;
+  dataCriacao: number;
   valorTotal: number;
   status: string;
   observacao: string;
