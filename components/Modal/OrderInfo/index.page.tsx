@@ -279,7 +279,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     setEmpresa(event.target.value)
   }
 
-  const validate = () => dataEntrega.length > 0
+  const validate = () => pedido.status === 'CRIADO' &&  dataEntrega.length > 0
   
   useEffect(() => {
     const isValid = validate();
@@ -360,7 +360,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   <div>
                     <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
                     {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>}
-                    
                   </div>
                 }
                 <div>
