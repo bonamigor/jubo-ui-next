@@ -62,9 +62,9 @@ const Vendas: NextPage = () => {
 
   const gerarRelatorio = async () => {
     const idCliente = Number(clienteId.split(' ')[0])
-    const dataInicialFormatada: string = `${dataInicial.split('/')[2]}-${dataInicial.split('/')[1]}-${dataInicial.split('/')[0]}`
-    const dataFinalFormatada: string = `${dataFinal.split('/')[2]}-${dataFinal.split('/')[1]}-${dataFinal.split('/')[0]}`
-    await mutation.mutateAsync({ clienteId: idCliente, dataInicial: dataInicialFormatada, dataFinal: dataFinalFormatada }, {
+    const dataInicialTimestamp = new Date(dataInicial.split('/').reverse().join('-')).getTime()
+    const dataFinalTimestamp = new Date(dataFinal.split('/').reverse().join('-')).getTime()
+    await mutation.mutateAsync({ clienteId: idCliente, dataInicial: dataInicialTimestamp, dataFinal: dataFinalTimestamp }, {
       onSuccess: async (data) => {
         setVendas(data.vendas)
         setClienteId('')

@@ -9,11 +9,13 @@ import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
 import { Loading, Textarea } from '@nextui-org/react';
+import { format } from 'date-fns';
 
 interface Pedido {
   id: number;
   endereco: string;
   dataCriacao: number;
+  dataEntrega?: number;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -103,9 +105,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const confirmOrder = async () => {
     const data = dataEntrega.split('/')
     const dataFormatada = data.reverse().join('-')
+    const timestamp = new Date(dataFormatada).getTime()
     
     try {
-      const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
+      const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: timestamp })
 
       if (!errors) {
         toast.success(data.message)
@@ -195,8 +198,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     doc.text(`Telefone: ${pedido.telefone}`, 14, 60)
     doc.text(`Telefone: ${pedido.telefone}`, 154, 60)
 
-    doc.text(`Data de Entrega: ${dataEntrega}`, 14, 65)
-    doc.text(`Data de Entrega: ${dataEntrega}`, 154, 65)
+    if (!pedido.dataEntrega) {
+      doc.text(`Data de Entrega: ${dataEntrega}`, 14, 65)
+      doc.text(`Data de Entrega: ${dataEntrega}`, 154, 65)
+    } else {
+      doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 14, 65)
+      doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 154, 65)
+    }
 
     autoTable(doc, {
       head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
@@ -348,9 +356,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             <>
               <ConfirmSection>
                 <h2>Deseja {pedido.status === 'CRIADO' ? 'confirmar?' : 'gerar PDF?'}</h2>
+                {pedido.status === 'CRIADO' &&
+                  <div>
+                    <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
+                    {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>}
+                    
+                  </div>
+                }
                 <div>
-                  <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
-                  {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>}
                   <button onClick={generatePdf} disabled={!isValid}>Criar PDF</button>
                 </div>
                 <div id='empresa'>

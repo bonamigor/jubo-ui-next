@@ -28,10 +28,10 @@ const Fornecimento: NextPage = () => {
   const mutation = useMutation(pedidoService.listarPedidosEntreDatas)
 
   const handleSearchOrders = async () => {
-    const dataInicialFormatada = dataInicial.split('/').reverse().join('-')
-    const dataFinalFormatada = dataFinal.split('/').reverse().join('-')
+    const dataInicialTimestamp = new Date(dataInicial.split('/').reverse().join('-')).getTime()
+    const dataFinalTimestamp = new Date(dataFinal.split('/').reverse().join('-')).getTime()
 
-    await mutation.mutateAsync({ dataInicial: dataInicialFormatada, dataFinal: dataFinalFormatada }, {
+    await mutation.mutateAsync({ dataInicial: dataInicialTimestamp, dataFinal: dataFinalTimestamp }, {
       onSuccess: async (data) => {
         setPedidos(data.pedidos)
         setValorTotal(data.valorTotal)

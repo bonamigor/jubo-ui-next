@@ -46,7 +46,7 @@ const PedidoService = (httpClient: AxiosInstance) => ({
   },
 
   listarPedidosEntreDatas: async ({ dataInicial, dataFinal }: 
-    { dataInicial: string, dataFinal: string}) => {
+    { dataInicial: number, dataFinal: number}) => {
     const response = await httpClient.get(`/api/pedidos/relatorio/datas/${dataInicial}/to/${dataFinal}`, {  })
 
     return response.data
@@ -124,7 +124,7 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     return response.data
   },
   
-  gerarRelatorioPedidos: async ({ clienteId, dataInicial, dataFinal }: { clienteId: number, dataInicial: string, dataFinal: string }) => {
+  gerarRelatorioPedidos: async ({ clienteId, dataInicial, dataFinal }: { clienteId: number, dataInicial: number, dataFinal: number }) => {
     const response = await httpClient.post('/api/pedidos/relatorio-data', { clienteId, dataInicial, dataFinal })
 
     return response.data
@@ -191,7 +191,7 @@ const PedidoService = (httpClient: AxiosInstance) => ({
   },
 
 
-  confirmarPedidoById: async ({ pedidoId, dataEntrega }: { pedidoId: number, dataEntrega: string }) => {
+  confirmarPedidoById: async ({ pedidoId, dataEntrega }: { pedidoId: number, dataEntrega: number }) => {
     const response = await httpClient.put(`/api/pedidos/${pedidoId}/confirmar`, { dataEntrega })
 
     let errors = null
