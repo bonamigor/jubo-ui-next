@@ -92,7 +92,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
   const [empresa, setEmpresa] = useState(0)
-  const [isValid, setIsValid] = useState(false)
+  const [isValidConfirmar, setIsValidConfirmar] = useState(false)
+  const [isValidPdf, setIsValidPdf] = useState(false)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { staleTime: 60 * 10 * 10, refetchOnWindowFocus: false, enabled: isOpen })
 
@@ -279,12 +280,19 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     setEmpresa(event.target.value)
   }
 
-  const validate = () => pedido.status === 'CRIADO' &&  dataEntrega.length > 0
+  const validateConfirmar = () => dataEntrega.length > 0
   
   useEffect(() => {
-    const isValid = validate();
-    setIsValid(isValid);
+    const isValid = validateConfirmar();
+    setIsValidConfirmar(isValid);
   }, [dataEntrega])
+
+  const validatePdf = () => pedido.status === 'CRIADO'
+  
+  useEffect(() => {
+    const isValid = validatePdf();
+    setIsValidConfirmar(isValid);
+  }, [pedido])
 
   return (
     <Modal
@@ -359,11 +367,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 {pedido.status === 'CRIADO' &&
                   <div>
                     <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
-                    {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValid}>Confirmar Pedido</button>}
+                    {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValidConfirmar}>Confirmar Pedido</button>}
                   </div>
                 }
                 <div>
-                  <button onClick={generatePdf} disabled={!isValid}>Criar PDF</button>
+                  <button onClick={generatePdf} disabled={!isValidPdf}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
                   <label htmlFor="mendes">
