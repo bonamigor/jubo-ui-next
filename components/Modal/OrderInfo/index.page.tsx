@@ -93,7 +93,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [dataEntrega, setDataEntrega] = useState('')
   const [empresa, setEmpresa] = useState(0)
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
-  const [isValidPdf, setIsValidPdf] = useState(false)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { staleTime: 60 * 10 * 10, refetchOnWindowFocus: false, enabled: isOpen })
 
@@ -287,13 +286,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     setIsValidConfirmar(isValid);
   }, [dataEntrega])
 
-  const validatePdf = () => pedido.status === 'CRIADO'
-  
-  useEffect(() => {
-    const isValid = validatePdf();
-    setIsValidConfirmar(isValid);
-  }, [pedido])
-
   return (
     <Modal
       isOpen={isOpen}
@@ -371,7 +363,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   </div>
                 }
                 <div>
-                  <button onClick={generatePdf} disabled={!isValidPdf}>Criar PDF</button>
+                  <button onClick={generatePdf}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
                   <label htmlFor="mendes">
