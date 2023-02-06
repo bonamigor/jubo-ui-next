@@ -19,7 +19,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1200px;
+  width: 1300px;
   height: 270px;
   padding: 0 5px;
 
@@ -103,7 +103,7 @@ export const TableContainer = styled.div`
   margin-top: 10px;
 
   table {
-    width: 1200px;
+    width: 1300px;
     border-spacing: 0 0.5rem;
     text-align: center;
     margin-bottom: 1rem;
