@@ -227,6 +227,24 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  atualizarDataEntregaPedido: async (pedidoId: number, dataEntrega: number) => {
+    const response = await httpClient.patch(`/api/pedidos/${pedidoId}/alterar/entrega/${dataEntrega}`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
   adicionarObservacao: async ({ observacao, pedidoId }: { observacao: string, pedidoId: number }) => {
     const response = await httpClient.put(`/api/pedidos/${pedidoId}/observacao`, { observacao })
 

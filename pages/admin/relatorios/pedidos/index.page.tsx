@@ -8,8 +8,12 @@ import toast from 'react-hot-toast';
 import { Loading } from '@nextui-org/react';
 import Image from "next/image";
 import BloomImg from '../../../../assets/bloom.png'
+import DeleteImg from '../../../../assets/delete.png'
+import EditImg from '../../../../assets/edit.png'
 import OrderInfo from '../../../../components/Modal/OrderInfo/index.page';
 import Head from 'next/head';
+import CancelOrder from '../../../../components/Modal/CancelOrder/index.page';
+import ChangeDate from '../../../../components/Modal/ChangeDate/index.page';
 
 interface Cliente {
   id: number;
@@ -43,6 +47,8 @@ const Pedidos: NextPage = () => {
   const [pedidos, setPedidos] = useState<Pedido[]>([])
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
+  const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
 
@@ -63,7 +69,6 @@ const Pedidos: NextPage = () => {
 
     if (!errors) {
       setIsOrdersLoading(false)
-      console.log(data.pedidos)
       setPedidos(data.pedidos)
       setClienteId('')
     } else {
@@ -75,9 +80,27 @@ const Pedidos: NextPage = () => {
     setIsModalOpen(false)
   }
 
-  const viewOrderInfo = async (pedido: Pedido) => {
+  const onRequestCloseCancelOrder = async () => {
+    setIsCancelOrderModalOpen(false)
+  }
+
+  const onRequestCloseChangeDate = async () => {
+    setIsChangeDateModalOpen(false)
+  } 
+
+  const handleViewOrderInfo = async (pedido: Pedido) => {
     setPedido(pedido)
     setIsModalOpen(true)
+  }
+
+  const handleCancelOrder = async (pedido: Pedido) => {
+    setPedido(pedido)
+    setIsCancelOrderModalOpen(true)
+  }
+
+  const handleChangeDate = async (pedido: Pedido) => {
+    setPedido(pedido)
+    setIsChangeDateModalOpen(true)
   }
 
   return (
@@ -119,7 +142,7 @@ const Pedidos: NextPage = () => {
             </LoadingOrders>          
           </>
         )}
-        {!isOrdersLoading && pedidos.length < 1 ? (
+        {!isOrdersLoading && pedidos.length === 0 ? (
           <>
             <Orderless>
               <h1>Não há pedidos para exibir aqui.</h1>  
@@ -152,7 +175,9 @@ const Pedidos: NextPage = () => {
                         <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(pedido.dataEntrega) : 'Sem Data'}</td>
                         <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
                         <td>
-                          <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                          <a><Image onClick={() => {handleViewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                          {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleCancelOrder(pedido)}} src={DeleteImg} alt="Visualizar" width={30} height={30} /></a>}
+                          {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleChangeDate(pedido)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>}
                         </td>
                       </tr>
                     )
@@ -163,6 +188,8 @@ const Pedidos: NextPage = () => {
           </>
         )}
       </Container>
+      <ChangeDate isOpen={isChangeDateModalOpen} onRequestClose={onRequestCloseChangeDate} pedido={pedido}></ChangeDate>
+      <CancelOrder isOpen={isCancelOrderModalOpen} onRequestClose={onRequestCloseCancelOrder} pedido={pedido}></CancelOrder>
       <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
     </>
   )
