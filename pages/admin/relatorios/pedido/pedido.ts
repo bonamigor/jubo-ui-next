@@ -19,7 +19,7 @@ export const Content = styled.div`
   align-items: center;
   background: var(--white);
   border-radius: 10px;
-  width: 1200px;
+  width: 1300px;
   height: 270px;
   padding: 0 5px;
 
@@ -103,7 +103,7 @@ export const TableContainer = styled.div`
   margin-top: 10px;
 
   table {
-    width: 1200px;
+    width: 1300px;
     border-spacing: 0 0.5rem;
     text-align: center;
     margin-bottom: 1rem;
@@ -125,21 +125,28 @@ export const TableContainer = styled.div`
 
     tbody {
       tr {
+        
+
         td {
           font-size: 0.8rem;
+          padding: 1rem 2rem;
+          border: 0;
+          background: var(--white);
+          color: var(--black);
+
+          a {
+            margin: 0 5px;
+          }
         }
-      }
-    }
 
-    td {
-      padding: 1rem 2rem;
-      border: 0;
-      background: var(--white);
-      color: var(--black);
-      border-radius: 0.25rem;
+        td:first-child {
+          border-radius: 0.5rem 0 0 0.5rem;
+        }
 
-      a {
-        margin: 0 5px;
+        
+        td:last-child {
+          border-radius: 0 0.5rem 0.5rem 0;
+        }
       }
     }
   }

@@ -7,9 +7,11 @@ import { Loading } from '@nextui-org/react';
 import Image from "next/image";
 import BloomImg from '../../../../assets/bloom.png'
 import DeleteImg from '../../../../assets/delete.png'
+import EditImg from '../../../../assets/edit.png'
 import OrderInfo from '../../../../components/Modal/OrderInfo/index.page';
 import Head from 'next/head';
 import CancelOrder from '../../../../components/Modal/CancelOrder/index.page';
+import ChangeDate from '../../../../components/Modal/ChangeDate/index.page';
 
 interface Pedido {
   id: number;
@@ -19,7 +21,7 @@ interface Pedido {
   status: string;
   observacao: string;
   nome: string;
-    endereco: string;
+  endereco: string;
   cidade: string;
   estado: string;
   telefone: string;
@@ -29,6 +31,7 @@ const Pedido: NextPage = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
+  const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [pedidoId, setPedidoId] = useState(0)
   
@@ -58,6 +61,15 @@ const Pedido: NextPage = () => {
   const handleCancelOrder = async (pedido: Pedido) => {
     setPedido(pedido)
     setIsCancelOrderModalOpen(true)
+  }
+
+  const onRequestCloseChangeDate = async () => {
+    setIsChangeDateModalOpen(false)
+  } 
+
+  const handleChangeDate = async (pedido: Pedido) => {
+    setPedido(pedido)
+    setIsChangeDateModalOpen(true)
   }
 
   return (
@@ -120,6 +132,7 @@ const Pedido: NextPage = () => {
                     <td>
                       <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
                       {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleCancelOrder(pedido)}} src={DeleteImg} alt="Visualizar" width={30} height={30} /></a>}
+                      {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleChangeDate(pedido)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>}
                     </td>
                   </tr>
                 </tbody>
@@ -128,6 +141,7 @@ const Pedido: NextPage = () => {
           </>
         )}
       </Container>
+      <ChangeDate isOpen={isChangeDateModalOpen} onRequestClose={onRequestCloseChangeDate} pedido={pedido}></ChangeDate>
       <CancelOrder isOpen={isCancelOrderModalOpen} onRequestClose={onRequestCloseCancelOrder} pedido={pedido}></CancelOrder>
       <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
     </>

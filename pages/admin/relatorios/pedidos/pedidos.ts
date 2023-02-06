@@ -127,19 +127,25 @@ export const TableContainer = styled.div`
       tr {
         td {
           font-size: 0.8rem;
+          padding: 1rem 2rem;
+          border: 0;
+          background: var(--white);
+          color: var(--black);
+          border-radius: 0.25rem;
+
+          a {
+            margin: 0 5px;
+          }
         }
-      }
-    }
 
-    td {
-      padding: 1rem 2rem;
-      border: 0;
-      background: var(--white);
-      color: var(--black);
-      border-radius: 0.25rem;
+        td:first-child {
+          border-radius: 0.5rem 0 0 0.5rem;
+        }
 
-      a {
-        margin: 0 5px;
+        
+        td:last-child {
+          border-radius: 0 0.5rem 0.5rem 0;
+        }
       }
     }
   }
