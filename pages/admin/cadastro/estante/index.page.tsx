@@ -178,7 +178,7 @@ const CadastroEstante: NextPage = () => {
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
-                        <a><Image onClick={() => router.push(`/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
+                        <a><Image onClick={() => router.push(`estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
