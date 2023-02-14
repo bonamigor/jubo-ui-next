@@ -88,11 +88,20 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
   }
 
   const handleFecharPedido = async () => {
-    if (observacao != '') {
-      await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
+    try {
+      if (observacao != '') {
+        await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
+      }
+      const { data, errors } = await pedidoService.atualizarValorTotal(Number(pedidoId), valorTotal)
+  
+      if (!errors) {
+        toast.success(data.message)
+        router.push('/cliente/inicial')
+      }
+    } catch (error) {
+      toast.error('Erro ao fechar o pedido.')
     }
-    toast.success('Pedido fechado!')
-    router.push('/cliente/inicial')
+    
   }
 
   const handleDeletePedido = () => {

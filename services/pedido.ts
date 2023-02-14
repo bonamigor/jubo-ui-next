@@ -190,6 +190,24 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
+  atualizarValorTotal: async (pedidoId: number, valorTotal: number) => {
+    const response = await httpClient.patch(`/api/pedidos/${pedidoId}/atualizar/valorTotal`, { valorTotal })
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
 
   confirmarPedidoById: async ({ pedidoId, dataEntrega }: { pedidoId: number, dataEntrega: number }) => {
     const response = await httpClient.put(`/api/pedidos/${pedidoId}/confirmar`, { dataEntrega })

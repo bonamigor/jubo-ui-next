@@ -26,7 +26,7 @@ interface Pedido {
 }
 
 interface ProductsProps {
-  itemPedidoId: string;
+  itemPedidoId?: string;
   produtoId?: string;
   nome: string;
   unidade: string;
@@ -145,8 +145,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const generatePdf = () => {
     const doc = new jsPDF('l')
 
+    console.log(products)
+
     products.forEach(product => {
       delete product['produtoId'];
+      delete product['itemPedidoId'];
     })
 
     const formatedPrices = products.map(produto => {
@@ -206,71 +209,159 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 154, 65)
     }
 
+    let columns = [
+      { header: 'Nome', dataKey: 'nome'},
+      { header: 'Und', dataKey: 'unidade'},
+      { header: 'Preço', dataKey: 'preco'},
+      { header: 'Qtde', dataKey: 'quantidade'},
+      { header: 'Total', dataKey: 'total'}
+    ]
+
     autoTable(doc, {
-      head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
-      body: newProdutosArray,
+      head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+      columns: columns,
+      body: newProdutosArray.slice(0, 12),
       startY: 70,
       tableWidth: 130,
-      showHead: 'firstPage',
       margin: { right: 125 },
-      styles: { overflow: 'hidden' },
-      pageBreak: 'auto'
+      showHead: 'firstPage',
+      rowPageBreak: 'auto',
+      styles: { overflow: 'visible', fontSize: 8 },
+      columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+      pageBreak: 'avoid'
     })
 
     doc.setPage(pageNumber)
 
     autoTable(doc, {
-      head: [['ID', 'Nome', 'Unidade', 'Preço', 'Quantidade', 'Valor Total']],
-      body: newProdutosArray,
+      head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+      columns: columns,
+      body: newProdutosArray.slice(0, 12),
       startY: 70,
       tableWidth: 130,
-      showHead: 'firstPage',
       margin: { left: 153 },
-      styles: { overflow: 'hidden' },
-      pageBreak: 'auto'
+      showHead: 'firstPage',
+      rowPageBreak: 'auto',
+      styles: { overflow: 'visible', fontSize: 8 },
+      columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+      pageBreak: 'avoid'
     })
 
-    const valorTotal = new Intl.NumberFormat('pt-BR', {
+    if (products.length > 12) {
+      doc.addPage()
+
+      autoTable(doc, {
+        head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+        columns: columns,
+        body: newProdutosArray.slice(12),
+        startY: 10,
+        tableWidth: 130,
+        margin: { right: 125 },
+        showHead: 'firstPage',
+        rowPageBreak: 'auto',
+        styles: { overflow: 'visible', fontSize: 8 },
+        columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+        pageBreak: 'avoid'
+      })
+  
+      autoTable(doc, {
+        head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+        columns: columns,
+        body: newProdutosArray.slice(12),
+        startY: 10,
+        tableWidth: 130,
+        margin: { left: 153 },
+        showHead: 'firstPage',
+        rowPageBreak: 'auto',
+        styles: { overflow: 'visible', fontSize: 8 },
+        columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+        pageBreak: 'avoid'
+      })
+
+      const valorTotal = new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
-    }).format(Number(pedido.valorTotal))
+      }).format(Number(pedido.valorTotal))
 
-    doc.text(`Valor Total: `, 14, 165)
-    doc.text(`${valorTotal}`, 125, 165)
+      doc.text(`Valor Total: `, 14, 165)
+      doc.text(`${valorTotal}`, 125, 165)
 
-    doc.text(`Valor Total: `, 154, 165)
-    doc.text(`${valorTotal}`, 265, 165)
+      doc.text(`Valor Total: `, 154, 165)
+      doc.text(`${valorTotal}`, 265, 165)
 
-    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
+      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
 
-    
-    const linhas1: Array<string> = [];
+      
+      const linhas1: Array<string> = [];
 
-    if (pedido.observacao) {
-      if (pedido.observacao.length > 58) {
-        let contadorInicial: number = 0;
-        let contadorFinal: number = 58;
-        const numeroDeLinhas = pedido.observacao.length / 58;
-        for (let i = 0; i <= numeroDeLinhas; i++) {
-          linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-          contadorInicial = contadorInicial + 58
-          contadorFinal = contadorFinal + 58
+      if (pedido.observacao) {
+        if (pedido.observacao.length > 58) {
+          let contadorInicial: number = 0;
+          let contadorFinal: number = 58;
+          const numeroDeLinhas = pedido.observacao.length / 58;
+          for (let i = 0; i <= numeroDeLinhas; i++) {
+            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            contadorInicial = contadorInicial + 58
+            contadorFinal = contadorFinal + 58
+          }
+          doc.text('Observação: ', 14, 180)
+          doc.text('Observação: ', 154, 180)
+          doc.text(linhas1, 35, 180)
+          doc.text(linhas1, 175, 180)
+        } else {
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
         }
-        doc.text('Observação: ', 14, 180)
-        doc.text('Observação: ', 154, 180)
-        doc.text(linhas1, 35, 180)
-        doc.text(linhas1, 175, 180)
       } else {
         doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
         doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
       }
+      
+      doc.text(`Assinatura: ________________________________________________________`, 14, 205)
+      doc.text(`Assinatura: ________________________________________________________`, 154, 205)
     } else {
-      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+      const valorTotal = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      }).format(Number(pedido.valorTotal))
+
+      doc.text(`Valor Total: `, 14, 165)
+      doc.text(`${valorTotal}`, 125, 165)
+
+      doc.text(`Valor Total: `, 154, 165)
+      doc.text(`${valorTotal}`, 265, 165)
+
+      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
+
+      
+      const linhas1: Array<string> = [];
+
+      if (pedido.observacao) {
+        if (pedido.observacao.length > 58) {
+          let contadorInicial: number = 0;
+          let contadorFinal: number = 58;
+          const numeroDeLinhas = pedido.observacao.length / 58;
+          for (let i = 0; i <= numeroDeLinhas; i++) {
+            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            contadorInicial = contadorInicial + 58
+            contadorFinal = contadorFinal + 58
+          }
+          doc.text('Observação: ', 14, 180)
+          doc.text('Observação: ', 154, 180)
+          doc.text(linhas1, 35, 180)
+          doc.text(linhas1, 175, 180)
+        } else {
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+        }
+      } else {
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+      }
+      
+      doc.text(`Assinatura: ________________________________________________________`, 14, 205)
+      doc.text(`Assinatura: ________________________________________________________`, 154, 205)
     }
-    
-    doc.text(`Assinatura: ________________________________________________________`, 14, 205)
-    doc.text(`Assinatura: ________________________________________________________`, 154, 205)
 
     doc.save(`pedido-${pedido.id}.pdf`)
   }
@@ -302,7 +393,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p>
           </div>
         </OrderHeader>
-        <OrderItems>
+        <OrderItems showScrollBar={products.length > 6}>
           <table>
             <thead>
               <tr>

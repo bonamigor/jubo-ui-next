@@ -94,8 +94,8 @@ const PedidoProdutos: NextPage = () => {
       const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
         estanteId: String(estanteId),
         produtoId: produtoId.split(' ')[0],
-        precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
-        quantidade: Number(quantidade),
+        precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
+        quantidade: Number(quantidade.replace(',','.')),
         pedidoId: String(pedidoId)
       })
 
@@ -106,8 +106,8 @@ const PedidoProdutos: NextPage = () => {
         const newProduto: ProdutoNoPedidoProps = {
           produtoId: produtoId.split(' ')[0],
           nome: produtoId.split(' ')[1],
-          unidade: produtoId.split(' ')[5],
-          precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
+          unidade: produtoId.split('/')[1].trim(),
+          precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
           quantidade: Number(quantidade),
           total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
         }
