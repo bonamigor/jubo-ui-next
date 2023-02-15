@@ -191,7 +191,7 @@ const PedidoService = (httpClient: AxiosInstance) => ({
   },
 
   atualizarValorTotal: async (pedidoId: number, valorTotal: number) => {
-    const response = await httpClient.patch(`/api/pedidos/${pedidoId}/atualizar/valorTotal`, { valorTotal })
+    const response = await httpClient.put(`/api/pedidos/${pedidoId}/atualizar/valorTotal`, { valorTotal })
 
     let errors = null
 
