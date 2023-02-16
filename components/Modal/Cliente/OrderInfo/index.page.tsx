@@ -24,7 +24,7 @@ interface ProductsProps {
   nome: string;
   unidade: string;
   precoVenda: number;
-  quantidade: number;
+  quantidade: string;
   total: number;
 }
 
@@ -106,7 +106,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                             }).format(product.precoVenda)}
                           </td>
                           <td>{product.unidade}</td>
-                          <td>{product.quantidade}</td>
+                          <td>{product.quantidade.replaceAll('.',',')}</td>
                           <td>
                             {new Intl.NumberFormat('pt-BR', {
                                 style: 'currency',
