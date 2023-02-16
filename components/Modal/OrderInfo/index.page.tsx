@@ -170,6 +170,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       return Object.values(produto)
     })
 
+    console.log('newProdutosArray: ', newProdutosArray)
+
     let pageNumber = doc.internal.pages.length - 1
 
     doc.text(`${empresas[empresa].nome}`, 14, 15)
@@ -423,7 +425,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         }).format(Number(product.precoVenda))}
                       </td>
                       <td>{product.unidade}</td>
-                      <td>{product.quantidade}</td>
+                      <td>{product.quantidade.replaceAll('.', ',')}</td>
                       <td>
                         {new Intl.NumberFormat('pt-BR', {
                             style: 'currency',
