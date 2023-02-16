@@ -23,7 +23,7 @@ interface ProdutoNoPedidoProps {
   nome: string;
   unidade: string;
   precoVenda: number;
-  quantidade: number;
+  quantidade: string;
   total: number;
 }
 
@@ -31,7 +31,7 @@ const PedidoProdutos: NextPage = () => {
   const router = useRouter()
   const { pedidoId, estanteId } = router.query
   const [produtoNaEstante, setProdutosNaEstante] = useState<ProdutoNaEstanteProps[]>([])
-  const [product, setProduct] = useState<ProdutoNoPedidoProps>({ itemPedidoId: '', produtoId: '', nome: '', unidade: '', precoVenda: 0, quantidade: 0, total: 0 })
+  const [product, setProduct] = useState<ProdutoNoPedidoProps>({ itemPedidoId: '', produtoId: '', nome: '', unidade: '', precoVenda: 0, quantidade: '', total: 0 })
   const [produtos, setProdutos] = useState<ProdutoNoPedidoProps[]>([])
   const [produtoId, setProdutoId] = useState('')
   const [quantidade, setQuantidade] = useState('')
@@ -108,7 +108,7 @@ const PedidoProdutos: NextPage = () => {
           nome: produtoId.split(' ')[1],
           unidade: produtoId.split('/')[1].trim(),
           precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
-          quantidade: Number(quantidade),
+          quantidade: quantidade.replaceAll('.', ','),
           total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
         }
         setProduct(newProduto)
@@ -137,8 +137,8 @@ const PedidoProdutos: NextPage = () => {
         produtoId: Number(idProduto),
         pedidoId: Number(pedidoId),
         itemPedidoId: Number(itemPedidoId),
-        precoVenda: Number(produtoId.split('-')[2].split('/')[0].trim().substring(3).replaceAll(',','.')),
-        quantidade: Number(quantidade)
+        precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
+        quantidade: Number(quantidade.replaceAll(',', '.'))
       })
 
       if (!errors) {
@@ -152,7 +152,7 @@ const PedidoProdutos: NextPage = () => {
           nome: produtoId.split(' ')[1],
           unidade: produtoId.split(' ')[5],
           precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
-          quantidade: Number(quantidade),
+          quantidade: quantidade.replaceAll('.', ','),
           total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
         }
         setProduct(newProduto)

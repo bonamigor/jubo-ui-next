@@ -25,10 +25,16 @@ export const OrderHeader = styled.div`
   }
 `
 
-export const OrderItems = styled.div`
+interface OrderItemsProps {
+  showScrollBar?: boolean;
+}
+
+export const OrderItems = styled.div<OrderItemsProps>`
   margin-top: 4rem 0;
   padding-bottom: 4rem;
   text-align: center;
+  overflow-y: ${(props) => props.showScrollBar ? 'scroll' : 'hidden'};
+  max-height: 500px;
 
   h3 {
     text-align: center;

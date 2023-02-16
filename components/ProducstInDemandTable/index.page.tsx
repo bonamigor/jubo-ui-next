@@ -18,7 +18,7 @@ interface ProductsProps {
   nome: string;
   unidade: string;
   precoVenda: number;
-  quantidade: number;
+  quantidade: string;
   total: number;
 }
 
@@ -28,7 +28,7 @@ interface ProdutoNoPedidoProps {
   nome: string;
   unidade: string;
   precoVenda: number;
-  quantidade: number;
+  quantidade: string;
   total: number;
 }
 
@@ -144,7 +144,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
                               currency: 'BRL'
                           }).format(product.precoVenda)} / {product.unidade}
                         </td>
-                        <td>{product.quantidade}</td>
+                        <td>{product.quantidade.replaceAll('.', ',')}</td>
                         <td>
                           {new Intl.NumberFormat('pt-BR', {
                               style: 'currency',

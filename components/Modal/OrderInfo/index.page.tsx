@@ -31,7 +31,7 @@ interface ProductsProps {
   nome: string;
   unidade: string;
   precoVenda: string;
-  quantidade: number;
+  quantidade: string;
   total: string;
 }
 
@@ -145,22 +145,24 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const generatePdf = () => {
     const doc = new jsPDF('l')
 
-    console.log(products)
-
     products.forEach(product => {
       delete product['produtoId'];
       delete product['itemPedidoId'];
     })
 
     const formatedPrices = products.map(produto => {
+      produto.quantidade = new Intl.NumberFormat('pt-BR', {
+        style: 'decimal',
+        minimumFractionDigits: 4
+    }).format(Number(produto.quantidade))
       produto.precoVenda = new Intl.NumberFormat('pt-BR', {
           style: 'currency',
           currency: 'BRL'
       }).format(Number(produto.precoVenda))
       produto.total = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    }).format(Number(produto.total))
+          style: 'currency',
+          currency: 'BRL'
+      }).format(Number(produto.total))
       return produto
     })
 

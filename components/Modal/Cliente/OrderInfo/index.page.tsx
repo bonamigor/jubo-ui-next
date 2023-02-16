@@ -77,7 +77,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             <h1>Não foi possível recuperar informações do pedido.</h1>
           )}
         </OrderHeader>
-        <OrderItems>
+        <OrderItems showScrollBar={products.length > 6}>
           {pedido ? (
             <>
               <table>
