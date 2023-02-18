@@ -11,6 +11,7 @@ import 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
 import { Loading, Textarea } from '@nextui-org/react';
 import { format } from 'date-fns';
+import InputMask from "react-input-mask";
 
 interface Pedido {
   id: number;
@@ -95,7 +96,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [empresa, setEmpresa] = useState(0)
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
 
-  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { staleTime: 60 * 10 * 10, refetchOnWindowFocus: false, enabled: isOpen })
+  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: true, enabled: isOpen })
 
   let products: Array<ProductsProps> = [];
 
@@ -217,52 +218,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     doc.text(`Assinatura: ________________________________________________________`, 14, 70)
     doc.text(`Assinatura: ________________________________________________________`, 154, 70)
 
-    // if (products.length > 12) {
-    //   const qtdePaginas = products.length / 18 
-
-    //   let columns = [
-    //     { header: 'Nome', dataKey: 'nome'},
-    //     { header: 'Und', dataKey: 'unidade'},
-    //     { header: 'Preço', dataKey: 'preco'},
-    //     { header: 'Qtde', dataKey: 'quantidade'},
-    //     { header: 'Total', dataKey: 'total'}
-    //   ]
-      
-    //   for (let i = 0; i <= qtdePaginas; i++) {
-    //     autoTable(doc, {
-    //       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-    //       columns: columns,
-    //       body: newProdutosArray.slice(0, 12),
-    //       startY: 70,
-    //       tableWidth: 130,
-    //       margin: { right: 125 },
-    //       showHead: 'firstPage',
-    //       rowPageBreak: 'auto',
-    //       styles: { overflow: 'visible', fontSize: 8 },
-    //       columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-    //       pageBreak: 'avoid'
-    //     })
-    
-    //     if (i === 0) {
-    //       doc.setPage(pageNumber)
-    //     }
-    
-    //     autoTable(doc, {
-    //       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-    //       columns: columns,
-    //       body: newProdutosArray.slice(0, 12),
-    //       startY: 70,
-    //       tableWidth: 130,
-    //       margin: { left: 153 },
-    //       showHead: 'firstPage',
-    //       rowPageBreak: 'auto',
-    //       styles: { overflow: 'visible', fontSize: 8 },
-    //       columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-    //       pageBreak: 'avoid'
-    //     })
-    //   }
-    // }
-
     let columns = [
       { header: 'Nome', dataKey: 'nome'},
       { header: 'Und', dataKey: 'unidade'},
@@ -343,126 +298,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 40)
       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 40)
     }
-    
-    // doc.text(`Assinatura: ________________________________________________________`, 14, finalY + 55)
-    // doc.text(`Assinatura: ________________________________________________________`, 154, finalY + 55)
-
-    // if (products.length > 12) {
-    //   doc.addPage()
-
-    //   autoTable(doc, {
-    //     head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-    //     columns: columns,
-    //     body: newProdutosArray.slice(12),
-    //     startY: 10,
-    //     tableWidth: 130,
-    //     margin: { right: 125 },
-    //     showHead: 'firstPage',
-    //     rowPageBreak: 'auto',
-    //     styles: { overflow: 'visible', fontSize: 8 },
-    //     columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-    //     pageBreak: 'avoid'
-    //   })
-  
-    //   autoTable(doc, {
-    //     head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-    //     columns: columns,
-    //     theme: 'grid',
-    //     body: newProdutosArray.slice(12),
-    //     startY: 10,
-    //     tableWidth: 130,
-    //     margin: { left: 153 },
-    //     showHead: 'firstPage',
-    //     rowPageBreak: 'auto',
-    //     styles: { overflow: 'visible', fontSize: 8 },
-    //     columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-    //     pageBreak: 'avoid'
-    //   })
-
-    //   const valorTotal = new Intl.NumberFormat('pt-BR', {
-    //     style: 'currency',
-    //     currency: 'BRL'
-    //   }).format(Number(pedido.valorTotal))
-
-    //   doc.text(`Valor Total: `, 14, 165)
-    //   doc.text(`${valorTotal}`, 125, 165)
-
-    //   doc.text(`Valor Total: `, 154, 165)
-    //   doc.text(`${valorTotal}`, 265, 165)
-
-    //   doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
-
-      
-    //   const linhas1: Array<string> = [];
-
-    //   if (pedido.observacao) {
-    //     if (pedido.observacao.length > 58) {
-    //       let contadorInicial: number = 0;
-    //       let contadorFinal: number = 58;
-    //       const numeroDeLinhas = pedido.observacao.length / 58;
-    //       for (let i = 0; i <= numeroDeLinhas; i++) {
-    //         linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-    //         contadorInicial = contadorInicial + 58
-    //         contadorFinal = contadorFinal + 58
-    //       }
-    //       doc.text('Observação: ', 14, 180)
-    //       doc.text('Observação: ', 154, 180)
-    //       doc.text(linhas1, 35, 180)
-    //       doc.text(linhas1, 175, 180)
-    //     } else {
-    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
-    //     }
-    //   } else {
-    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
-    //   }
-      
-    //   doc.text(`Assinatura: ________________________________________________________`, 14, 205)
-    //   doc.text(`Assinatura: ________________________________________________________`, 154, 205)
-    // } else {
-    //   const valorTotal = new Intl.NumberFormat('pt-BR', {
-    //     style: 'currency',
-    //     currency: 'BRL'
-    //   }).format(Number(pedido.valorTotal))
-
-    //   doc.text(`Valor Total: `, 14, 165)
-    //   doc.text(`${valorTotal}`, 125, 165)
-
-    //   doc.text(`Valor Total: `, 154, 165)
-    //   doc.text(`${valorTotal}`, 265, 165)
-
-    //   doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
-
-      
-    //   const linhas1: Array<string> = [];
-
-    //   if (pedido.observacao) {
-    //     if (pedido.observacao.length > 58) {
-    //       let contadorInicial: number = 0;
-    //       let contadorFinal: number = 58;
-    //       const numeroDeLinhas = pedido.observacao.length / 58;
-    //       for (let i = 0; i <= numeroDeLinhas; i++) {
-    //         linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-    //         contadorInicial = contadorInicial + 58
-    //         contadorFinal = contadorFinal + 58
-    //       }
-    //       doc.text('Observação: ', 14, 180)
-    //       doc.text('Observação: ', 154, 180)
-    //       doc.text(linhas1, 35, 180)
-    //       doc.text(linhas1, 175, 180)
-    //     } else {
-    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
-    //     }
-    //   } else {
-    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
-    //   }
-      
-    //   doc.text(`Assinatura: ________________________________________________________`, 14, 205)
-    //   doc.text(`Assinatura: ________________________________________________________`, 154, 205)
-    // }
 
     doc.save(`pedido-${pedido.id}.pdf`)
   }
@@ -509,7 +344,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
             <tbody>
               {isLoading && (<div><Loading type='points'>Carregando produtos...</Loading></div>)}
-              {
+              {isSuccess && (
                 products.map(product => {
                   return (
                     <tr key={String(product.itemPedidoId)}>
@@ -532,7 +367,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                     </tr>
                   )
                 })
-              }
+              )}
             </tbody>
           </table>
           <h3>
@@ -550,7 +385,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 <h2>Deseja {pedido.status === 'CRIADO' ? 'confirmar?' : 'gerar PDF?'}</h2>
                 {pedido.status === 'CRIADO' &&
                   <div>
-                    <input type="text"  placeholder='Data de Entrega' value={dataEntrega} onChange={event => {setDataEntrega(event.target.value)}} />
+                    <InputMask mask="99/99/9999" placeholder='Data de Entrega' onChange={event => {setDataEntrega(event.target.value)}} />
                     {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValidConfirmar}>Confirmar Pedido</button>}
                   </div>
                 }
