@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
 import { Loading, Textarea } from '@nextui-org/react';
 import { format } from 'date-fns';
@@ -213,6 +214,55 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 154, 65)
     }
 
+    doc.text(`Assinatura: ________________________________________________________`, 14, 70)
+    doc.text(`Assinatura: ________________________________________________________`, 154, 70)
+
+    // if (products.length > 12) {
+    //   const qtdePaginas = products.length / 18 
+
+    //   let columns = [
+    //     { header: 'Nome', dataKey: 'nome'},
+    //     { header: 'Und', dataKey: 'unidade'},
+    //     { header: 'Preço', dataKey: 'preco'},
+    //     { header: 'Qtde', dataKey: 'quantidade'},
+    //     { header: 'Total', dataKey: 'total'}
+    //   ]
+      
+    //   for (let i = 0; i <= qtdePaginas; i++) {
+    //     autoTable(doc, {
+    //       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+    //       columns: columns,
+    //       body: newProdutosArray.slice(0, 12),
+    //       startY: 70,
+    //       tableWidth: 130,
+    //       margin: { right: 125 },
+    //       showHead: 'firstPage',
+    //       rowPageBreak: 'auto',
+    //       styles: { overflow: 'visible', fontSize: 8 },
+    //       columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+    //       pageBreak: 'avoid'
+    //     })
+    
+    //     if (i === 0) {
+    //       doc.setPage(pageNumber)
+    //     }
+    
+    //     autoTable(doc, {
+    //       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+    //       columns: columns,
+    //       body: newProdutosArray.slice(0, 12),
+    //       startY: 70,
+    //       tableWidth: 130,
+    //       margin: { left: 153 },
+    //       showHead: 'firstPage',
+    //       rowPageBreak: 'auto',
+    //       styles: { overflow: 'visible', fontSize: 8 },
+    //       columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+    //       pageBreak: 'avoid'
+    //     })
+    //   }
+    // }
+
     let columns = [
       { header: 'Nome', dataKey: 'nome'},
       { header: 'Und', dataKey: 'unidade'},
@@ -223,149 +273,196 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     autoTable(doc, {
       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+      headStyles: { fillColor: [255,255,255], textColor: 'black '},
       columns: columns,
-      body: newProdutosArray.slice(0, 12),
-      startY: 70,
+      body: newProdutosArray,
+      theme: 'grid',
+      startY: 75,
       tableWidth: 130,
-      margin: { right: 125 },
+      margin: { right: 125, bottom: 15 },
       showHead: 'firstPage',
-      rowPageBreak: 'auto',
       styles: { overflow: 'visible', fontSize: 8 },
       columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-      pageBreak: 'avoid'
+      pageBreak: 'auto'
     })
 
     doc.setPage(pageNumber)
 
     autoTable(doc, {
       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+      headStyles: { fillColor: [255,255,255], textColor: 'black '},
       columns: columns,
-      body: newProdutosArray.slice(0, 12),
-      startY: 70,
+      body: newProdutosArray,
+      theme: 'grid',
+      startY: 75,
       tableWidth: 130,
-      margin: { left: 153 },
+      margin: { left: 153, bottom: 15 },
       showHead: 'firstPage',
-      rowPageBreak: 'auto',
       styles: { overflow: 'visible', fontSize: 8 },
       columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-      pageBreak: 'avoid'
+      pageBreak: 'auto'
     })
 
-    if (products.length > 12) {
-      doc.addPage()
+    let finalY = (doc as any).lastAutoTable.finalY;
 
-      autoTable(doc, {
-        head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-        columns: columns,
-        body: newProdutosArray.slice(12),
-        startY: 10,
-        tableWidth: 130,
-        margin: { right: 125 },
-        showHead: 'firstPage',
-        rowPageBreak: 'auto',
-        styles: { overflow: 'visible', fontSize: 8 },
-        columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-        pageBreak: 'avoid'
-      })
-  
-      autoTable(doc, {
-        head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-        columns: columns,
-        body: newProdutosArray.slice(12),
-        startY: 10,
-        tableWidth: 130,
-        margin: { left: 153 },
-        showHead: 'firstPage',
-        rowPageBreak: 'auto',
-        styles: { overflow: 'visible', fontSize: 8 },
-        columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
-        pageBreak: 'avoid'
-      })
+    const valorTotal = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(Number(pedido.valorTotal))
 
-      const valorTotal = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(Number(pedido.valorTotal))
+    doc.text(`Valor Total: `, 14, finalY + 15)
+    doc.text(`${valorTotal}`, 125, finalY + 15)
 
-      doc.text(`Valor Total: `, 14, 165)
-      doc.text(`${valorTotal}`, 125, 165)
+    doc.text(`Valor Total: `, 154, finalY + 15)
+    doc.text(`${valorTotal}`, 265, finalY + 15)
 
-      doc.text(`Valor Total: `, 154, 165)
-      doc.text(`${valorTotal}`, 265, 165)
+    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, finalY + 20)
 
-      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
+    
+    const linhas1: Array<string> = [];
 
-      
-      const linhas1: Array<string> = [];
-
-      if (pedido.observacao) {
-        if (pedido.observacao.length > 58) {
-          let contadorInicial: number = 0;
-          let contadorFinal: number = 58;
-          const numeroDeLinhas = pedido.observacao.length / 58;
-          for (let i = 0; i <= numeroDeLinhas; i++) {
-            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-            contadorInicial = contadorInicial + 58
-            contadorFinal = contadorFinal + 58
-          }
-          doc.text('Observação: ', 14, 180)
-          doc.text('Observação: ', 154, 180)
-          doc.text(linhas1, 35, 180)
-          doc.text(linhas1, 175, 180)
-        } else {
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    if (pedido.observacao) {
+      if (pedido.observacao.length > 58) {
+        let contadorInicial: number = 0;
+        let contadorFinal: number = 58;
+        const numeroDeLinhas = pedido.observacao.length / 58;
+        for (let i = 0; i <= numeroDeLinhas; i++) {
+          linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+          contadorInicial = contadorInicial + 58
+          contadorFinal = contadorFinal + 58
         }
+        doc.text('Observação: ', 14, finalY + 30)
+        doc.text('Observação: ', 154, finalY + 30)
+        doc.text(linhas1, 35, finalY + 30)
+        doc.text(linhas1, 175, finalY + 30)
       } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 40)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 40)
       }
-      
-      doc.text(`Assinatura: ________________________________________________________`, 14, 205)
-      doc.text(`Assinatura: ________________________________________________________`, 154, 205)
     } else {
-      const valorTotal = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(Number(pedido.valorTotal))
-
-      doc.text(`Valor Total: `, 14, 165)
-      doc.text(`${valorTotal}`, 125, 165)
-
-      doc.text(`Valor Total: `, 154, 165)
-      doc.text(`${valorTotal}`, 265, 165)
-
-      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
-
-      
-      const linhas1: Array<string> = [];
-
-      if (pedido.observacao) {
-        if (pedido.observacao.length > 58) {
-          let contadorInicial: number = 0;
-          let contadorFinal: number = 58;
-          const numeroDeLinhas = pedido.observacao.length / 58;
-          for (let i = 0; i <= numeroDeLinhas; i++) {
-            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-            contadorInicial = contadorInicial + 58
-            contadorFinal = contadorFinal + 58
-          }
-          doc.text('Observação: ', 14, 180)
-          doc.text('Observação: ', 154, 180)
-          doc.text(linhas1, 35, 180)
-          doc.text(linhas1, 175, 180)
-        } else {
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
-        }
-      } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
-      }
-      
-      doc.text(`Assinatura: ________________________________________________________`, 14, 205)
-      doc.text(`Assinatura: ________________________________________________________`, 154, 205)
+      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 40)
+      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 40)
     }
+    
+    // doc.text(`Assinatura: ________________________________________________________`, 14, finalY + 55)
+    // doc.text(`Assinatura: ________________________________________________________`, 154, finalY + 55)
+
+    // if (products.length > 12) {
+    //   doc.addPage()
+
+    //   autoTable(doc, {
+    //     head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+    //     columns: columns,
+    //     body: newProdutosArray.slice(12),
+    //     startY: 10,
+    //     tableWidth: 130,
+    //     margin: { right: 125 },
+    //     showHead: 'firstPage',
+    //     rowPageBreak: 'auto',
+    //     styles: { overflow: 'visible', fontSize: 8 },
+    //     columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+    //     pageBreak: 'avoid'
+    //   })
+  
+    //   autoTable(doc, {
+    //     head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+    //     columns: columns,
+    //     theme: 'grid',
+    //     body: newProdutosArray.slice(12),
+    //     startY: 10,
+    //     tableWidth: 130,
+    //     margin: { left: 153 },
+    //     showHead: 'firstPage',
+    //     rowPageBreak: 'auto',
+    //     styles: { overflow: 'visible', fontSize: 8 },
+    //     columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+    //     pageBreak: 'avoid'
+    //   })
+
+    //   const valorTotal = new Intl.NumberFormat('pt-BR', {
+    //     style: 'currency',
+    //     currency: 'BRL'
+    //   }).format(Number(pedido.valorTotal))
+
+    //   doc.text(`Valor Total: `, 14, 165)
+    //   doc.text(`${valorTotal}`, 125, 165)
+
+    //   doc.text(`Valor Total: `, 154, 165)
+    //   doc.text(`${valorTotal}`, 265, 165)
+
+    //   doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
+
+      
+    //   const linhas1: Array<string> = [];
+
+    //   if (pedido.observacao) {
+    //     if (pedido.observacao.length > 58) {
+    //       let contadorInicial: number = 0;
+    //       let contadorFinal: number = 58;
+    //       const numeroDeLinhas = pedido.observacao.length / 58;
+    //       for (let i = 0; i <= numeroDeLinhas; i++) {
+    //         linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+    //         contadorInicial = contadorInicial + 58
+    //         contadorFinal = contadorFinal + 58
+    //       }
+    //       doc.text('Observação: ', 14, 180)
+    //       doc.text('Observação: ', 154, 180)
+    //       doc.text(linhas1, 35, 180)
+    //       doc.text(linhas1, 175, 180)
+    //     } else {
+    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    //     }
+    //   } else {
+    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    //   }
+      
+    //   doc.text(`Assinatura: ________________________________________________________`, 14, 205)
+    //   doc.text(`Assinatura: ________________________________________________________`, 154, 205)
+    // } else {
+    //   const valorTotal = new Intl.NumberFormat('pt-BR', {
+    //     style: 'currency',
+    //     currency: 'BRL'
+    //   }).format(Number(pedido.valorTotal))
+
+    //   doc.text(`Valor Total: `, 14, 165)
+    //   doc.text(`${valorTotal}`, 125, 165)
+
+    //   doc.text(`Valor Total: `, 154, 165)
+    //   doc.text(`${valorTotal}`, 265, 165)
+
+    //   doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 170)
+
+      
+    //   const linhas1: Array<string> = [];
+
+    //   if (pedido.observacao) {
+    //     if (pedido.observacao.length > 58) {
+    //       let contadorInicial: number = 0;
+    //       let contadorFinal: number = 58;
+    //       const numeroDeLinhas = pedido.observacao.length / 58;
+    //       for (let i = 0; i <= numeroDeLinhas; i++) {
+    //         linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+    //         contadorInicial = contadorInicial + 58
+    //         contadorFinal = contadorFinal + 58
+    //       }
+    //       doc.text('Observação: ', 14, 180)
+    //       doc.text('Observação: ', 154, 180)
+    //       doc.text(linhas1, 35, 180)
+    //       doc.text(linhas1, 175, 180)
+    //     } else {
+    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+    //       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    //     }
+    //   } else {
+    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 190)
+    //     doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 190)
+    //   }
+      
+    //   doc.text(`Assinatura: ________________________________________________________`, 14, 205)
+    //   doc.text(`Assinatura: ________________________________________________________`, 154, 205)
+    // }
 
     doc.save(`pedido-${pedido.id}.pdf`)
   }
