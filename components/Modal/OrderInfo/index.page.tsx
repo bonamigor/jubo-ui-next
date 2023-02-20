@@ -180,8 +180,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     doc.text(`${empresas[empresa].nome}`, 154, 15)
 
     doc.setFontSize(10)
-    doc.text(`Empresa: ${empresas[empresa].cnpj}`, 14, 20)
-    doc.text(`Empresa: ${empresas[empresa].cnpj}`, 154, 20)
+    doc.text(`CNPJ: ${empresas[empresa].cnpj}`, 14, 20)
+    doc.text(`CNPJ: ${empresas[empresa].cnpj}`, 154, 20)
 
     doc.text(`Endereço: ${empresas[empresa].endereco}`, 14, 25)
     doc.text(`Endereço: ${empresas[empresa].endereco}`, 154, 25)
@@ -297,6 +297,18 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     } else {
       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 40)
       doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 40)
+    }
+
+    const numberOfPages = (doc as any).internal.getNumberOfPages();
+
+    for (let i = 1; i <= numberOfPages; i++){
+      doc.setPage(i);
+      if (i > 1) {
+        doc.text(`Pedido ${pedido.id}`, 14, 10)
+        doc.text(`Pedido ${pedido.id}`, 154, 10)
+      }
+      doc.text(`Pagina ${i}/${numberOfPages}`, 127, 10)
+      doc.text(`Pagina ${i}/${numberOfPages}`, 266, 10)
     }
 
     doc.save(`pedido-${pedido.id}.pdf`)
