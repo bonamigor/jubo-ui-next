@@ -215,9 +215,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 154, 65)
     }
 
-    doc.text(`Assinatura: ________________________________________________________`, 14, 70)
-    doc.text(`Assinatura: ________________________________________________________`, 154, 70)
-
     let columns = [
       { header: 'Nome', dataKey: 'nome'},
       { header: 'Und', dataKey: 'unidade'},
@@ -232,7 +229,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       columns: columns,
       body: newProdutosArray,
       theme: 'grid',
-      startY: 75,
+      startY: 70,
       tableWidth: 130,
       margin: { right: 125, bottom: 15 },
       showHead: 'firstPage',
@@ -249,7 +246,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       columns: columns,
       body: newProdutosArray,
       theme: 'grid',
-      startY: 75,
+      startY: 70,
       tableWidth: 130,
       margin: { left: 153, bottom: 15 },
       showHead: 'firstPage',
@@ -258,57 +255,113 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       pageBreak: 'auto'
     })
 
+    const numberOfPages = (doc as any).internal.getNumberOfPages();
+    const pageSize = doc.internal.pageSize
+    let pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight()
     let finalY = (doc as any).lastAutoTable.finalY;
-
     const valorTotal = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(Number(pedido.valorTotal))
 
-    doc.text(`Valor Total: `, 14, finalY + 15)
-    doc.text(`${valorTotal}`, 125, finalY + 15)
+    if (finalY <= 180) {
+      doc.text(`Valor Total: `, 14, finalY + 5)
+      doc.text(`${valorTotal}`, 125, finalY + 5)
+  
+      doc.text(`Valor Total: `, 154, finalY + 5)
+      doc.text(`${valorTotal}`, 264, finalY + 5)
+  
+      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, finalY + 8)
 
-    doc.text(`Valor Total: `, 154, finalY + 15)
-    doc.text(`${valorTotal}`, 265, finalY + 15)
-
-    doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, finalY + 20)
-
-    
-    const linhas1: Array<string> = [];
-
-    if (pedido.observacao) {
-      if (pedido.observacao.length > 58) {
-        let contadorInicial: number = 0;
-        let contadorFinal: number = 58;
-        const numeroDeLinhas = pedido.observacao.length / 58;
-        for (let i = 0; i <= numeroDeLinhas; i++) {
-          linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
-          contadorInicial = contadorInicial + 58
-          contadorFinal = contadorFinal + 58
+      const linhas1: Array<string> = [];
+  
+      if (pedido.observacao) {
+        if (pedido.observacao.length > 58) {
+          let contadorInicial: number = 0;
+          let contadorFinal: number = 58;
+          const numeroDeLinhas = pedido.observacao.length / 58;
+          for (let i = 0; i <= numeroDeLinhas; i++) {
+            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            contadorInicial = contadorInicial + 58
+            contadorFinal = contadorFinal + 58
+          }
+          doc.text('Observação: ', 14, finalY + 15)
+          doc.text('Observação: ', 154, finalY + 15)
+          doc.text(linhas1, 35, finalY + 15)
+          doc.text(linhas1, 175, finalY + 15)
+        } else {
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 20)
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 20)
         }
-        doc.text('Observação: ', 14, finalY + 30)
-        doc.text('Observação: ', 154, finalY + 30)
-        doc.text(linhas1, 35, finalY + 30)
-        doc.text(linhas1, 175, finalY + 30)
       } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 40)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 40)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 20)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 20)
       }
-    } else {
-      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 40)
-      doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 40)
+
+      doc.text(`Assinatura: ________________________________________________________`, 14, finalY + 30)
+      doc.text(`Assinatura: ________________________________________________________`, 154, finalY + 30)
+
+      let pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth()
+      doc.text(pedido.nome, pageWidth / 4, finalY + 35, { align: 'center' })
+      doc.text(pedido.nome, pageWidth - (pageWidth / 4), finalY + 35, { align: 'center' })
     }
 
-    const numberOfPages = (doc as any).internal.getNumberOfPages();
+    if (finalY >= 180) {
+      doc.addPage()
 
-    for (let i = 1; i <= numberOfPages; i++){
+      doc.setPage(numberOfPages + 1)  
+
+      doc.text(`Valor Total: `, 14, 10)
+      doc.text(`${valorTotal}`, 125, 10)
+  
+      doc.text(`Valor Total: `, 154, 10)
+      doc.text(`${valorTotal}`, 265, 10)
+  
+      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 13)
+
+      const linhas1: Array<string> = [];
+  
+      if (pedido.observacao) {
+        if (pedido.observacao.length > 58) {
+          let contadorInicial: number = 0;
+          let contadorFinal: number = 58;
+          const numeroDeLinhas = pedido.observacao.length / 58;
+          for (let i = 0; i <= numeroDeLinhas; i++) {
+            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            contadorInicial = contadorInicial + 58
+            contadorFinal = contadorFinal + 58
+          }
+          doc.text('Observação: ', 14, 20)
+          doc.text('Observação: ', 154, 20)
+          doc.text(linhas1, 35, 20)
+          doc.text(linhas1, 175, 20)
+        } else {
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 25)
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 25)
+        }
+      } else {
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 25)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 25)
+      }
+
+      doc.text(`Assinatura: ________________________________________________________`, 14, 35)
+      doc.text(`Assinatura: ________________________________________________________`, 154, 35)
+
+      let pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth()
+      doc.text(pedido.nome, pageWidth / 4, finalY + 40, { align: 'center' })
+      doc.text(pedido.nome, pageWidth - (pageWidth / 4), finalY + 40, { align: 'center' })
+    }
+
+    const numberOfPagesAtt = (doc as any).internal.getNumberOfPages();
+
+    for (let i = 1; i <= numberOfPagesAtt; i++){
       doc.setPage(i);
       if (i > 1) {
         doc.text(`Pedido ${pedido.id}`, 14, 10)
         doc.text(`Pedido ${pedido.id}`, 154, 10)
       }
-      doc.text(`Pagina ${i}/${numberOfPages}`, 127, 10)
-      doc.text(`Pagina ${i}/${numberOfPages}`, 266, 10)
+      doc.text(`Pagina ${i}/${numberOfPagesAtt}`, 127, 10)
+      doc.text(`Pagina ${i}/${numberOfPagesAtt}`, 266, 10)
     }
 
     doc.save(`pedido-${pedido.id}.pdf`)
