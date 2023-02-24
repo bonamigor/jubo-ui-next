@@ -309,13 +309,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
       doc.setPage(numberOfPages + 1)  
 
-      doc.text(`Valor Total: `, 14, 10)
-      doc.text(`${valorTotal}`, 125, 10)
+      doc.text(`Valor Total: `, 14, 20)
+      doc.text(`${valorTotal}`, 125, 20)
   
-      doc.text(`Valor Total: `, 154, 10)
-      doc.text(`${valorTotal}`, 265, 10)
+      doc.text(`Valor Total: `, 154, 20)
+      doc.text(`${valorTotal}`, 265, 20)
   
-      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 13)
+      doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 23)
 
       const linhas1: Array<string> = [];
   
@@ -329,25 +329,25 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             contadorInicial = contadorInicial + 58
             contadorFinal = contadorFinal + 58
           }
-          doc.text('Observação: ', 14, 20)
-          doc.text('Observação: ', 154, 20)
-          doc.text(linhas1, 35, 20)
-          doc.text(linhas1, 175, 20)
+          doc.text('Observação: ', 14, 30)
+          doc.text('Observação: ', 154, 30)
+          doc.text(linhas1, 35, 30)
+          doc.text(linhas1, 175, 30)
         } else {
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 25)
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 25)
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 35)
+          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 35)
         }
       } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 25)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 25)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 35)
+        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 35)
       }
 
-      doc.text(`Assinatura: ________________________________________________________`, 14, 35)
-      doc.text(`Assinatura: ________________________________________________________`, 154, 35)
+      doc.text(`Assinatura: ________________________________________________________`, 14, 45)
+      doc.text(`Assinatura: ________________________________________________________`, 154, 45)
 
       let pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth()
-      doc.text(pedido.nome, pageWidth / 4, finalY + 40, { align: 'center' })
-      doc.text(pedido.nome, pageWidth - (pageWidth / 4), finalY + 40, { align: 'center' })
+      doc.text(pedido.nome, pageWidth / 4, finalY + 45, { align: 'center' })
+      doc.text(pedido.nome, pageWidth - (pageWidth / 4), finalY + 45, { align: 'center' })
     }
 
     const numberOfPagesAtt = (doc as any).internal.getNumberOfPages();
