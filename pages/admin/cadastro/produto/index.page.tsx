@@ -140,6 +140,7 @@ const CadastroProduto: NextPage = () => {
                 <option value="BDJ">BDJ</option>
                 <option value="CX">CX</option>
                 <option value="PLT">PLT</option>
+                <option value="DZ">DZ</option>
               </select>
             </div>
             <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>Cadastrar</FormSubmitButton>
