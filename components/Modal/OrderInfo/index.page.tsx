@@ -105,12 +105,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   }
 
   const confirmOrder = async () => {
-    const data = dataEntrega.split('/')
-    const dataFormatada = data.reverse().join('-')
-    const timestamp = new Date(dataFormatada).getTime()
+    const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
     
     try {
-      const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: timestamp })
+      const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
 
       if (!errors) {
         toast.success(data.message)

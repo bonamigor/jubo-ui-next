@@ -33,9 +33,8 @@ const ChangeDate: NextPage<CancelOrderModalProps> = ({ isOpen, onRequestClose, p
   const [isValid, setIsValid] = useState(false)
 
   const handleChangeOrderDate = async (pedido: Pedido) => {
-    const dataFormatada = dataEntrega.split('/').reverse().join('-')
-    const dataParaEntrega = new Date(`${dataFormatada.split('-')[1]}-${dataFormatada.split('-')[2]}-${dataFormatada.split('-')[0]}`).getTime()
-    const { data, errors } = await pedidoService.atualizarDataEntregaPedido(pedido.id, dataParaEntrega)
+    const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
+    const { data, errors } = await pedidoService.atualizarDataEntregaPedido(pedido.id, dataFormatada)
 
     if (!errors) {
       onRequestClose()
