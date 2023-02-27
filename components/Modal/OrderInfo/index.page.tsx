@@ -209,8 +209,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text(`Data de Entrega: ${dataEntrega}`, 14, 65)
       doc.text(`Data de Entrega: ${dataEntrega}`, 154, 65)
     } else {
-      doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 14, 65)
-      doc.text(`Data de Entrega: ${format(new Date(pedido.dataEntrega), 'dd/MM/yyyy')}`, 154, 65)
+      doc.text(`Data de Entrega: ${new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega))}`, 14, 65)
+      doc.text(`Data de Entrega: ${new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega))}`, 154, 65)
     }
 
     let columns = [
