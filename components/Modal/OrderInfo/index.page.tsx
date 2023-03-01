@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { CancelSection, ConfirmSection, Container, OrderFooter, OrderHeader, OrderItems, GeneratePdf } from './orderInfo';
+import { CancelSection, ConfirmSection, Container, OrderFooter, OrderHeader, OrderItems, GeneratePdf, Observacao } from './orderInfo';
 import Modal from 'react-modal'
 import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../services';
@@ -9,7 +9,7 @@ import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
-import { Loading, Textarea } from '@nextui-org/react';
+import { Checkbox, Loading, Textarea } from '@nextui-org/react';
 import { format } from 'date-fns';
 import InputMask from "react-input-mask";
 
@@ -96,6 +96,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [empresa, setEmpresa] = useState(0)
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
   const [observacao, setObservacao] = useState('')
+  const [selected, setSelected] = useState(true);
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: true, enabled: isOpen })
 
@@ -441,7 +442,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                             currency: 'BRL'
                         }).format(pedido.valorTotal)}
           </h3>
-          <Textarea initialValue={pedido.observacao ?? 'Sem observação'} value={observacao} onChange={event => setObservacao(event.target.value)} css={{ mt: "1.5rem", w: "900px" }} />
+          <Observacao>
+            <Textarea initialValue={pedido.observacao ?? 'Sem observação'} readOnly={!selected} css={{ mt: "1.5rem", w: "900px" }} />
+            <Checkbox isSelected={selected} onChange={setSelected} size="sm" label='Deseja editar a observação?'></Checkbox>
+          </Observacao>
         </OrderItems>
         <OrderFooter>
           {pedido.status === 'CRIADO' || pedido.status === 'CONFIRMADO' ? (

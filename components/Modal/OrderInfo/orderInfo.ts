@@ -216,3 +216,8 @@ export const CancelSection = styled.div`
     }
   }
 `
+
+export const Observacao = styled.div`
+  display: flex;
+  flex-direction: column;
+`
