@@ -4,26 +4,16 @@ import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../services/index';
 import Image from "next/image";
 import BloomImg from '../../../assets/bloom.png'
+import DeleteImg from '../../../assets/delete.png'
 import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 import Head from "next/head";
+import CancelOrder, { Pedido } from "../../../components/Modal/CancelOrder/index.page";
 
-interface PedidosProps {
-  id: number;
-  dataCriacao: string;
-  dataEntrega: string;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  endereco: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
 
 const Inicial: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   useEffect(() => {
     const fetchLastOrder = async () => {
@@ -46,9 +36,18 @@ const Inicial: NextPage = () => {
     setIsModalOpen(false)
   }
 
-  const viewOrderInfo = async (pedido: PedidosProps) => {
+  const viewOrderInfo = async (pedido: Pedido) => {
     setPedido(pedido)
     setIsModalOpen(true)
+  }
+
+  const handleCancelOrder = async (pedido: Pedido) => {
+    setPedido(pedido)
+    setIsCancelOrderModalOpen(true)
+  }
+
+  const onRequestCloseCancelOrder = async () => {
+    setIsCancelOrderModalOpen(false)
   }
 
   return (
@@ -79,7 +78,7 @@ const Inicial: NextPage = () => {
                     <tr>
                       <td>{pedido.id}</td>
                       <td>
-                        {pedido.dataCriacao === '' ? '' : new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
+                        {pedido.dataCriacao === 0 ? '' : new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'})
                               .format(new Date(pedido.dataCriacao))}
                       </td>
                       <td>
@@ -91,6 +90,7 @@ const Inicial: NextPage = () => {
                       <td>{pedido.status}</td>
                       <td>
                         <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        {pedido.status === 'CRIADO' && <a><Image onClick={() => {handleCancelOrder(pedido)}} src={DeleteImg} alt="Excluir" width={30} height={30} /></a>}
                       </td>
                     </tr>
                   </tbody>
@@ -104,6 +104,7 @@ const Inicial: NextPage = () => {
           </TableContainer>
         </Content>
       </Container>
+      <CancelOrder isOpen={isCancelOrderModalOpen} onRequestClose={onRequestCloseCancelOrder} pedido={pedido}></CancelOrder>
       <>
       {pedido ? (
         <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>

@@ -95,6 +95,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [dataEntrega, setDataEntrega] = useState('')
   const [empresa, setEmpresa] = useState(0)
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
+  const [observacao, setObservacao] = useState('')
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: true, enabled: isOpen })
 
@@ -108,10 +109,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
     
     try {
-      const { data, errors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
+      const { data: confirmarData, errors: confirmarErrors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
+      const { data: observacaoData, errors: observacaoErrors } = await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedido.id) })
 
-      if (!errors) {
-        toast.success(data.message)
+      if (!confirmarErrors && !observacaoErrors) {
+        toast.success(confirmarData.message)
         onRequestClose()
         router.reload()
       } else {
@@ -439,7 +441,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                             currency: 'BRL'
                         }).format(pedido.valorTotal)}
           </h3>
-          <Textarea readOnly initialValue={pedido.observacao ?? 'Sem observação'} css={{ mt: "1.5rem", w: "900px" }} />
+          <Textarea initialValue={pedido.observacao ?? 'Sem observação'} value={observacao} onChange={event => setObservacao(event.target.value)} css={{ mt: "1.5rem", w: "900px" }} />
         </OrderItems>
         <OrderFooter>
           {pedido.status === 'CRIADO' || pedido.status === 'CONFIRMADO' ? (

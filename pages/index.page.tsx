@@ -48,13 +48,16 @@ const Home: NextPage = () => {
           }
         },
         onError: async (error) => {
-          toast.error('Erro ao realizar o login')
-          console.error(error)
+          const erro = error as Error
+          if (erro.message.includes('404')) {
+            toast.error(`Usuário não encontrado.
+            Verifique as credenciais.`)
+          }
         }
       })
       
     } catch (error) {
-      toast.error('Erro ao realizar o login')
+      toast.error('Erro ao realizar o login.')
       console.error(error)
     }
   }

@@ -70,6 +70,10 @@ export const TableContainer = styled.div`
       border: 0;
       background: var(--white);
       color: var(--black);
+
+      a {
+        margin: 0 5px;
+      }
     }
   }
 `

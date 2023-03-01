@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { pedidoService } from '../../../services';
 import { useRouter } from 'next/router';
 
-interface Pedido {
+export interface Pedido {
   id: number;
   endereco: string;
   dataCriacao: number;

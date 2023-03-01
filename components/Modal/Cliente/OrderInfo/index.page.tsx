@@ -8,9 +8,10 @@ import { Textarea } from '@nextui-org/react';
 interface Pedido {
   id: number;
   endereco: string;
-  dataCriacao: string;
-  dataEntrega: string;
+  dataCriacao: number;
+  dataEntrega?: number;
   valorTotal: number;
+  status: string;
   observacao: string;
   nome: string;
   cidade: string;
@@ -35,19 +36,7 @@ interface OrderInfoModalProps {
 }
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
-  // useEffect(() => {
-  //   const fetchProdutosNoPedido = async () => {
-  //     const { data, errors } = await pedidoService.listarProdutosByPedidoId(pedido.id)
-
-  //     if (!errors) {
-  //       setProducts(data.produtos)
-  //     }
-  //   }
-
-  //   fetchProdutosNoPedido()
-  // }, [pedido.id])
   let products: Array<ProductsProps> = [];
-
   const { data, error, isLoading, isError, isSuccess } = useQuery(['produtosNoPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id))
 
   if (isSuccess) {
