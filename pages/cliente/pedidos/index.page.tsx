@@ -4,13 +4,15 @@ import { Container, Content, InputFilter, TableContainer } from "./pedidos";
 import { pedidoService } from '../../../services/index';
 import Image from "next/image";
 import BloomImg from '../../../assets/bloom.png'
+import DeleteImg from '../../../assets/delete.png'
 import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 import Head from "next/head";
+import CancelOrder from "../../../components/Modal/CancelOrder/index.page";
 
 interface PedidosProps {
   id: number;
-  dataCriacao: string;
-  dataEntrega: string;
+  dataCriacao: number;
+  dataEntrega: number;
   valorTotal: number;
   status: string;
   observacao: string;
@@ -26,7 +28,8 @@ const Pedidos: NextPage = () => {
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: '', dataEntrega: '', valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchPedidos = async () => {
@@ -53,6 +56,15 @@ const Pedidos: NextPage = () => {
   const viewOrderInfo = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsModalOpen(true)
+  }
+
+  const handleCancelOrder = async (pedido: PedidosProps) => {
+    setPedido(pedido)
+    setIsCancelOrderModalOpen(true)
+  }
+
+  const onRequestCloseCancelOrder = async () => {
+    setIsCancelOrderModalOpen(false)
   }
 
   return (
@@ -123,6 +135,7 @@ const Pedidos: NextPage = () => {
                       </td>
                       <td>
                         <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                        {pedido.status === 'CRIADO' && <a><Image onClick={() => {handleCancelOrder(pedido)}} src={DeleteImg} alt="Excluir" width={30} height={30} /></a>}
                       </td>
                     </tr>
                   )
@@ -133,6 +146,7 @@ const Pedidos: NextPage = () => {
         </TableContainer>
       </Container>
       <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
+      <CancelOrder isOpen={isCancelOrderModalOpen} onRequestClose={onRequestCloseCancelOrder} pedido={pedido}></CancelOrder>
     </>
   )
 }
