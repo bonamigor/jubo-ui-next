@@ -275,14 +275,15 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, finalY + 8)
 
       const linhas1: Array<string> = [];
+      const obs: string = observacao.length > 0 ? observacao : pedido.observacao
   
-      if (pedido.observacao) {
-        if (pedido.observacao.length > 58) {
+      if (obs) {
+        if (obs.length > 58) {
           let contadorInicial: number = 0;
           let contadorFinal: number = 58;
-          const numeroDeLinhas = pedido.observacao.length / 58;
+          const numeroDeLinhas = obs.length / 58;
           for (let i = 0; i <= numeroDeLinhas; i++) {
-            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            linhas1.push(obs.substring(contadorInicial, contadorFinal))
             contadorInicial = contadorInicial + 58
             contadorFinal = contadorFinal + 58
           }
@@ -291,12 +292,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           doc.text(linhas1, 35, finalY + 15)
           doc.text(linhas1, 175, finalY + 15)
         } else {
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 20)
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 20)
+          doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 14, finalY + 20)
+          doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 154, finalY + 20)
         }
       } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 20)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 20)
+        doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 14, finalY + 20)
+        doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 154, finalY + 20)
       }
 
       doc.text(`Assinatura: ________________________________________________________`, 14, finalY + 30)
@@ -366,6 +367,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     }
 
     doc.save(`pedido-${pedido.id}.pdf`)
+    setObservacao('')
   }
 
   const handleOptionEmpresa = (event: any) => {
@@ -443,7 +445,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         }).format(pedido.valorTotal)}
           </h3>
           <Observacao>
-            <Textarea initialValue={pedido.observacao ?? 'Sem observação'} readOnly={!selected} css={{ mt: "1.5rem", w: "900px" }} />
+            <Textarea initialValue={pedido.observacao ?? 'Sem observação'} readOnly={!selected} onChange={event => setObservacao(event.target.value)} css={{ mt: "1.5rem", w: "900px" }} />
             <Checkbox isSelected={selected} onChange={setSelected} size="sm" label='Deseja editar a observação?'></Checkbox>
           </Observacao>
         </OrderItems>

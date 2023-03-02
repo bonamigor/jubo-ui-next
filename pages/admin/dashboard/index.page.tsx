@@ -17,8 +17,10 @@ const Dashboard: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
+  const [observacao, setObservacao] = useState('')
 
   const onRequestClose = async () => {
+    setObservacao('')
     setIsModalOpen(false)
   }
 
