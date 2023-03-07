@@ -121,7 +121,7 @@ const Vendas: NextPage = () => {
           </Dates>
           <ButtonArea>
             <SearchButton type="button" onClick={() => {gerarRelatorio()}}>Pesquisar</SearchButton>
-            {vendas.length > 1 && <SearchButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</SearchButton>}
+            {vendas.length > 0 && <SearchButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</SearchButton>}
           </ButtonArea>
         </Content>
         {mutation.isLoading && <h1>Carregando pedidos...</h1>}
