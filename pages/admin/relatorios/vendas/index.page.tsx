@@ -126,7 +126,7 @@ const Vendas: NextPage = () => {
         </Content>
         {mutation.isLoading && <h1>Carregando pedidos...</h1>}
 
-        {vendas.length > 1 ? (
+        {vendas.length > 0 ? (
           <>
             <TableContainer>
               <table id="vendas">

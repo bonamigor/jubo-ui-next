@@ -53,11 +53,13 @@ const Fornecimento: NextPage = () => {
 
     autoTable(doc, { html: '#pedidos' })
 
-    doc.text(`Valor Total: `, 14, 110)
+    let finalY = (doc as any).lastAutoTable.finalY;
+
+    doc.text(`Valor Total: `, 14, finalY + 5)
     doc.text(`${new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(Number(valorTotal))}`, 150, 110)
+    }).format(Number(valorTotal))}`, 150, finalY + 5)
 
     const dataInicialFormatada = dataInicial.split('/').reverse().join('-')
     const dataFinalFormatada = dataFinal.split('/').reverse().join('-')

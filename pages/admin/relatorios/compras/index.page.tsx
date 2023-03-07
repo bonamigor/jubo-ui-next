@@ -97,7 +97,7 @@ const Compras: NextPage = () => {
                       <tr key={produto.nome}>
                         <td>{produto.nome}</td>
                         <td>{produto.unidadeMedida}</td>
-                        <td>{produto.quantidade}</td>
+                        <td>{produto.quantidade.replaceAll('.',',')}</td>
                       </tr>
                     )
                   })}
