@@ -126,10 +126,7 @@ const Fornecimento: NextPage = () => {
                           'Sem data'
                         }
                       </td>
-                      <td>{new Intl.NumberFormat('pt-BR', {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }).format(Number(pedido.total))}</td>
+                      <td>{String(Number(pedido.total).toFixed(2)).replaceAll('.', ',')}</td>
                     </tr>
                   )
                 })}
