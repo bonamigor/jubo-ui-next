@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { Container, Content, TableContainer } from "./inicial";
+import { Container, Content, Observacao, TableContainer } from "./inicial";
 import { useState, useEffect } from 'react';
 import { pedidoService } from '../../../services/index';
 import Image from "next/image";
@@ -55,6 +55,9 @@ const Inicial: NextPage = () => {
       <Head>
         <title>Jubo Notas - Início</title>
       </Head>
+      <Observacao>
+        <h1>OBS.: Faça o seu pedido com no mínimo 5 dias úteis <br />de antecedência da data de entrega desejada.</h1>
+      </Observacao>
       <Container>
         <Content>
           <h1>Último pedido feito!</h1>

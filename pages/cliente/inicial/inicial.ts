@@ -1,11 +1,21 @@
 import styled from 'styled-components';
 
+export const Observacao = styled.div`
+  text-align: center;
+
+  h1 {
+    margin-top: -9rem;
+    color: white;
+    font-weight: 500;
+  }
+`
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: -7rem;
+  margin-top: 1rem;
 `
 
 export const Content = styled.div`
