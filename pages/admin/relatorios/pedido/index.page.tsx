@@ -8,12 +8,14 @@ import Image from "next/image";
 import BloomImg from '../../../../assets/bloom.png'
 import DeleteImg from '../../../../assets/delete.png'
 import EditImg from '../../../../assets/edit.png'
-import ConfirmImg from '../../../../assets/confirm.png'
+import EditObsImg from '../../../../assets/confirm.png'
+import ConfirmImg from '../../../../assets/select.png'
 import OrderInfo from '../../../../components/Modal/OrderInfo/index.page';
 import Head from 'next/head';
 import CancelOrder from '../../../../components/Modal/CancelOrder/index.page';
 import ChangeDate from '../../../../components/Modal/ChangeDate/index.page';
 import ConfirmOrder from '../../../../components/Modal/ConfirmOrder/index.page';
+import Observacao from '../../../../components/Modal/Observacao/index.page';
 
 interface Pedido {
   id: number;
@@ -32,6 +34,7 @@ interface Pedido {
 const Pedido: NextPage = () => {
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalObsOpen, setIsModalObsOpen] = useState(false)
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
   const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [isConfirmOrderModalOpen, setIsConfirmOrderModalOpen] = useState(false)
@@ -83,6 +86,15 @@ const Pedido: NextPage = () => {
     setPedido(pedido)
     setIsChangeDateModalOpen(true)
   }
+
+  const handleChangeObs = async (pedido: Pedido) => {
+    setPedido(pedido)
+    setIsModalObsOpen(true)
+  }
+
+  const onRequestCloseObs = async () => {
+    setIsModalObsOpen(false)
+  } 
 
   return (
     <>
@@ -146,6 +158,7 @@ const Pedido: NextPage = () => {
                       {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleCancelOrder(pedido)}} src={DeleteImg} alt="Visualizar" width={30} height={30} /></a>}
                       {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleChangeDate(pedido)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>}
                       {pedido.status === 'CONFIRMADO' && <a><Image onClick={() => {handleConfirmOrder(pedido)}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>}
+                      {pedido.status !== 'CANCELADO' && <a><Image onClick={() => {handleChangeObs(pedido)}} src={EditObsImg} alt="Confirmar" width={30} height={30} /></a>}
                     </td>
                   </tr>
                 </tbody>
@@ -158,6 +171,7 @@ const Pedido: NextPage = () => {
       <CancelOrder isOpen={isCancelOrderModalOpen} onRequestClose={onRequestCloseCancelOrder} pedido={pedido}></CancelOrder>
       <ConfirmOrder isOpen={isConfirmOrderModalOpen} onRequestClose={onRequestCloseConfirmOrder} pedido={pedido}></ConfirmOrder>
       <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
+      <Observacao isOpen={isModalObsOpen} onRequestClose={onRequestCloseObs} pedido={pedido}></Observacao>
     </>
   )
 }
