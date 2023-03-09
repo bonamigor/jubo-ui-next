@@ -147,6 +147,12 @@ export const TableContainer = styled.div`
         &:first-child {
           color: var(--gray-700);
         }
+
+        th {
+          &:nth-child(2){
+            text-align: left;
+          }
+        }
       }
     }
 
@@ -155,7 +161,7 @@ export const TableContainer = styled.div`
         td {
           font-size: 0.85rem;
 
-          &:first-child {
+          &:nth-child(2){
             text-align: left;
           }
         }

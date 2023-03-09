@@ -92,8 +92,8 @@ const Pedido: NextPage = () => {
       <Container>
         <Content>
           <header>
-            <h1>Pedidos por Cliente</h1>
-            <p>Selecione o Cliente para ver os seus pedidos.</p>
+            <h1>Pedido por ID</h1>
+            <p>Digite o ID para recuperar um pedido específico e ver as informações deste.</p>
           </header>
           <section>
             <input type="text" placeholder="Pesquise por ID" 

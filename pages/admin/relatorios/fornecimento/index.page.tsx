@@ -126,7 +126,7 @@ const Fornecimento: NextPage = () => {
                           'Sem data'
                         }
                       </td>
-                      <td>{String(Number(pedido.total).toFixed(2)).replaceAll('.', ',')}</td>
+                      <td>{String(Number(pedido.total)).replaceAll('.', ',')}</td>
                     </tr>
                   )
                 })}

@@ -68,3 +68,8 @@ export const Buttons = styled.div`
     }
   }
 `
+
+export const ObservacaoDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`
