@@ -48,10 +48,10 @@ const Dashboard: NextPage = () => {
     }))
   }
 
-  const handleFilterPedidosByData = (event: any) => {
+  const handleFilterPedidosById = (event: any) => {
     setFilter(event.toUpperCase())
     setFilteredPedidos(pedidosObject!.pedidos.filter((pedido: PedidosProps) => {
-      return pedido.dataCriacao
+      return pedido.id.toString().includes(filter)
     }))
   }
 
@@ -88,7 +88,7 @@ const Dashboard: NextPage = () => {
             <input type="text" placeholder="Filtre pelo nome do Cliente" onChange={event => handleFilterPedidosByCliente(event.target.value)} />
           </InputFilter>
           <InputFilter>
-            <input type="text" placeholder="Filtre pela Data de Criação" onChange={event => handleFilterPedidosByData(event.target.value)} />
+            <input type="text" placeholder="Filtre pelo ID do Pedido" onChange={event => handleFilterPedidosById(event.target.value)} />
           </InputFilter>
         </Filter>
         {isPedidosObjectLoading && 
