@@ -12,6 +12,7 @@ export interface PedidosProps {
   cidade: string;
   estado: string;
   telefone: string;
+  empresa?: number;
 }
 
 export interface PedidosObject {
@@ -265,6 +266,24 @@ const PedidoService = (httpClient: AxiosInstance) => ({
 
   setarPedidoComoEntregue: async (pedidoId: number) => {
     const response = await httpClient.patch(`/api/pedidos/${pedidoId}/entrega`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
+  setarEmpresaAoPedido: async (pedidoId: number, idEmpresa: number) => {
+    const response = await httpClient.patch(`/api/pedidos/${pedidoId}/empresa/${idEmpresa}`)
 
     let errors = null
 

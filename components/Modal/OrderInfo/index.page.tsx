@@ -25,6 +25,7 @@ interface Pedido {
   cidade: string;
   estado: string;
   telefone: string;
+  empresa?: number;
 }
 
 interface ProductsProps {
@@ -109,8 +110,9 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     
     try {
       const { data: confirmarData, errors: confirmarErrors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
+      const { data: empresaData, errors: empresaErrors } = await pedidoService.setarEmpresaAoPedido(pedido.id, empresa)
 
-      if (!confirmarErrors) {
+      if (!confirmarErrors && !empresaErrors) {
         toast.success(confirmarData.message)
         onRequestClose()
         router.reload()
@@ -171,19 +173,20 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     })
 
     let pageNumber = doc.internal.pages.length - 1
+    const idEmpresa = pedido.empresa ?? empresa
 
-    doc.text(`${empresas[empresa].nome}`, 14, 15)
-    doc.text(`${empresas[empresa].nome}`, 154, 15)
+    doc.text(`${empresas[idEmpresa].nome}`, 14, 15)
+    doc.text(`${empresas[idEmpresa].nome}`, 154, 15)
 
     doc.setFontSize(10)
-    doc.text(`CNPJ: ${empresas[empresa].cnpj}`, 14, 20)
-    doc.text(`CNPJ: ${empresas[empresa].cnpj}`, 154, 20)
+    doc.text(`CNPJ: ${empresas[idEmpresa].cnpj}`, 14, 20)
+    doc.text(`CNPJ: ${empresas[idEmpresa].cnpj}`, 154, 20)
 
-    doc.text(`Endereço: ${empresas[empresa].endereco}`, 14, 25)
-    doc.text(`Endereço: ${empresas[empresa].endereco}`, 154, 25)
+    doc.text(`Endereço: ${empresas[idEmpresa].endereco}`, 14, 25)
+    doc.text(`Endereço: ${empresas[idEmpresa].endereco}`, 154, 25)
 
-    doc.text(`Cidade / Estado: ${empresas[empresa].cidade} / ${empresas[empresa].estado}`, 14, 30)
-    doc.text(`Cidade / Estado: ${empresas[empresa].cidade} / ${empresas[empresa].estado}`, 154, 30)
+    doc.text(`Cidade / Estado: ${empresas[idEmpresa].cidade} / ${empresas[idEmpresa].estado}`, 14, 30)
+    doc.text(`Cidade / Estado: ${empresas[idEmpresa].cidade} / ${empresas[idEmpresa].estado}`, 154, 30)
 
     doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 32.5)
 
