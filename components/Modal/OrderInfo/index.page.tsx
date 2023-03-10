@@ -20,12 +20,13 @@ interface Pedido {
   dataEntrega?: number;
   valorTotal: number;
   status: string;
-  observacao: string;
+  observacaoCancelamento?: string;
   nome: string;
   cidade: string;
   estado: string;
   telefone: string;
   empresa?: number;
+  observacao?: string;
 }
 
 interface ProductsProps {
@@ -95,7 +96,9 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
   const [empresa, setEmpresa] = useState(0)
-  const [observacao, setObservacao] = useState('')
+  const [observacaoPedidoInicial, setObservacaoPedidoInicial] = useState('')
+  const [observacaoPedido, setObservacaoPedido] = useState('')
+  const [observacaoCancelamento, setObservacaoCancelamento] = useState('')
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: true, enabled: isOpen })
@@ -108,12 +111,19 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const confirmOrder = async () => {
     const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
+    let observacaoData: any;
+    let observacaoErrors: any;
     
     try {
       const { data: confirmarData, errors: confirmarErrors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
       const { data: empresaData, errors: empresaErrors } = await pedidoService.setarEmpresaAoPedido(pedido.id, empresa)
+      if (observacaoPedidoInicial !== observacaoPedido) {
+        const result = await pedidoService.adicionarObservacao({ observacao: observacaoPedido, pedidoId: pedido.id })
+        observacaoData = result.data
+        observacaoErrors = result.errors
+      }
 
-      if (!confirmarErrors && !empresaErrors) {
+      if (!confirmarErrors && !empresaErrors && !observacaoErrors) {
         toast.success(confirmarData.message)
         onRequestClose()
         router.reload()
@@ -128,7 +138,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const cancelOrder = async () => {
     try {
-      const { data, errors } = await pedidoService.cancelarPedidoByIdComObservacao({ pedidoId: pedido.id, observacao })
+      const { data, errors } = await pedidoService.cancelarPedidoByIdComObservacao({ pedidoId: pedido.id, observacao: observacaoCancelamento })
 
       if (!errors) {
         queryClient.setQueryData('getPedidosForDashboard', { pedidos: [] })
@@ -320,14 +330,15 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 23)
 
       const linhas1: Array<string> = [];
+      const obs: string = pedido.observacao ?? observacaoPedido
   
-      if (pedido.observacao) {
-        if (pedido.observacao.length > 58) {
+      if (obs) {
+        if (obs.length > 58) {
           let contadorInicial: number = 0;
           let contadorFinal: number = 58;
-          const numeroDeLinhas = pedido.observacao.length / 58;
+          const numeroDeLinhas = obs.length / 58;
           for (let i = 0; i <= numeroDeLinhas; i++) {
-            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            linhas1.push(obs.substring(contadorInicial, contadorFinal))
             contadorInicial = contadorInicial + 58
             contadorFinal = contadorFinal + 58
           }
@@ -336,12 +347,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           doc.text(linhas1, 35, 30)
           doc.text(linhas1, 175, 30)
         } else {
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 35)
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 35)
+          doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 14, 35)
+          doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 154, 35)
         }
       } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, 35)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, 35)
+        doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 14, 35)
+        doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 154, 35)
       }
 
       doc.text(`Assinatura: ________________________________________________________`, 14, 45)
@@ -377,6 +388,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const isValid = validateConfirmar();
     setIsValidConfirmar(isValid);
   }, [dataEntrega])
+
+  useEffect(() => {
+    setObservacaoPedidoInicial(pedido.observacao as string)
+    setObservacaoPedido(pedido.observacao as string)
+  }, [pedido])
 
   return (
     <Modal
@@ -442,7 +458,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         }).format(pedido.valorTotal)}
           </h3>
           <Observacao>
-            <Textarea initialValue={pedido.observacao ?? 'Sem observação'} readOnly css={{ mt: "1.5rem", w: "900px" }} />
+            <Textarea initialValue={pedido.observacao ?? observacaoPedido ?? 'Sem observação'} onChange={event => {setObservacaoPedido(event.target.value)}} css={{ mt: "1.5rem", w: "900px" }} />
           </Observacao>
         </OrderItems>
         <OrderFooter>
@@ -484,7 +500,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
               </ConfirmSection>
               <CancelSection>
                 <h2>Ou, deseja cancelar o pedido?</h2>
-                <Textarea placeholder='Por quê quer cancelar esse pedido?' onChange={event => setObservacao(event.target.value)}  css={{ mt: "1.5rem", w: "400px" }} />
+                <Textarea placeholder='Por quê quer cancelar esse pedido?' onChange={event => setObservacaoCancelamento(event.target.value)}  css={{ mt: "1.5rem", w: "400px" }} />
                 <button onClick={cancelOrder} disabled={!(pedido.status === 'CRIADO')}>Cancelar Pedido</button>
               </CancelSection>
             </>

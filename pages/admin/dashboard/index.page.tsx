@@ -4,7 +4,6 @@ import { Container, Filter, InputFilter, LeftPanel, LoadingDiv, NoContent, Right
 import AlertImg from '../../../assets/alert.png'
 import TruckImg from '../../../assets/truck.png'
 import BloomImg from '../../../assets/bloom.png'
-import EditImg from '../../../assets/edit.png'
 import { useState } from 'react';
 import { pedidoService } from '../../../services';
 import Head from 'next/head';
@@ -12,30 +11,20 @@ import { useQuery } from 'react-query';
 import OrderInfo from '../../../components/Modal/OrderInfo/index.page';
 import { PedidosObject, PedidosProps } from '../../../services/pedido';
 import { Loading } from '@nextui-org/react';
-import Observacao from '../../../components/Modal/Observacao/index.page';
 
 const Dashboard: NextPage = () => {
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', observacaoCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isModalObsOpen, setIsModalObsOpen] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
-  const [observacao, setObservacao] = useState('')
 
   const onRequestClose = async () => {
-    setObservacao('')
     setIsModalOpen(false)
-    setIsModalObsOpen(false)
   }
 
   const viewOrderInfo = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsModalOpen(true)
-  }
-
-  const changeObservacao = async (pedido: PedidosProps) => {
-    setPedido(pedido)
-    setIsModalObsOpen(true)
   }
 
   const { data: pedidosObject, isLoading: isPedidosObjectLoading, isSuccess, isFetching } = useQuery<PedidosObject, Error>('getPedidosForDashboard', pedidoService.listarPedidos, { staleTime: 1000 * 60 * 15, refetchOnWindowFocus: true })
@@ -145,7 +134,6 @@ const Dashboard: NextPage = () => {
                           </td>
                           <td>
                             <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
-                            <a><Image onClick={() => {changeObservacao(pedido)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                           </td>
                         </tr>
                       )
@@ -156,7 +144,6 @@ const Dashboard: NextPage = () => {
               </table>
             </TableContainer>
             <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
-            <Observacao isOpen={isModalObsOpen} onRequestClose={onRequestClose} pedido={pedido}/>
           </> ) : 
           (
             <NoContent>
