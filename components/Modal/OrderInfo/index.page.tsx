@@ -95,6 +95,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
   const [empresa, setEmpresa] = useState(0)
+  const [observacao, setObservacao] = useState('')
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: true, enabled: isOpen })
@@ -127,7 +128,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const cancelOrder = async () => {
     try {
-      const { data, errors } = await pedidoService.cancelarPedidoById(pedido.id)
+      const { data, errors } = await pedidoService.cancelarPedidoByIdComObservacao({ pedidoId: pedido.id, observacao })
 
       if (!errors) {
         queryClient.setQueryData('getPedidosForDashboard', { pedidos: [] })
@@ -483,6 +484,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
               </ConfirmSection>
               <CancelSection>
                 <h2>Ou, deseja cancelar o pedido?</h2>
+                <Textarea placeholder='Por quê quer cancelar esse pedido?' onChange={event => setObservacao(event.target.value)}  css={{ mt: "1.5rem", w: "400px" }} />
                 <button onClick={cancelOrder} disabled={!(pedido.status === 'CRIADO')}>Cancelar Pedido</button>
               </CancelSection>
             </>

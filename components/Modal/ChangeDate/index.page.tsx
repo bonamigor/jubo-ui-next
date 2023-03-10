@@ -21,13 +21,13 @@ interface Pedido {
   telefone: string;
 }
 
-interface CancelOrderModalProps {
+interface ChangeDateModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   pedido: Pedido;
 }
 
-const ChangeDate: NextPage<CancelOrderModalProps> = ({ isOpen, onRequestClose, pedido }) => {
+const ChangeDate: NextPage<ChangeDateModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
   const [dataEntrega, setDataEntrega] = useState('')
   const [isValid, setIsValid] = useState(false)
