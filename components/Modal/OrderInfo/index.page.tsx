@@ -274,7 +274,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       if (pedido.status === 'CANCELADO') {
         obs = `MOTIVO CANCELAMENTO: ${pedido.obsCancelamento as string}`
       } else {
-        obs = pedido.observacao ?? observacaoPedido
+        obs = pedido.observacao !== observacaoPedido ? observacaoPedido : pedido.observacao
       }
 
       if (obs) {
