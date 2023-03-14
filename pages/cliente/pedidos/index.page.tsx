@@ -8,27 +8,14 @@ import DeleteImg from '../../../assets/delete.png'
 import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 import Head from "next/head";
 import CancelOrder from "../../../components/Modal/CancelOrder/index.page";
-
-interface PedidosProps {
-  id: number;
-  dataCriacao: number;
-  dataEntrega: number;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  endereco: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
+import { PedidosProps } from "../../../services/pedido";
 
 const Pedidos: NextPage = () => {
   const [pedidos, setPedidos] = useState<PedidosProps[]>([])
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
 
   useEffect(() => {
