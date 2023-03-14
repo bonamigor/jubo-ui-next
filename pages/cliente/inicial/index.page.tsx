@@ -7,13 +7,14 @@ import BloomImg from '../../../assets/bloom.png'
 import DeleteImg from '../../../assets/delete.png'
 import OrderInfo from "../../../components/Modal/Cliente/OrderInfo/index.page";
 import Head from "next/head";
-import CancelOrder, { Pedido } from "../../../components/Modal/CancelOrder/index.page";
+import CancelOrder from "../../../components/Modal/CancelOrder/index.page";
+import { PedidosProps } from "../../../services/pedido";
 
 
 const Inicial: NextPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
   useEffect(() => {
     const fetchLastOrder = async () => {
@@ -36,12 +37,12 @@ const Inicial: NextPage = () => {
     setIsModalOpen(false)
   }
 
-  const viewOrderInfo = async (pedido: Pedido) => {
+  const viewOrderInfo = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsModalOpen(true)
   }
 
-  const handleCancelOrder = async (pedido: Pedido) => {
+  const handleCancelOrder = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsCancelOrderModalOpen(true)
   }
