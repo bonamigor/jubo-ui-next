@@ -6,32 +6,20 @@ import { pedidoService } from '../../../services';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Textarea } from '@nextui-org/react';
+import { PedidosProps } from '../../../services/pedido';
 
-interface Pedido {
-  id: number;
-  endereco: string;
-  dataCriacao: number;
-  dataEntrega?: number;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
 
 interface ObservacaoModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  pedido: Pedido;
+  pedido: PedidosProps;
 }
 
 const Observacao: NextPage<ObservacaoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
   const [observacao, setObservacao] = useState('')
 
-  const handleChangeObsPedido = async (pedido: Pedido) => {
+  const handleChangeObsPedido = async (pedido: PedidosProps) => {
     const { data: observacaoData, errors: observacaoErrors } = await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedido.id) })
 
     if (!observacaoErrors) {

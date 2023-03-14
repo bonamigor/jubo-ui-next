@@ -7,7 +7,7 @@ export interface PedidosProps {
   valorTotal: number;
   status: string;
   observacao: string;
-  observacaoCancelamento: string;
+  obsCancelamento: string;
   nome: string;
   endereco: string;
   cidade: string;

@@ -4,6 +4,7 @@ import Modal from 'react-modal'
 import { pedidoService } from '../../../../services';
 import { useQuery } from 'react-query';
 import { Textarea } from '@nextui-org/react';
+import { useEffect } from 'react';
 
 interface Pedido {
   id: number;
@@ -12,7 +13,8 @@ interface Pedido {
   dataEntrega?: number;
   valorTotal: number;
   status: string;
-  observacao: string;
+  observacao?: string;
+  obsCancelamento: string;
   nome: string;
   cidade: string;
   estado: string;
@@ -42,6 +44,18 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   if (isSuccess) {
     products = data.produtos
   }
+
+  let obs: string = '';
+
+  useEffect(() => {
+    if (pedido.status === 'CANCELADO') {
+      obs = `MOTIVO CANCELAMENTO: ${pedido.obsCancelamento as string}`
+    } else {
+      obs = pedido.observacao as string
+    }
+  }, [pedido])
+
+  console.log(pedido)
 
   return (
     <Modal
@@ -118,7 +132,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           ) : (
             <h1>Não foi possível recuperar informações dos produtos no pedido.</h1>
           )}
-          <Textarea readOnly initialValue={pedido.observacao ?? 'Sem observação'} css={{ mt: "1.5rem", w: "900px" }} />
+          <Textarea readOnly initialValue={pedido.status === 'CANCELADO' ? pedido.obsCancelamento : pedido.observacao} css={{ mt: "1.5rem", w: "900px" }} />
         </OrderItems>
       </Container>
     </Modal>

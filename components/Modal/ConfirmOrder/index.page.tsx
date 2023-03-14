@@ -4,31 +4,18 @@ import Modal from 'react-modal'
 import toast from 'react-hot-toast';
 import { pedidoService } from '../../../services';
 import { useRouter } from 'next/router';
-
-interface Pedido {
-  id: number;
-  endereco: string;
-  dataCriacao: number;
-  dataEntrega?: number;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
+import { PedidosProps } from '../../../services/pedido';
 
 interface ConfirmOrderModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  pedido: Pedido;
+  pedido: PedidosProps;
 }
 
 const ConfirmOrder: NextPage<ConfirmOrderModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
 
-  const handleConfirmOrder = async (pedido: Pedido) => {
+  const handleConfirmOrder = async (pedido: PedidosProps) => {
     const { data, errors } = await pedidoService.setarPedidoComoEntregue(pedido.id)
 
     if (!errors) {

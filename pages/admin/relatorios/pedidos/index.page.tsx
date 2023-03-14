@@ -18,6 +18,7 @@ import CancelOrder from '../../../../components/Modal/CancelOrder/index.page';
 import ChangeDate from '../../../../components/Modal/ChangeDate/index.page';
 import ConfirmOrder from '../../../../components/Modal/ConfirmOrder/index.page';
 import Observacao from '../../../../components/Modal/Observacao/index.page';
+import { PedidosProps } from '../../../../services/pedido';
 
 interface Cliente {
   id: number;
@@ -32,30 +33,16 @@ interface Cliente {
   ativo: boolean;
 }
 
-interface Pedido {
-  id: number;
-  dataCriacao: number;
-  dataEntrega: number;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  endereco: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
-
 const Pedidos: NextPage = () => {
   const [clienteId, setClienteId] = useState('')
-  const [pedidos, setPedidos] = useState<Pedido[]>([])
+  const [pedidos, setPedidos] = useState<PedidosProps[]>([])
   const [isOrdersLoading, setIsOrdersLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalObsOpen, setIsModalObsOpen] = useState(false)
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
   const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [isConfirmOrderModalOpen, setIsConfirmOrderModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
 
 
   let clientes: Array<Cliente> = [];
@@ -102,27 +89,27 @@ const Pedidos: NextPage = () => {
     setIsModalObsOpen(false)
   } 
 
-  const handleChangeObs = async (pedido: Pedido) => {
+  const handleChangeObs = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsModalObsOpen(true)
   }
 
-  const handleViewOrderInfo = async (pedido: Pedido) => {
+  const handleViewOrderInfo = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsModalOpen(true)
   }
 
-  const handleCancelOrder = async (pedido: Pedido) => {
+  const handleCancelOrder = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsCancelOrderModalOpen(true)
   }
 
-  const handleChangeDate = async (pedido: Pedido) => {
+  const handleChangeDate = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsChangeDateModalOpen(true)
   }
 
-  const handleConfirmOrder = async (pedido: Pedido) => {
+  const handleConfirmOrder = async (pedido: PedidosProps) => {
     setPedido(pedido)
     setIsConfirmOrderModalOpen(true)
   }

@@ -24,6 +24,7 @@ interface Pedido {
   valorTotal: number;
   status: string;
   observacao: string;
+  obsCancelamento: string;
   nome: string;
   endereco: string;
   cidade: string;
@@ -38,14 +39,13 @@ const Pedido: NextPage = () => {
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
   const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [isConfirmOrderModalOpen, setIsConfirmOrderModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
   const [pedidoId, setPedidoId] = useState(0)
   
   const handlePedidoByIdSearch = async () => {
     setIsOrdersLoading(true)
     const { data, errors } = await pedidoService.listarPedidoById(pedidoId)
     if (!errors) {
-      console.log(data.pedido[0])
       setPedido(data.pedido[0])
       setIsOrdersLoading(false)
     }

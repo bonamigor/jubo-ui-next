@@ -6,25 +6,12 @@ import { pedidoService } from '../../../services';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InputMask from "react-input-mask";
-
-interface Pedido {
-  id: number;
-  endereco: string;
-  dataCriacao: number;
-  dataEntrega?: number;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
+import { PedidosProps } from '../../../services/pedido';
 
 interface ChangeDateModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  pedido: Pedido;
+  pedido: PedidosProps;
 }
 
 const ChangeDate: NextPage<ChangeDateModalProps> = ({ isOpen, onRequestClose, pedido }) => {
@@ -32,7 +19,7 @@ const ChangeDate: NextPage<ChangeDateModalProps> = ({ isOpen, onRequestClose, pe
   const [dataEntrega, setDataEntrega] = useState('')
   const [isValid, setIsValid] = useState(false)
 
-  const handleChangeOrderDate = async (pedido: Pedido) => {
+  const handleChangeOrderDate = async (pedido: PedidosProps) => {
     const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
     const { data, errors } = await pedidoService.atualizarDataEntregaPedido(pedido.id, dataFormatada)
 

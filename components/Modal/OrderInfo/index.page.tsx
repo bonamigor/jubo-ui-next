@@ -9,25 +9,9 @@ import jsPDF from "jspdf";
 import autoTable from 'jspdf-autotable';
 import 'jspdf-autotable';
 import { useQuery, useQueryClient } from 'react-query';
-import { Checkbox, Loading, Textarea } from '@nextui-org/react';
-import { format } from 'date-fns';
+import { Loading, Textarea } from '@nextui-org/react';
 import InputMask from "react-input-mask";
-
-interface Pedido {
-  id: number;
-  endereco: string;
-  dataCriacao: number;
-  dataEntrega?: number;
-  valorTotal: number;
-  status: string;
-  observacaoCancelamento?: string;
-  nome: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-  empresa?: number;
-  observacao?: string;
-}
+import { PedidosProps } from '../../../services/pedido';
 
 interface ProductsProps {
   itemPedidoId?: string;
@@ -42,7 +26,7 @@ interface ProductsProps {
 interface OrderInfoModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  pedido: Pedido;
+  pedido: PedidosProps;
 }
 
 interface EmpresaProps {
@@ -98,10 +82,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [empresa, setEmpresa] = useState(0)
   const [observacaoPedidoInicial, setObservacaoPedidoInicial] = useState('')
   const [observacaoPedido, setObservacaoPedido] = useState('')
-  const [observacaoCancelamento, setObservacaoCancelamento] = useState('')
+  const [obsCancelamento, setobsCancelamento] = useState('')
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
 
-  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: true, enabled: isOpen })
+  const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: false, enabled: isOpen })
 
   let products: Array<ProductsProps> = [];
 
@@ -113,7 +97,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
     let observacaoData: any;
     let observacaoErrors: any;
-    
+
     try {
       const { data: confirmarData, errors: confirmarErrors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
       const { data: empresaData, errors: empresaErrors } = await pedidoService.setarEmpresaAoPedido(pedido.id, empresa)
@@ -138,7 +122,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const cancelOrder = async () => {
     try {
-      const { data, errors } = await pedidoService.cancelarPedidoByIdComObservacao({ pedidoId: pedido.id, observacao: observacaoCancelamento })
+      const { data, errors } = await pedidoService.cancelarPedidoByIdComObservacao({ pedidoId: pedido.id, observacao: obsCancelamento })
 
       if (!errors) {
         queryClient.setQueryData('getPedidosForDashboard', { pedidos: [] })
@@ -167,14 +151,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       produto.quantidade = new Intl.NumberFormat('pt-BR', {
         style: 'decimal',
         minimumFractionDigits: 4
-    }).format(Number(produto.quantidade))
+      }).format(Number(produto.quantidade))
       produto.precoVenda = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
+        style: 'currency',
+        currency: 'BRL'
       }).format(Number(produto.precoVenda))
       produto.total = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL'
+        style: 'currency',
+        currency: 'BRL'
       }).format(Number(produto.total))
       return produto
     })
@@ -221,21 +205,21 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.text(`Data de Entrega: ${dataEntrega}`, 14, 65)
       doc.text(`Data de Entrega: ${dataEntrega}`, 154, 65)
     } else {
-      doc.text(`Data de Entrega: ${new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega))}`, 14, 65)
-      doc.text(`Data de Entrega: ${new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega))}`, 154, 65)
+      doc.text(`Data de Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedido.dataEntrega))}`, 14, 65)
+      doc.text(`Data de Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedido.dataEntrega))}`, 154, 65)
     }
 
     let columns = [
-      { header: 'Nome', dataKey: 'nome'},
-      { header: 'Und', dataKey: 'unidade'},
-      { header: 'Preço', dataKey: 'preco'},
-      { header: 'Qtde', dataKey: 'quantidade'},
-      { header: 'Total', dataKey: 'total'}
+      { header: 'Nome', dataKey: 'nome' },
+      { header: 'Und', dataKey: 'unidade' },
+      { header: 'Preço', dataKey: 'preco' },
+      { header: 'Qtde', dataKey: 'quantidade' },
+      { header: 'Total', dataKey: 'total' }
     ]
 
     autoTable(doc, {
       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-      headStyles: { fillColor: [255,255,255], textColor: 'black '},
+      headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
       columns: columns,
       body: newProdutosArray,
       theme: 'grid',
@@ -252,7 +236,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     autoTable(doc, {
       head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
-      headStyles: { fillColor: [255,255,255], textColor: 'black '},
+      headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
       columns: columns,
       body: newProdutosArray,
       theme: 'grid',
@@ -277,21 +261,29 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     if (finalY <= 180) {
       doc.text(`Valor Total: `, 14, finalY + 5)
       doc.text(`${valorTotal}`, 125, finalY + 5)
-  
+
       doc.text(`Valor Total: `, 154, finalY + 5)
       doc.text(`${valorTotal}`, 264, finalY + 5)
-  
+
       doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, finalY + 8)
 
       const linhas1: Array<string> = [];
-  
-      if (pedido.observacao) {
-        if (pedido.observacao.length > 58) {
+
+      let obs: string;
+
+      if (pedido.status === 'CANCELADO') {
+        obs = `MOTIVO CANCELAMENTO: ${pedido.obsCancelamento as string}`
+      } else {
+        obs = pedido.observacao ?? observacaoPedido
+      }
+
+      if (obs) {
+        if (obs.length > 58) {
           let contadorInicial: number = 0;
           let contadorFinal: number = 58;
-          const numeroDeLinhas = pedido.observacao.length / 58;
+          const numeroDeLinhas = obs.length / 58;
           for (let i = 0; i <= numeroDeLinhas; i++) {
-            linhas1.push(pedido.observacao.substring(contadorInicial, contadorFinal))
+            linhas1.push(obs.substring(contadorInicial, contadorFinal))
             contadorInicial = contadorInicial + 58
             contadorFinal = contadorFinal + 58
           }
@@ -300,12 +292,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           doc.text(linhas1, 35, finalY + 15)
           doc.text(linhas1, 175, finalY + 15)
         } else {
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 20)
-          doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 20)
+          doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 14, finalY + 20)
+          doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 154, finalY + 20)
         }
       } else {
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 14, finalY + 20)
-        doc.text(`Observação: ${pedido.observacao ?? '_______________________________________________________'}`, 154, finalY + 20)
+        doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 14, finalY + 20)
+        doc.text(`Observação: ${obs ?? '_______________________________________________________'}`, 154, finalY + 20)
       }
 
       doc.text(`Assinatura: ________________________________________________________`, 14, finalY + 30)
@@ -319,19 +311,19 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     if (finalY >= 180) {
       doc.addPage()
 
-      doc.setPage(numberOfPages + 1)  
+      doc.setPage(numberOfPages + 1)
 
       doc.text(`Valor Total: `, 14, 20)
       doc.text(`${valorTotal}`, 125, 20)
-  
+
       doc.text(`Valor Total: `, 154, 20)
       doc.text(`${valorTotal}`, 265, 20)
-  
+
       doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 23)
 
       const linhas1: Array<string> = [];
       const obs: string = pedido.observacao ?? observacaoPedido
-  
+
       if (obs) {
         if (obs.length > 58) {
           let contadorInicial: number = 0;
@@ -365,7 +357,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     const numberOfPagesAtt = (doc as any).internal.getNumberOfPages();
 
-    for (let i = 1; i <= numberOfPagesAtt; i++){
+    for (let i = 1; i <= numberOfPagesAtt; i++) {
       doc.setPage(i);
       if (i > 1) {
         doc.text(`Pedido ${pedido.id}`, 14, 10)
@@ -383,15 +375,20 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   }
 
   const validateConfirmar = () => dataEntrega.length > 0
-  
+
   useEffect(() => {
     const isValid = validateConfirmar();
     setIsValidConfirmar(isValid);
   }, [dataEntrega])
 
   useEffect(() => {
-    setObservacaoPedidoInicial(pedido.observacao as string)
-    setObservacaoPedido(pedido.observacao as string)
+    if (pedido.status === 'CANCELADO') {
+      setObservacaoPedidoInicial(pedido.obsCancelamento as string)
+      setObservacaoPedido(pedido.obsCancelamento as string)
+    } else {
+      setObservacaoPedidoInicial(pedido.observacao as string)
+      setObservacaoPedido(pedido.observacao as string)
+    }
   }, [pedido])
 
   return (
@@ -410,7 +407,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             <p>Cidade/Estado: {`${pedido.cidade}/${pedido.estado}`}</p>
           </div>
         </OrderHeader>
-        <OrderItems showScrollBar={products.length > 6}>
+        <OrderItems showScrollBar={products.length >= 5}>
           <table>
             <thead>
               <tr>
@@ -433,16 +430,16 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                       <td>{product.nome}</td>
                       <td>
                         {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
+                          style: 'currency',
+                          currency: 'BRL'
                         }).format(Number(product.precoVenda))}
                       </td>
                       <td>{product.unidade}</td>
                       <td>{product.quantidade.replaceAll('.', ',')}</td>
                       <td>
                         {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
+                          style: 'currency',
+                          currency: 'BRL'
                         }).format(Number(product.total))}
                       </td>
                     </tr>
@@ -453,12 +450,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           </table>
           <h3>
             Valor Total: {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(pedido.valorTotal)}
+              style: 'currency',
+              currency: 'BRL'
+            }).format(pedido.valorTotal)}
           </h3>
           <Observacao>
-            <Textarea initialValue={pedido.observacao ?? observacaoPedido ?? 'Sem observação'} onChange={event => {setObservacaoPedido(event.target.value)}} css={{ mt: "1.5rem", w: "900px" }} />
+            <Textarea initialValue={pedido.status === 'CANCELADO' ? pedido.obsCancelamento : pedido.observacao ?? 'Sem observacao'} onChange={event => { setObservacaoPedido(event.target.value) }} css={{ mt: "1.5rem", w: "900px" }} />
           </Observacao>
         </OrderItems>
         <OrderFooter>
@@ -468,7 +465,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 <h2>Deseja {pedido.status === 'CRIADO' ? 'confirmar?' : 'gerar PDF?'}</h2>
                 {pedido.status === 'CRIADO' &&
                   <div>
-                    <InputMask mask="99/99/9999" placeholder='Data de Entrega' onChange={event => {setDataEntrega(event.target.value)}} />
+                    <InputMask mask="99/99/9999" placeholder='Data de Entrega' onChange={event => { setDataEntrega(event.target.value) }} />
                     {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValidConfirmar}>Confirmar Pedido</button>}
                   </div>
                 }
@@ -477,30 +474,30 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 </div>
                 <div id='empresa'>
                   <label htmlFor="mendes">
-                    <input type="radio" name="mendes" id="mendes"  value="0" onChange={handleOptionEmpresa} />
+                    <input type="radio" name="mendes" id="mendes" value="0" onChange={handleOptionEmpresa} />
                     Mendes
                   </label>
                   <label htmlFor="coperal">
-                    <input type="radio" name="coperal" id="coperal" value="1" onChange={handleOptionEmpresa}/>
+                    <input type="radio" name="coperal" id="coperal" value="1" onChange={handleOptionEmpresa} />
                     COPERAL
                   </label>
                   <label htmlFor="coopassen">
-                    <input type="radio" name="coopassen" id="coopassen" value="2" onChange={handleOptionEmpresa}/>
+                    <input type="radio" name="coopassen" id="coopassen" value="2" onChange={handleOptionEmpresa} />
                     COOPASSEN
                   </label>
                   <label htmlFor="coopaco">
-                    <input type="radio" name="coopaco" id="coopaco" value="3" onChange={handleOptionEmpresa}/>
+                    <input type="radio" name="coopaco" id="coopaco" value="3" onChange={handleOptionEmpresa} />
                     COOPACO
                   </label>
                   <label htmlFor="compaf">
-                    <input type="radio" name="compaf" id="compaf" value="4" onChange={handleOptionEmpresa}/>
+                    <input type="radio" name="compaf" id="compaf" value="4" onChange={handleOptionEmpresa} />
                     COMPAF
                   </label>
                 </div>
               </ConfirmSection>
               <CancelSection>
                 <h2>Ou, deseja cancelar o pedido?</h2>
-                <Textarea placeholder='Por quê quer cancelar esse pedido?' onChange={event => setObservacaoCancelamento(event.target.value)}  css={{ mt: "1.5rem", w: "400px" }} />
+                <Textarea placeholder='Por quê quer cancelar esse pedido?' onChange={event => setobsCancelamento(event.target.value)} css={{ mt: "1.5rem", w: "400px" }} />
                 <button onClick={cancelOrder} disabled={!(pedido.status === 'CRIADO')}>Cancelar Pedido</button>
               </CancelSection>
             </>

@@ -6,32 +6,19 @@ import { pedidoService } from '../../../services';
 import { useRouter } from 'next/router';
 import { Textarea } from '@nextui-org/react';
 import { useState } from 'react';
-
-export interface Pedido {
-  id: number;
-  endereco: string;
-  dataCriacao: number;
-  dataEntrega?: number;
-  valorTotal: number;
-  status: string;
-  observacao: string;
-  nome: string;
-  cidade: string;
-  estado: string;
-  telefone: string;
-}
+import { PedidosProps } from '../../../services/pedido';
 
 interface CancelOrderModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
-  pedido: Pedido;
+  pedido: PedidosProps;
 }
 
 const CancelOrder: NextPage<CancelOrderModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
   const [observacao, setObservacao] = useState('')
 
-  const handleCancelOrder = async (pedido: Pedido) => {
+  const handleCancelOrder = async (pedido: PedidosProps) => {
     const { data, errors } = await pedidoService.cancelarPedidoByIdComObservacao({ pedidoId: pedido.id, observacao })
 
     if (!errors) {
