@@ -29,7 +29,9 @@ interface ProdutoNoPedidoProps {
 
 const PedidoProdutos: NextPage = () => {
   const router = useRouter()
-  const { pedidoId, estanteId } = router.query
+  // const { pedidoId, estanteId } = router.query
+  const [idPedido, setIdPedido] = useState('')
+  const [idEstante, setIdEstante] = useState('')
   const [produtoNaEstante, setProdutosNaEstante] = useState<ProdutoNaEstanteProps[]>([])
   const [product, setProduct] = useState<ProdutoNoPedidoProps>({ itemPedidoId: '', produtoId: '', nome: '', unidade: '', precoVenda: 0, quantidade: '', total: 0 })
   const [produtos, setProdutos] = useState<ProdutoNoPedidoProps[]>([])
@@ -53,7 +55,7 @@ const PedidoProdutos: NextPage = () => {
 
   useEffect(() => {
     const fetchProdutos = async () => {
-      const { data, errors } = await produtoEstanteService.listarProdutosNaEstante(Number(estanteId))
+      const { data, errors } = await produtoEstanteService.listarProdutosNaEstante(Number(idEstante))
 
       if (!errors) {
         setProdutosNaEstante(data.estante.produtos)
@@ -69,7 +71,7 @@ const PedidoProdutos: NextPage = () => {
     }
 
     const fetchPedido = async () => {
-      const { data, errors } = await pedidoService.listarPedidoById(Number(pedidoId))
+      const { data, errors } = await pedidoService.listarPedidoById(Number(idPedido))
 
       if (!errors) {
         setPedido(data.pedido[0])
@@ -79,7 +81,17 @@ const PedidoProdutos: NextPage = () => {
     fetchProdutos()
     fetchCliente()
     fetchPedido()
-  }, [estanteId, pedidoId, produtos])
+  }, [idEstante, idPedido, produtos])
+
+  useEffect(() => {  
+    if (router.isReady ) {
+      const { pedidoId, estanteId } = router.query
+      setIdPedido(pedidoId as string)
+      setIdEstante(estanteId as string)
+    } else {
+      return;
+    }
+  }, [router.isReady])
 
   const validate = () => produtoId.length > 0 && quantidade.length > 0
 
@@ -92,11 +104,11 @@ const PedidoProdutos: NextPage = () => {
     event.preventDefault()
     try {
       const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
-        estanteId: String(estanteId),
+        estanteId: String(idEstante),
         produtoId: produtoId.split(' ')[0],
         precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
         quantidade: Number(quantidade.replace(',','.')),
-        pedidoId: String(pedidoId)
+        pedidoId: String(idPedido)
       })
 
       if (!errors) {
@@ -133,9 +145,9 @@ const PedidoProdutos: NextPage = () => {
       const idProduto = produtoId.split(' ')[2]
 
       const { data, errors } = await itemPedidoService.atualizarItemDoPedido({
-        estanteId: Number(estanteId),
+        estanteId: Number(idEstante),
         produtoId: Number(idProduto),
-        pedidoId: Number(pedidoId),
+        pedidoId: Number(idPedido),
         itemPedidoId: Number(itemPedidoId),
         precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
         quantidade: Number(quantidade.replaceAll(',', '.'))
@@ -173,7 +185,7 @@ const PedidoProdutos: NextPage = () => {
           <FormHeader>
             <h1>Adicione Produtos ao Pedido!</h1>
             <PedidoData>
-              <h2>Dados Pedido N° {pedidoId}</h2>
+              <h2>Dados Pedido N° {idPedido}</h2>
               <div>
                 <p><span>Colégio:</span> {cliente.nome}</p>
                 <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date())}</p>

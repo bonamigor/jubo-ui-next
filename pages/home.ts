@@ -12,6 +12,16 @@ export const HomeStyle = styled.div`
 `
 
 export const Box = styled.div`
+  @media (min-width: 768px) {
+    width: 700px;
+    height: 600px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 1220px;
+    height: 800px;
+  }
+  
   width: 1220px;
   height: 800px;
   background: var(--green-500);
@@ -23,8 +33,22 @@ export const Box = styled.div`
 `
 
 export const LeftContent = styled.div`
-  width: 610px;
-  height: 800px;
+  @media (min-width: 768px) {
+    width: 410px;
+    height: 600px;
+    justify-content: space-evenly;
+  }
+
+  @media (min-width: 1024px) {
+    width: 610px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 610px;
+    height: 800px;
+  }
+
+
   border-radius: 20px 0 0 20px;
   display: flex;
   flex-direction: column;
@@ -38,19 +62,38 @@ export const LeftContent = styled.div`
 
   h1 {
     color: var(--white);
-    font-size: 3rem;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
+
+    @media (min-width: 768px) {
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+
+    @media (min-width: 1440px) {
+      font-size: 3rem;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+    }
   }
 
   h2 {
     color: #000000;
-    font-size: 2.25rem;
-    font-weight: 300;
-    font-family: 'Poppins', sans-serif;
+
+    @media (min-width: 768px) {
+      font-size: 1.125rem;
+      font-weight: 400;
+    }
+
+    @media (min-width: 1440px) {
+      font-size: 2.25rem;
+      font-weight: 300;
+      font-family: 'Poppins', sans-serif;
+    }
   }
 
   footer {
+    @media (min-width: 768px) {
+      font-size: 0.75rem;
+    }
     font-size: 1rem;
     color: var(--white);
     /* display: flex;
@@ -68,8 +111,22 @@ export const Text = styled.div`
 `
 
 export const RightContent = styled.div`
-  width: 610px;
-  height: 800px;
+  @media (min-width: 768px) {
+    width: 410px;
+    height: 600px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 610px;
+    height: 600px;
+  }
+
+  @media (min-width: 1440px) {
+    width: 610px;
+    height: 800px;
+  }
+
+  height: 600px;
   background: var(--white);
   border-radius: 0 20px 20px 0;
   display: flex;
@@ -91,11 +148,27 @@ export const LoginForm = styled.form`
 
   h1 {
     color: var(--green-500);
-    margin-bottom: 2rem;
-    font-weight: 400;
+    @media (min-width: 768px) {
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    @media (min-width: 1440px) {
+      margin-bottom: 2rem;
+      font-weight: 400;
+    } 
   }
 
   input {
+    @media (min-width: 768px) {
+      width: 290px;
+      font-weight: 300;
+    }
+
+    @media (min-width: 1440px) {
+      width: 390px;
+      font-weight: 400;
+    } 
     width: 390px;
     padding-top: 5px;
     padding-left: 1rem;
@@ -110,8 +183,8 @@ export const LoginForm = styled.form`
 
     &::placeholder {
       color: var(--gray-300);
-      font-size: 1.5rem;
-      font-weight: 400;
+      font-size: 1.25rem;
+      font-weight: 300;
     }
   
     & + input {
@@ -120,6 +193,13 @@ export const LoginForm = styled.form`
   }
 
   button[type="submit"] {
+    @media (min-width: 768px) {
+      width: 150px;
+    }
+
+    @media (min-width: 1440px) {
+      width: 230px;
+    }
     width: 230px;
     padding: 0 1.5rem;
     height: 45px;
