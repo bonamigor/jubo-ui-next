@@ -132,6 +132,24 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     return response.data
   },
 
+  gerarRelatorioPedidosOld: async ({ clienteId, dataInicial, dataFinal }: { clienteId: number, dataInicial: number, dataFinal: number }) => {
+    const response = await httpClient.post('/api/pedidos/relatorio-data', { clienteId, dataInicial, dataFinal })
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
   listarProdutosByPedidoIdOld: async (pedidoId: number ) => {
     const response = await httpClient.get(`/api/pedidos/${pedidoId}/produtos`)
 
@@ -148,6 +166,12 @@ const PedidoService = (httpClient: AxiosInstance) => ({
       data: response.data,
       errors
     }
+  },
+
+  relatorioAnaliticoDePedidos: async ({ clienteId, dataInicial, dataFinal }: { clienteId: number, dataInicial: number, dataFinal: number }) => {
+    const response = await httpClient.post('/api/pedidos/relatorio-data/analitico', { clienteId, dataInicial, dataFinal })
+
+    return response.data
   },
 
   valorTotalPedidoByPedidoId: async (pedidoId: number) => {

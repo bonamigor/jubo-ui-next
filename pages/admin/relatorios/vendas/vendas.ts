@@ -65,9 +65,14 @@ export const Dates = styled.section`
 export const ButtonArea = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 1rem;
   align-items: center;
   text-align: center;
+
+  input[type="checkbox"] {
+    margin-top: 0.15rem;
+    width: 20px;
+    height: 20px;
+  }
 `
 
 export const SearchButton = styled.button`
