@@ -46,7 +46,6 @@ const CadastroProduto: NextPage = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
-    console.log
     try {
       const { errors } = await produtoService.cadastrarProduto({
         nome: nome,

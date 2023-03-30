@@ -55,8 +55,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     }
   }, [pedido])
 
-  console.log(pedido)
-
   return (
     <Modal
       isOpen={isOpen}

@@ -107,7 +107,6 @@ const EstanteProduto: NextPage = () => {
 
   const handleUpdate = async () => {
     try {
-      console.log(estanteId)
       const { errors } = await produtoEstanteService.atualizarProdutoNaEstante({
         idEstante: Number(id),
         idProduto: Number(produtoId.split(' ')[0]),
@@ -128,7 +127,6 @@ const EstanteProduto: NextPage = () => {
   const handleDeleteProdutoNaEstante = (produto: EstanteProdutoProps) => {
     const ids = [Number(id), Number(produto.produtoId)]
     setProdutoNaEstanteId(ids)
-    console.log(produtoNaEstanteId)
     setIsDeleteModalOpen(true)
   }
 
