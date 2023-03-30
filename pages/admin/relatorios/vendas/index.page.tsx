@@ -101,22 +101,11 @@ const Vendas: NextPage = () => {
       setDataFinal('')
       setIsLoading(false)
     }
-    // await mutation.mutateAsync({ clienteId: idCliente, dataInicial: dataInicialTimestamp, dataFinal: dataFinalTimestamp }, {
-    //   onSuccess: async (data) => {
-    //     setVendas(data.vendas)
-    //     setClienteId('')
-    //     setDataInicial('')
-    //     setDataFinal('')
-    //   },
-    //   onError: async (error) => {
-    //     toast.error('Erro ao pesquisar os pedidos nessa data.')
-    //     console.error(error)
-    //   }
-    // })
   }
 
   const generateProductsPdf = async () => {
     const doc = new jsPDF()
+    let finalY: any;
 
     if (isAnalitico === "true") {  
       for (let i = 0; i <= vendas.length - 1; i++) {
@@ -149,10 +138,12 @@ const Vendas: NextPage = () => {
 
         if (i === 0) {
           doc.setFontSize(11)
-          doc.text(`ID: ${vendas[i].id} | Cliente: ${vendas[i].cliente} | Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(vendas[i].dataEntrega))} | Valor Total: ${new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(vendas[i].total)}`, 5, 10)
+          doc.text(`Pedido: ${vendas[i].id} / Cliente: ${vendas[i].cliente}`, 5, 10)
+          doc.text(`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(vendas[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(vendas[i].total)}`, 5, 15)
+        doc.text('_____________________________________________________________________________________________', 5, 18)
 
           // array com produtos      
           autoTable(doc, {
@@ -161,27 +152,29 @@ const Vendas: NextPage = () => {
             columns: columns,
             body: produtosDaVenda,
             theme: 'grid',
-            startY: 12,
-            tableWidth: 130,
-            margin: { right: -50, bottom: 15 },
+            startY: 20,
+            tableWidth: 200,
+            margin: { left: 5, bottom: 15 },
             showHead: 'firstPage',
             styles: { overflow: 'visible', fontSize: 8 },
             columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
             pageBreak: 'auto'
           })
         } else {
-          let finalY = (doc as any).lastAutoTable.finalY;
+          finalY = (doc as any).lastAutoTable.finalY;
           const numberOfPages = (doc as any).internal.getNumberOfPages();
   
-          if (finalY >= 180) {
+          if (finalY >= 250) {
             doc.addPage()
   
             doc.setPage(numberOfPages + 1)
   
-            doc.text(`ID: ${vendas[i].id} | Cliente: ${vendas[i].cliente} | Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(vendas[i].dataEntrega))} | Valor Total: ${new Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-          }).format(vendas[i].total)}`, 5, 10)
+            doc.text(`Pedido: ${vendas[i].id} / Cliente: ${vendas[i].cliente}`, 5, 10)
+            doc.text(`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(vendas[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(vendas[i].total)}`, 5, 15)
+          doc.text('_____________________________________________________________________________________________', 5, 18)
   
             // array com produtos do pedido
             autoTable(doc, {
@@ -190,19 +183,21 @@ const Vendas: NextPage = () => {
               columns: columns,
               body: produtosDaVenda,
               theme: 'grid',
-              startY: 12,
-              tableWidth: 130,
-              margin: { right: 125, bottom: 15 },
+              startY: 20,
+              tableWidth: 200,
+              margin: { left: 5, bottom: 15 },
               showHead: 'firstPage',
               styles: { overflow: 'visible', fontSize: 8 },
               columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
               pageBreak: 'auto'
             })
           } else {
-            doc.text(`ID: ${vendas[i].id} | Cliente: ${vendas[i].cliente} | Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(vendas[i].dataEntrega))} | Valor Total: ${new Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-          }).format(vendas[i].total)}`, 5, finalY + 10)
+            doc.text(`Pedido: ${vendas[i].id} / Cliente: ${vendas[i].cliente}`, 5, finalY + 10)
+            doc.text(`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(vendas[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(vendas[i].total)}`, 5, finalY + 15)
+          doc.text('_____________________________________________________________________________________________', 5, finalY + 18)
   
             // array co produtos do pedido
             autoTable(doc, {
@@ -211,9 +206,9 @@ const Vendas: NextPage = () => {
               columns: columns,
               body: produtosDaVenda,
               theme: 'grid',
-              startY: finalY + 12,
-              tableWidth: 130,
-              margin: { right: 125, bottom: 15 },
+              startY: finalY + 20,
+              tableWidth: 200,
+              margin: { left: 5, bottom: 15 },
               showHead: 'firstPage',
               styles: { overflow: 'visible', fontSize: 8 },
               columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
@@ -224,15 +219,22 @@ const Vendas: NextPage = () => {
 
         
       }
+
+      finalY = (doc as any).lastAutoTable.finalY;
+
+      doc.setFontSize(14)
+      doc.text(`Valor Total dos Pedidos: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`, 5, finalY + 25)
     } else {
       autoTable(doc, { html: '#vendas' })
 
-      doc.text(`Valor Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`, 140, 290)
+      finalY = (doc as any).lastAutoTable.finalY;
+
+      doc.text(`Valor Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`, 120, finalY + 10)
     }
 
     const data = format(new Date(), 'dd-MM-yyyy')
 
-    doc.save(`vendas-${data}`)
+    doc.save(`vendas-${data}-cliente-${Number(clienteId.split(' ')[0])}`)
   }
 
   return (
