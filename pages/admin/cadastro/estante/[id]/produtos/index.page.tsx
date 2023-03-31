@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import { produtoEstanteService } from '../../../../../../services/index';
 import Image from "next/image";
 import EditImg from '../../../../../../assets/edit.png'
-import DeleteImg from '../../../../../../assets/delete.png'
 import DeleteModal from "../../../../../../components/Modal/Delete/index.page";
 import { useQuery, useQueryClient } from "react-query";
 import Head from "next/head";
@@ -124,12 +123,6 @@ const EstanteProduto: NextPage = () => {
     }
   }
 
-  const handleDeleteProdutoNaEstante = (produto: EstanteProdutoProps) => {
-    const ids = [Number(id), Number(produto.produtoId)]
-    setProdutoNaEstanteId(ids)
-    setIsDeleteModalOpen(true)
-  }
-
   const onRequestClose = () => {
     setIsDeleteModalOpen(false)
   }
@@ -205,7 +198,6 @@ const EstanteProduto: NextPage = () => {
                       <td>{produto.quantidade}</td>
                       <td>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => {handleDeleteProdutoNaEstante(produto)}} src={DeleteImg} alt="Deletear" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
@@ -222,7 +214,6 @@ const EstanteProduto: NextPage = () => {
                       <td>{produto.quantidade}</td>
                       <td>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
-                        <a><Image onClick={() => {handleDeleteProdutoNaEstante(produto)}} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
                       </td>
                     </tr>
                   )
