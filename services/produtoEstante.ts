@@ -46,7 +46,7 @@ const ProdutoEstanteService = (httpClient: AxiosInstance) => ({
       },
 
     listarProdutosNaEstante: async (idEstante: number) => {
-      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade`)
+      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade-estante`)
 
       let errors = null
 
@@ -64,7 +64,31 @@ const ProdutoEstanteService = (httpClient: AxiosInstance) => ({
     },
 
     listarProdutosNaEstanteReactQuery: async (idEstante: number) => {
-      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade`)
+      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade-estante`)
+
+      return response.data
+    },
+
+    listarProdutosNaEstantePedido: async (idEstante: number) => {
+      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade-pedido`)
+
+      let errors = null
+
+      if (!response.data) {
+        errors = {
+          status: response.request.status,
+          statusText: response.request.statusText
+        }
+      }
+
+      return {
+        data: response.data,
+        errors
+      }
+    },
+
+    listarProdutosNaEstantePedidoReactQuery: async (idEstante: number) => {
+      const response = await httpClient.get(`api/estantes/${idEstante}/produtos/preco-quantidade-pedido`)
 
       return response.data
     },

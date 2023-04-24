@@ -53,7 +53,7 @@ const PedidoProdutos: NextPage = () => {
 
   useEffect(() => {
     const fetchProdutos = async () => {
-      const { data, errors } = await produtoEstanteService.listarProdutosNaEstante(Number(estanteId))
+      const { data, errors } = await produtoEstanteService.listarProdutosNaEstantePedido(Number(estanteId))
 
       if (!errors) {
         setProdutosNaEstante(data.estante.produtos)

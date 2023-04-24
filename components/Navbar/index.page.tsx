@@ -6,7 +6,6 @@ import { Container, Content, DropdownMenuItem, Logo, Menu, MenuItem } from './na
 import LogginButton from '../LoginButton/index.page';
 import { useRouter } from 'next/router';
 import { useUser } from '../../hooks/useUser';
-import { pedidoService } from '../../services';
 import { usePedido } from '../../hooks/usePedido';
 import { Dropdown } from '@nextui-org/react';
 import Link from 'next/link';
