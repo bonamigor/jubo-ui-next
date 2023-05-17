@@ -104,6 +104,29 @@ const EstanteService = (httpClient: AxiosInstance) => ({
       errors
     }
   },
+
+  atualizarStatusDoProdutoNaEstante: async ({ ativo, estanteId, produtoId }: 
+    { ativo: number, estanteId: number, produtoId: number }) => {
+    const response = await httpClient.patch(
+      '/api/estante-produto/atualizar-status-produto',
+      { ativo, estanteId, produtoId }
+    )
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
   deletarEstante: async (id: number) => {
     const response = await httpClient.delete(
       `/api/estantes/${id}`

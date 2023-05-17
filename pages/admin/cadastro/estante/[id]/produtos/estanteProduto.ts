@@ -179,14 +179,12 @@ export const TableContainer = styled.div`
   table {
     width: 1200px;
     border-spacing: 0 0.5rem;
-    text-align: left;
     margin-bottom: 1rem;
     
     th {
       color: var(--text-body);
       font-weight: 400;
       padding: 1rem 2rem;
-      text-align: left;
       line-height: 1.5rem;
     }
 
@@ -202,10 +200,7 @@ export const TableContainer = styled.div`
       tr {
         td {
           font-size: 1rem;
-
-          &:first-child {
-            text-align: left;
-          }
+          text-align: center;
         }
       }
     }

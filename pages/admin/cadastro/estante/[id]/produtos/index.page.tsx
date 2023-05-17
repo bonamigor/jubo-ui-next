@@ -8,18 +8,21 @@ import toast from "react-hot-toast";
 import { produtoEstanteService } from '../../../../../../services/index';
 import Image from "next/image";
 import EditImg from '../../../../../../assets/edit.png'
+import ConfirmImg from '../../../../../../assets/confirm.png'
 import DeleteModal from "../../../../../../components/Modal/Delete/index.page";
 import { useQuery, useQueryClient } from "react-query";
 import Head from "next/head";
 import Pagination from "../../../../../../components/Pagination/index.page";
+import UpdateStatus from "../../../../../../components/Modal/UpdateStatus/index.page";
 
-interface EstanteProdutoProps {
+export interface EstanteProdutoProps {
   produtoId: number;
   nome: string;
   precoCusto: number;
   unidade: string;
   precoVenda: number;
   quantidade: number;
+  ativo: number;
 }
 
 const EstanteProduto: NextPage = () => {
@@ -31,13 +34,14 @@ const EstanteProduto: NextPage = () => {
   
   const [filter, setFilter] = useState('')
   const [filteredProdutosNaEstante, setFilteredProdutosNaEstante] = useState<EstanteProdutoProps[]>([])
+  const [produto, setProduto] = useState<EstanteProdutoProps>()
   const [produtoId, setProdutoId] = useState('')
   const [estanteId, setEstanteId] = useState(id)
   const [precoVenda, setPrecoVenda] = useState('')
   const [quantidade, setQuantidade] = useState('')
   const [qtdProdutosEstante, setQtdProdutosEstante] = useState(0)
   const [produtoNaEstanteId, setProdutoNaEstanteId] = useState<number[]>([])
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isUpdateStatusModalOpen, setIsUpdateStatusModalOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [postPerPage, setPostsPerPage] = useState(5)
   const lastIndex = currentPage * postPerPage;
@@ -104,6 +108,11 @@ const EstanteProduto: NextPage = () => {
     setIsUpdate(true)
   }
 
+  const handleUpdateProductStatus = (produto: EstanteProdutoProps) => {
+    setProduto(produto)
+    setIsUpdateStatusModalOpen(true)
+  }
+
   const handleUpdate = async () => {
     try {
       const { errors } = await produtoEstanteService.atualizarProdutoNaEstante({
@@ -124,7 +133,7 @@ const EstanteProduto: NextPage = () => {
   }
 
   const onRequestClose = () => {
-    setIsDeleteModalOpen(false)
+    setIsUpdateStatusModalOpen(false)
   }
 
   const handleFilterProdutosList = (event: any) => {
@@ -175,12 +184,12 @@ const EstanteProduto: NextPage = () => {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nome</th>
                 <th>Preço Custo</th>
                 <th>Unidade</th>
                 <th>Preço Venda</th>
                 <th>Quantidade</th>
+                <th>Status</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -190,13 +199,14 @@ const EstanteProduto: NextPage = () => {
                 filteredProdutosNaEstante.map(produto => {
                   return (
                     <tr key={produto.produtoId}>
-                      <td>{produto.produtoId}</td>
                       <td>{produto.nome}</td>
                       <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoCusto)}</td>
                       <td>{produto.unidade}</td>
                       <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}</td>
                       <td>{produto.quantidade}</td>
+                      <td>{produto.ativo}</td>
                       <td>
+                        <a><Image onClick={() => {handleUpdateProductStatus(produto)}} src={ConfirmImg} alt="Atualizar status do produto" width={30} height={30} /></a>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                       </td>
                     </tr>
@@ -206,13 +216,14 @@ const EstanteProduto: NextPage = () => {
                 produtosNaEstantePaginados.map(produto => {
                   return (
                     <tr key={produto.produtoId}>
-                      <td>{produto.produtoId}</td>
                       <td>{produto.nome}</td>
                       <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoCusto)}</td>
                       <td>{produto.unidade}</td>
                       <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}</td>
                       <td>{produto.quantidade}</td>
+                      <td>{produto.ativo === 1 ? 'ATIVO' : 'DESATIVADO'}</td>
                       <td>
+                        <a><Image onClick={() => {handleUpdateProductStatus(produto)}} src={ConfirmImg} alt="Atualizar status do produto" width={30} height={30} /></a>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                       </td>
                     </tr>
@@ -224,7 +235,7 @@ const EstanteProduto: NextPage = () => {
         </TableContainer>
         )}
         {produtosNaEstantePaginados.length > 0 && <Pagination totalPosts={produtosNaEstante.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
-        <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='ProdutoEstante' idArray={produtoNaEstanteId} />
+        <UpdateStatus isOpen={isUpdateStatusModalOpen} onRequestClose={onRequestClose} produto={produto as EstanteProdutoProps} estanteId={Number(id)} />
       </Container>
     </>
   )
