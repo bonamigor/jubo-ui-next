@@ -92,10 +92,11 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
       if (observacao != '') {
         await pedidoService.adicionarObservacao({ observacao, pedidoId: Number(pedidoId) })
       }
-      const { data, errors } = await pedidoService.atualizarValorTotal(Number(pedidoId), valorTotal)
+      const { data: totalData, errors: totalErrors } = await pedidoService.atualizarValorTotal(Number(pedidoId), valorTotal)
+      const { data: finalizarData, errors: finalizarErrors } = await pedidoService.finalizarPedido(Number(pedidoId))
   
-      if (!errors) {
-        toast.success(data.message)
+      if (!totalErrors && !finalizarErrors) {
+        toast.success(totalData.message)
         router.push('/cliente/inicial')
       }
     } catch (error) {
