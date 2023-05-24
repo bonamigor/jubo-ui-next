@@ -15,7 +15,7 @@ const Pedidos: NextPage = () => {
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
 
   useEffect(() => {
@@ -94,7 +94,7 @@ const Pedidos: NextPage = () => {
                         style: 'currency',
                         currency: 'BRL'
                         }).format(pedido.valorTotal)}</td>
-                      <td>{pedido.status}</td>
+                      <td>{pedido.status} / {pedido.isFinalizado === 1 ? 'FINALIZADO' : 'N. FINALIZ.'}</td>
                       <td>
                         {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega)) : 'Sem Data'}
                       </td>
@@ -116,7 +116,7 @@ const Pedidos: NextPage = () => {
                         style: 'currency',
                         currency: 'BRL'
                         }).format(pedido.valorTotal)}</td>
-                      <td>{pedido.status}</td>
+                      <td>{pedido.status} / {pedido.isFinalizado === 1 ? 'FINALIZADO' : 'N. FINALIZ.'}</td>
                       <td>
                         {pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date(pedido.dataEntrega)) : 'Sem Data'}
                       </td>

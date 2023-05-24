@@ -42,7 +42,7 @@ const Pedidos: NextPage = () => {
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
   const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [isConfirmOrderModalOpen, setIsConfirmOrderModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '' })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
 
 
   let clientes: Array<Cliente> = [];
@@ -61,6 +61,7 @@ const Pedidos: NextPage = () => {
     const { data, errors } = await pedidoService.listarPedidosByCliente(idCliente)
 
     if (!errors) {
+      console.log(data)
       setIsOrdersLoading(false)
       setPedidos(data.pedidos)
       setClienteId('')
@@ -182,7 +183,7 @@ const Pedidos: NextPage = () => {
                         <td>{pedido.id}</td>
                         <td>{pedido.nome}</td>
                         <td>{new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(pedido.dataCriacao)}</td>
-                        <td>{pedido.status}</td>
+                        <td>{pedido.status} / {pedido.isFinalizado === 1 ? 'FINALIZADO' : 'N. FINALIZ.'}</td>
                         <td>{pedido.dataEntrega ? new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(pedido.dataEntrega) : 'Sem Data'}</td>
                         <td>{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(pedido.valorTotal)}</td>
                         <td>

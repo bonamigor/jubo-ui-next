@@ -14,6 +14,7 @@ export interface PedidosProps {
   estado: string;
   telefone: string;
   empresa?: number;
+  isFinalizado: number;
 }
 
 export interface PedidosObject {
