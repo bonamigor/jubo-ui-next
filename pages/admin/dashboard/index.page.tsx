@@ -29,7 +29,8 @@ const Dashboard: NextPage = () => {
 
   const { data: pedidosObject, isLoading: isPedidosObjectLoading, isSuccess, isFetching } = useQuery<PedidosObject, Error>('getPedidosForDashboard', pedidoService.listarPedidos, { staleTime: 1000 * 60 * 15, refetchOnWindowFocus: true })
   const { data: tomorrowPedidosObject } = useQuery<PedidosObject, Error>('getTomorrowPedidosForDashboard', pedidoService.listarPedidosDeAmanha, { staleTime: 1000 * 60 * 15 })
-  
+  console.log(pedidosObject)
+
   const handleFilterPedidosByCliente = (event: any) => {
     setFilter(event.toUpperCase())
     setFilteredPedidos(pedidosObject!.pedidos.filter((pedido: PedidosProps) => {
@@ -133,7 +134,7 @@ const Dashboard: NextPage = () => {
                             }).format(pedido.valorTotal)}
                           </td>
                           <td>
-                            <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                            {pedido.isFinalizado === 1 ? <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a> : 'N. FINALIZ.'}
                           </td>
                         </tr>
                       )

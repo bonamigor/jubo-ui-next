@@ -173,7 +173,7 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
           </TableFooter>
           <Textarea placeholder="Deixe uma observação para o fornecedor. OBS.: A observação não pode conter mais de 255 caracteres;" size="lg" css={{ mt: "1.5rem", w: "1000px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
           <DecideButtons>
-            <ConfirmButton onClick={handleFecharPedido} disabled={!(products.length > 0)}>Fechar Pedido</ConfirmButton>
+            <ConfirmButton onClick={handleFecharPedido} disabled={!(products.length > 0)}>Finalizar Pedido</ConfirmButton>
             <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>
           </DecideButtons>
           <DeleteModal isOpen={isDeletePedidoModalOpen} onRequestClose={onRequestClosePedidoModal} entity='Pedido' id={idPedido} />
