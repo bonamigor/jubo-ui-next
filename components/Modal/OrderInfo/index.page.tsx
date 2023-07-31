@@ -73,6 +73,13 @@ const empresas: Array<EmpresaProps> = [
     cidade: 'Goiatuba',
     estado: 'Goiás'
   },
+  {
+    nome: 'COOPANIRA',
+    cnpj: '50.702.609/0001-80',
+    endereco: 'Rua José Caitano Leal, Quadra 17, Lote 33, Setor Sul',
+    cidade: 'Goianira',
+    estado: 'Goiás'
+  }
 ]
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
