@@ -500,6 +500,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                     <input type="radio" name="compaf" id="compaf" value="4" onChange={handleOptionEmpresa} />
                     COMPAF
                   </label>
+                  <label htmlFor="coopanira">
+                    <input type="radio" name="coopanira" id="coopanira" value="5" onChange={handleOptionEmpresa} />
+                    COOPANIRA
+                  </label>
                 </div>
               </ConfirmSection>
               <CancelSection>
