@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios'
 
 const EstanteService = (httpClient: AxiosInstance) => ({
   listarUmaEstante: async (id: number) => {
@@ -131,6 +131,24 @@ const EstanteService = (httpClient: AxiosInstance) => ({
     const response = await httpClient.delete(
       `/api/estantes/${id}`
     )
+
+    let estanteErrors = null
+
+    if (!response.data) {
+      estanteErrors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      estanteErrors
+    }
+  },
+
+  alterarEstadoDaEstante: async (id: number, status: number) => {
+    const response = await httpClient.patch(`/api/estantes/${id}/${status}`)
 
     let estanteErrors = null
 
