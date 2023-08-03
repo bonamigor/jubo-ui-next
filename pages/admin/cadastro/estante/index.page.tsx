@@ -1,19 +1,21 @@
-import { NextPage } from "next";
-import Image from "next/image";
-import EditImg from '../../../../assets/edit.png'
-import DeleteImg from '../../../../assets/delete.png'
+import { NextPage } from "next"
+import Head from "next/head"
+import Image from "next/image"
+import { useRouter } from "next/router"
+import { FormEvent, SetStateAction, useEffect, useState } from 'react'
+import toast from "react-hot-toast"
+import NumberFormat from "react-number-format"
+import { useQuery } from "react-query"
 import AddImg from '../../../../assets/add.png'
-import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estante";
-import { useState, FormEvent, SetStateAction, useEffect } from 'react';
-import { clienteService, estanteService } from '../../../../services/index';
-import NumberFormat from "react-number-format";
-import { useRouter } from "next/router";
-import DeleteModal from "../../../../components/Modal/Delete/index.page";
-import toast from "react-hot-toast";
-import Head from "next/head";
-import { useQuery } from "react-query";
-import { Cliente } from "../cliente/index.page";
-import Pagination from "../../../../components/Pagination/index.page";
+import ConfirmImg from '../../../../assets/confirm.png'
+import DeleteImg from '../../../../assets/delete.png'
+import EditImg from '../../../../assets/edit.png'
+import DeleteModal from "../../../../components/Modal/Delete/index.page"
+import UpdateStatus from "../../../../components/Modal/UpdateStatus/index.page"
+import Pagination from "../../../../components/Pagination/index.page"
+import { clienteService, estanteService } from '../../../../services/index'
+import { Cliente } from "../cliente/index.page"
+import { Container, Content, FormButton, FormItself, FormSubmitButton, InputFilter, TableContainer } from "./estante"
 
 interface EstanteProps {
   id: number;
@@ -21,13 +23,14 @@ interface EstanteProps {
   cliente: string;
   periodo: string;
   observacao: string;
-  ativa: string;
+  ativa: boolean;
 }
 
 const CadastroEstante: NextPage = () => {
   const router = useRouter()
   const [isUpdate, setIsUpdate] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isUpdateStatusModalOpen, setIsUpdateStatusModalOpen] = useState(false)
   const [filter, setFilter] = useState('')
   const [filteredEstantes, setFilteredEstantes] = useState<EstanteProps[]>([])
   const [currentPage, setCurrentPage] = useState(1)
@@ -41,6 +44,7 @@ const CadastroEstante: NextPage = () => {
   const [cliente, setCliente] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [observacao, setObservacao] = useState('')
+  const [status, setStatus] = useState(0)
 
   const validate = () => cliente.length > 0 && periodo.length > 0 && observacao.length > 0 
 
@@ -120,7 +124,14 @@ const CadastroEstante: NextPage = () => {
     setIsDeleteModalOpen(true)
   }
 
+  const handleUpdateEstanteStatus = (estante: EstanteProps) => {
+    setId(estante.id)
+    setStatus(estante.ativa ? 0 : 1)
+    setIsUpdateStatusModalOpen(true)
+  }
+
   const onRequestClose = () => {
+    setIsUpdateStatusModalOpen(false)
     setIsDeleteModalOpen(false)
   }
 
@@ -163,6 +174,7 @@ const CadastroEstante: NextPage = () => {
                 <th>ID - Cliente</th>
                 <th>Período</th>
                 <th>Observação</th>
+                <th>Ativa</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -175,9 +187,11 @@ const CadastroEstante: NextPage = () => {
                       <td>{`${estante.clienteId} - ${estante.cliente}`}</td>
                       <td>{estante.periodo}</td>
                       <td>{estante.observacao}</td>
+                      <td>{estante.ativa ? 'SIM' : 'NAO'}</td>
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
+                        <a><Image onClick={() => handleUpdateEstanteStatus(estante)} src={ConfirmImg} alt="Deletar" width={30} height={30} /></a>
                         <a><Image onClick={() => router.push(`estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
                     </tr>
@@ -190,9 +204,11 @@ const CadastroEstante: NextPage = () => {
                       <td>{`${estante.clienteId} - ${estante.cliente}`}</td>
                       <td>{estante.periodo}</td>
                       <td>{estante.observacao}</td>
+                      <td>{estante.ativa ? 'SIM' : 'NAO'}</td>
                       <td>
                         <a><Image onClick={() => prepareUpdate(estante)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
                         <a><Image onClick={() => handleDeleteEstante(estante)} src={DeleteImg} alt="Deletar" width={30} height={30} /></a>
+                        <a><Image onClick={() => handleUpdateEstanteStatus(estante)} src={ConfirmImg} alt="Deletar" width={30} height={30} /></a>
                         <a><Image onClick={() => router.push(`estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
                     </tr>
@@ -204,6 +220,7 @@ const CadastroEstante: NextPage = () => {
         </TableContainer>
         {estantesPaginadas.length > 0 && <Pagination totalPosts={estantes.length} postsPerPage={postPerPage} setCurrentPage={setCurrentPage} />}
         <DeleteModal isOpen={isDeleteModalOpen} onRequestClose={onRequestClose} entity='Estante' id={id} />
+        <UpdateStatus isOpen={isUpdateStatusModalOpen} onRequestClose={onRequestClose} estanteId={Number(id)} statusEstante={status} />
       </Container>
     </>
   )
