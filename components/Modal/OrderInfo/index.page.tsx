@@ -1,25 +1,25 @@
-import { NextPage } from 'next';
-import { CancelSection, ConfirmSection, Container, OrderFooter, OrderHeader, OrderItems, GeneratePdf, Observacao } from './orderInfo';
+import { Loading, Textarea } from '@nextui-org/react'
+import jsPDF from "jspdf"
+import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
+import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import InputMask from "react-input-mask"
 import Modal from 'react-modal'
-import { useState, useEffect } from 'react';
-import { pedidoService } from '../../../services';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/router';
-import jsPDF from "jspdf";
-import autoTable from 'jspdf-autotable';
-import 'jspdf-autotable';
-import { useQuery, useQueryClient } from 'react-query';
-import { Loading, Textarea } from '@nextui-org/react';
-import InputMask from "react-input-mask";
-import { PedidosProps } from '../../../services/pedido';
+import { useQuery, useQueryClient } from 'react-query'
+import { pedidoService } from '../../../services'
+import { PedidosProps } from '../../../services/pedido'
+import { CancelSection, ConfirmSection, Container, GeneratePdf, Observacao, OrderFooter, OrderHeader, OrderItems } from './orderInfo'
 
 interface ProductsProps {
   itemPedidoId?: string;
   produtoId?: string;
   nome: string;
   unidade: string;
-  precoVenda: string;
   quantidade: string;
+  precoVenda: string;
   total: string;
 }
 
@@ -167,8 +167,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
         style: 'currency',
         currency: 'BRL'
       }).format(Number(produto.total))
-      return produto
+      return { nome: produto.nome, unidade: produto.unidade, quantidade: produto.quantidade, precoVenda: produto.precoVenda, total: produto.total }
     })
+
+    // const teste = formatedPrices.map(produto => {
+    //   return { nome: produto.nome, unidade: produto.unidade, quantidade: produto.quantidade, precoVenda: produto.precoVenda, total: produto.total }
+    // })
 
     const newProdutosArray = formatedPrices.map(produto => {
       return Object.values(produto)
@@ -219,13 +223,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     let columns = [
       { header: 'Nome', dataKey: 'nome' },
       { header: 'Und', dataKey: 'unidade' },
-      { header: 'Preço', dataKey: 'preco' },
       { header: 'Qtde', dataKey: 'quantidade' },
+      { header: 'Preço', dataKey: 'preco' },
       { header: 'Total', dataKey: 'total' }
     ]
 
     autoTable(doc, {
-      head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+      head: [['Nome', 'Und', 'Qtde', 'Preço', 'Total']],
       headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
       columns: columns,
       body: newProdutosArray,
@@ -242,7 +246,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     doc.setPage(pageNumber)
 
     autoTable(doc, {
-      head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+      head: [['Nome', 'Und', 'Qtde', 'Preço', 'Total']],
       headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
       columns: columns,
       body: newProdutosArray,
