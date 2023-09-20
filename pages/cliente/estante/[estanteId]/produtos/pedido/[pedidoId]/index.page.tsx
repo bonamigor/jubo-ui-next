@@ -1,11 +1,11 @@
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import { Container, Content, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm } from "./produtos";
-import { useState, useEffect, FormEvent } from 'react';
-import { produtoEstanteService, itemPedidoService, clienteService, pedidoService } from '../../../../../../../services/index';
-import toast from "react-hot-toast";
-import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page";
-import Head from "next/head";
+import { NextPage } from "next"
+import Head from "next/head"
+import { useRouter } from "next/router"
+import { FormEvent, useEffect, useState } from 'react'
+import toast from "react-hot-toast"
+import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page"
+import { clienteService, itemPedidoService, pedidoService, produtoEstanteService } from '../../../../../../../services/index'
+import { Container, Content, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm } from "./produtos"
 
 interface ProdutoNaEstanteProps {
   produtoId: number;
@@ -94,7 +94,7 @@ const PedidoProdutos: NextPage = () => {
       const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
         estanteId: String(estanteId),
         produtoId: produtoId.split(' ')[0],
-        precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
+        precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')),
         quantidade: Number(quantidade.replace(',','.')),
         pedidoId: String(pedidoId)
       })
@@ -107,7 +107,7 @@ const PedidoProdutos: NextPage = () => {
           produtoId: produtoId.split(' ')[0],
           nome: produtoId.split(' ')[1],
           unidade: produtoId.split('/')[1].trim(),
-          precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
+          precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')),
           quantidade: quantidade.replaceAll('.', ','),
           total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
         }
