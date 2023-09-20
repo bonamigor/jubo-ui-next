@@ -109,7 +109,7 @@ const PedidoProdutos: NextPage = () => {
           unidade: produtoId.split('/')[1].trim(),
           precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')),
           quantidade: quantidade.replaceAll('.', ','),
-          total: (Number(produtoId.split(' ')[3].substring(3).replaceAll('.', '').replaceAll(',', '.')) * Number(quantidade))
+          total: (Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')) * Number(quantidade))
         }
         setProduct(newProduto)
 
@@ -153,7 +153,7 @@ const PedidoProdutos: NextPage = () => {
           unidade: produtoId.split(' ')[5],
           precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
           quantidade: quantidade.replaceAll('.', ','),
-          total: (Number(produtoId.split(' ')[3].substring(3).replaceAll(',', '.')) * Number(quantidade))
+          total: (Number(produtoId.split(' ')[3].substring(3).replaceAll('.', '').replaceAll(',', '.')) * Number(quantidade))
         }
         setProduct(newProduto)
       }
