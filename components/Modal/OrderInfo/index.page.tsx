@@ -3,14 +3,18 @@ import jsPDF from "jspdf"
 import 'jspdf-autotable'
 import autoTable from 'jspdf-autotable'
 import { NextPage } from 'next'
+import Image from "next/image"
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import InputMask from "react-input-mask"
 import Modal from 'react-modal'
 import { useQuery, useQueryClient } from 'react-query'
+import DeleteImg from '../../../assets/delete.png'
+import EditImg from '../../../assets/edit.png'
 import { pedidoService } from '../../../services'
 import { PedidosProps } from '../../../services/pedido'
+import DeleteModal from '../Delete/index.page'
 import { CancelSection, ConfirmSection, Container, GeneratePdf, Observacao, OrderFooter, OrderHeader, OrderItems } from './orderInfo'
 
 interface ProductsProps {
@@ -91,13 +95,25 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [observacaoPedido, setObservacaoPedido] = useState('')
   const [obsCancelamento, setobsCancelamento] = useState('')
   const [isValidConfirmar, setIsValidConfirmar] = useState(false)
+  const [idItemPedido, setIdItemPedido] = useState('')
+  const [isDeleteItemPedidoModalOpen, setIsDeleteItemPedidoModalOpen] = useState(false)
+  const [valorTotal, setValorTotal] = useState('')
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: false, enabled: isOpen })
 
   let products: Array<ProductsProps> = [];
 
+  const fetchValorTotal = async () => {
+    const { data, errors } = await pedidoService.recuperarValorTotal(pedido.id)
+
+    if (!errors) {
+      setValorTotal(data.valorTotal)
+    }
+  }
+
   if (isSuccess) {
     products = data.produtos
+    fetchValorTotal()
   }
 
   const confirmOrder = async () => {
@@ -404,6 +420,25 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     }
   }, [pedido])
 
+  const handleUpdateItemPedido = () => {
+
+  }
+
+  const handleDeleteItemPedido = (product: ProductsProps) => {
+    setIdItemPedido(`${product.itemPedidoId} ${pedido.id}`)
+    setIsDeleteItemPedidoModalOpen(true)
+    setTimeout(() => {
+      const index = products.findIndex(productInArray => productInArray.itemPedidoId === product.itemPedidoId)
+      delete products[index]
+    }, 3000)
+  }
+
+  
+  const onRequestCloseItemPedidoModal = () => {
+    setIsDeleteItemPedidoModalOpen(false)
+    fetchValorTotal()
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -430,6 +465,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                 <th>Unidade</th>
                 <th>Quantidade</th>
                 <th>Total</th>
+                <th>Ações</th>
               </tr>
             </thead>
 
@@ -455,6 +491,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                           currency: 'BRL'
                         }).format(Number(product.total))}
                       </td>
+                      <td>
+                        <div>
+                          <a><Image onClick={() => {handleUpdateItemPedido()}} src={EditImg} alt="Atualizar item do pedido" width={50} height={50} /></a>
+                          <a><Image onClick={() => {handleDeleteItemPedido(product)}} src={DeleteImg} alt="Deletar item do pedido" width={50} height={50} /></a>
+                        </div>
+                      </td>
                     </tr>
                   )
                 })
@@ -465,7 +507,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             Valor Total: {new Intl.NumberFormat('pt-BR', {
               style: 'currency',
               currency: 'BRL'
-            }).format(pedido.valorTotal)}
+            }).format(Number(valorTotal))}
           </h3>
           <Observacao>
             <Textarea initialValue={pedido.status === 'CANCELADO' ? pedido.obsCancelamento : pedido.observacao ?? 'Sem observacao'} onChange={event => { setObservacaoPedido(event.target.value) }} css={{ mt: "1.5rem", w: "900px" }} />
@@ -526,6 +568,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
             </GeneratePdf>
           )}
         </OrderFooter>
+        <DeleteModal isOpen={isDeleteItemPedidoModalOpen} onRequestClose={onRequestCloseItemPedidoModal} entity='ItemPedido' id={String(idItemPedido)} />
       </Container>
     </Modal>
 

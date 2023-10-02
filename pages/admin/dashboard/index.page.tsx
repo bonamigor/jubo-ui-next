@@ -1,16 +1,16 @@
-import { NextPage } from 'next';
-import Image from 'next/image';
-import { Container, Filter, InputFilter, LeftPanel, LoadingDiv, NoContent, RightPanel, TableContainer } from './dashboard';
+import { Loading } from '@nextui-org/react'
+import { NextPage } from 'next'
+import Head from 'next/head'
+import Image from 'next/image'
+import { useState } from 'react'
+import { useQuery } from 'react-query'
 import AlertImg from '../../../assets/alert.png'
-import TruckImg from '../../../assets/truck.png'
 import BloomImg from '../../../assets/bloom.png'
-import { useState } from 'react';
-import { pedidoService } from '../../../services';
-import Head from 'next/head';
-import { useQuery } from 'react-query';
-import OrderInfo from '../../../components/Modal/OrderInfo/index.page';
-import { PedidosObject, PedidosProps } from '../../../services/pedido';
-import { Loading } from '@nextui-org/react';
+import TruckImg from '../../../assets/truck.png'
+import OrderInfo from '../../../components/Modal/OrderInfo/index.page'
+import { pedidoService } from '../../../services'
+import { PedidosObject, PedidosProps } from '../../../services/pedido'
+import { Container, Filter, InputFilter, LeftPanel, LoadingDiv, NoContent, RightPanel, TableContainer } from './dashboard'
 
 const Dashboard: NextPage = () => {
   const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
@@ -29,7 +29,6 @@ const Dashboard: NextPage = () => {
 
   const { data: pedidosObject, isLoading: isPedidosObjectLoading, isSuccess, isFetching } = useQuery<PedidosObject, Error>('getPedidosForDashboard', pedidoService.listarPedidos, { staleTime: 1000 * 60 * 15, refetchOnWindowFocus: true })
   const { data: tomorrowPedidosObject } = useQuery<PedidosObject, Error>('getTomorrowPedidosForDashboard', pedidoService.listarPedidosDeAmanha, { staleTime: 1000 * 60 * 15 })
-  console.log(pedidosObject)
 
   const handleFilterPedidosByCliente = (event: any) => {
     setFilter(event.toUpperCase())

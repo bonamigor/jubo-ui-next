@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
 export const Container = styled.div`
   width: 100%;
@@ -105,6 +105,12 @@ export const OrderItems = styled.div<OrderItemsProps>`
 
       a {
         margin: 0 5px;
+      }
+
+      div {
+        display: flex;
+        flex-direction: row;
+        width: 4rem;
       }
     }
   }
