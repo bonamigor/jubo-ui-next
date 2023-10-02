@@ -5,19 +5,20 @@ import autoTable from 'jspdf-autotable'
 import { NextPage } from 'next'
 import Image from "next/image"
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { KeyboardEvent, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import InputMask from "react-input-mask"
 import Modal from 'react-modal'
 import { useQuery, useQueryClient } from 'react-query'
 import DeleteImg from '../../../assets/delete.png'
 import EditImg from '../../../assets/edit.png'
-import { pedidoService } from '../../../services'
+import { itemPedidoService, pedidoService } from '../../../services'
 import { PedidosProps } from '../../../services/pedido'
 import DeleteModal from '../Delete/index.page'
 import { CancelSection, ConfirmSection, Container, GeneratePdf, Observacao, OrderFooter, OrderHeader, OrderItems } from './orderInfo'
 
 interface ProductsProps {
+  estanteId: string;
   itemPedidoId?: string;
   produtoId?: string;
   nome: string;
@@ -98,21 +99,24 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const [idItemPedido, setIdItemPedido] = useState('')
   const [isDeleteItemPedidoModalOpen, setIsDeleteItemPedidoModalOpen] = useState(false)
   const [valorTotal, setValorTotal] = useState('')
+  const [quantidade, setQuantidade] = useState('')
+  const [isUpdateItem, setIsUpdateItem] = useState(false)
+  const [previousIndex, setPreviousIndex] = useState(0)
 
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: false, enabled: isOpen })
 
   let products: Array<ProductsProps> = [];
-
-  const fetchValorTotal = async () => {
-    const { data, errors } = await pedidoService.recuperarValorTotal(pedido.id)
-
-    if (!errors) {
-      setValorTotal(data.valorTotal)
-    }
-  }
-
+  
   if (isSuccess) {
     products = data.produtos
+    const fetchValorTotal = async () => {
+      const { data, errors } = await pedidoService.recuperarValorTotal(pedido.id)
+  
+      if (!errors) {
+        setValorTotal(data.valorTotal)
+      }
+    }
+
     fetchValorTotal()
   }
 
@@ -420,8 +424,34 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     }
   }, [pedido])
 
-  const handleUpdateItemPedido = () => {
+  const prepareUpdateItemPedido = (product: ProductsProps) => {
+    setIsUpdateItem(true)
+    setPreviousIndex(Number(product.itemPedidoId))
+  }
 
+  const handleUpdateItemPedido = async (product: ProductsProps, event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      alert(`Deseja mudar a quantidade de ${product.quantidade} para ${quantidade}???????`)
+
+      try {
+        const { data, errors } = await itemPedidoService.atualizarItemDoPedido({
+          estanteId: Number(product.estanteId),
+          produtoId: Number(product.produtoId),
+          pedidoId: Number(pedido.id),
+          itemPedidoId: Number(product.itemPedidoId),
+          precoVenda: Number(product.precoVenda),
+          quantidade: Number(quantidade.replaceAll('.', '').replaceAll(',', '.'))
+        })
+
+        if (!errors) {
+          queryClient.invalidateQueries('produtosPedido')
+          toast.success('Produto alterado com sucesso!')
+          setIsUpdateItem(false)
+        }
+      } catch (error) {
+        toast.error(String(error))
+      }
+    }
   }
 
   const handleDeleteItemPedido = (product: ProductsProps) => {
@@ -433,10 +463,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     }, 3000)
   }
 
-  
   const onRequestCloseItemPedidoModal = () => {
     setIsDeleteItemPedidoModalOpen(false)
-    fetchValorTotal()
   }
 
   return (
@@ -484,7 +512,11 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         }).format(Number(product.precoVenda))}
                       </td>
                       <td>{product.unidade}</td>
-                      <td>{product.quantidade.replaceAll('.', ',')}</td>
+                      <td>{(isUpdateItem && (previousIndex === Number(product.itemPedidoId))) ? 
+                        <input 
+                        onKeyUp={event => { handleUpdateItemPedido(product, event) }}
+                        onChange={event => { setQuantidade(event.target.value) }} /> : 
+                        product.quantidade.replaceAll('.', ',')}</td>
                       <td>
                         {new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
@@ -493,7 +525,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                       </td>
                       <td>
                         <div>
-                          <a><Image onClick={() => {handleUpdateItemPedido()}} src={EditImg} alt="Atualizar item do pedido" width={50} height={50} /></a>
+                          <a><Image onClick={() => {prepareUpdateItemPedido(product)}} src={EditImg} alt="Atualizar item do pedido" width={50} height={50} /></a>
                           <a><Image onClick={() => {handleDeleteItemPedido(product)}} src={DeleteImg} alt="Deletar item do pedido" width={50} height={50} /></a>
                         </div>
                       </td>
