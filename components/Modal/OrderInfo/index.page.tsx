@@ -456,11 +456,9 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
   const handleDeleteItemPedido = (product: ProductsProps) => {
     setIdItemPedido(`${product.itemPedidoId} ${pedido.id}`)
+    const index = products.findIndex(productInArray => productInArray.itemPedidoId === product.itemPedidoId)
+    delete products[index]
     setIsDeleteItemPedidoModalOpen(true)
-    setTimeout(() => {
-      const index = products.findIndex(productInArray => productInArray.itemPedidoId === product.itemPedidoId)
-      delete products[index]
-    }, 3000)
   }
 
   const onRequestCloseItemPedidoModal = () => {
