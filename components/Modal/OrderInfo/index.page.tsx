@@ -425,7 +425,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   }, [pedido])
 
   const prepareUpdateItemPedido = (product: ProductsProps) => {
-    setIsUpdateItem(true)
+    setIsUpdateItem(!isUpdateItem)
     setPreviousIndex(Number(product.itemPedidoId))
   }
 
