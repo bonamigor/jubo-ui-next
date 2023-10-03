@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios'
 
 export interface PedidosProps {
   id: number;
@@ -217,8 +217,26 @@ const PedidoService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  atualizarValorTotal: async (pedidoId: number, valorTotal: number) => {
+  atualizarValorTotal: async (pedidoId: number, valorTotal?: number) => {
     const response = await httpClient.put(`/api/pedidos/${pedidoId}/atualizar/valorTotal`, { valorTotal })
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
+  recuperarValorTotal: async (pedidoId: number) => {
+    const response = await httpClient.get(`/api/pedidos/${pedidoId}/recuperarValorTotal`)
 
     let errors = null
 
