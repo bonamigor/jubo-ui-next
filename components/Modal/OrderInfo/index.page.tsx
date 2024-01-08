@@ -35,6 +35,8 @@ interface OrderInfoModalProps {
 }
 
 interface EmpresaProps {
+  attribute: string;
+  displayName: string;
   nome: string;
   cnpj: string;
   endereco: string;
@@ -44,13 +46,17 @@ interface EmpresaProps {
 
 const empresas: Array<EmpresaProps> = [
   {
-    nome: 'Comercial Mendes',
-    cnpj: '26.669.899/0001-23',
-    endereco: 'Rua Pinheiro Chagas, Vila Nova Canaã',
+    attribute: 'kidelicia',
+    displayName: 'Kidelicia',
+    nome: 'Panificadora e Lanchonete Kidelicia',
+    cnpj: '02.895.623/0001-03',
+    endereco: 'Rua Pinheiro Chagas, 171, Setor Sudoeste, 74303-035',
     cidade: 'Goiânia',
     estado: 'Goiás'
   },
   {
+    attribute: 'coperal',
+    displayName: 'COPERAL',
     nome: 'COPERAL',
     cnpj: '46.258.870/0001-66',
     endereco: 'Rua 26 de setembro, nº 21, lt. 23, Setor Estrela Dalva',
@@ -58,6 +64,8 @@ const empresas: Array<EmpresaProps> = [
     estado: 'Goiás'
   },
   {
+    attribute: 'coopassen',
+    displayName: 'COOPASSEN',
     nome: 'COOPASSEN',
     cnpj: '36.070.538/0001-10',
     endereco: 'R. Padre Alcides Spolidoro, S/N, Q. I4 L. 11/12, Dist Ind Santa Edwiges',
@@ -65,6 +73,8 @@ const empresas: Array<EmpresaProps> = [
     estado: 'Goiás'
   },
   {
+    attribute: 'coopaco',
+    displayName: 'COOPACO',
     nome: 'COOPACO',
     cnpj: '33.507.873/0001-44',
     endereco: 'Rua 03, QD. 07, LT. 13, Sala 03, Recanto das Emboabas',
@@ -72,6 +82,8 @@ const empresas: Array<EmpresaProps> = [
     estado: 'Goiás'
   },
   {
+    attribute: 'compaf',
+    displayName: 'COMPAF',
     nome: 'COMPAF',
     cnpj: '29.119.413/0001-71',
     endereco: 'ROD GO-320 KM 10.5 n 100, LT. 11 QD. 03, RES BOA ESPERANCA',
@@ -79,6 +91,8 @@ const empresas: Array<EmpresaProps> = [
     estado: 'Goiás'
   },
   {
+    attribute: 'coopanira',
+    displayName: 'COOPANIRA',
     nome: 'COOPANIRA',
     cnpj: '50.702.609/0001-80',
     endereco: 'Rua José Caitano Leal, Quadra 17, Lote 33, Setor Sul',
@@ -558,30 +572,16 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   <button onClick={generatePdf}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
-                  <label htmlFor="mendes">
-                    <input type="radio" name="mendes" id="mendes" value="0" onChange={handleOptionEmpresa} />
-                    Mendes
-                  </label>
-                  <label htmlFor="coperal">
-                    <input type="radio" name="coperal" id="coperal" value="1" onChange={handleOptionEmpresa} />
-                    COPERAL
-                  </label>
-                  <label htmlFor="coopassen">
-                    <input type="radio" name="coopassen" id="coopassen" value="2" onChange={handleOptionEmpresa} />
-                    COOPASSEN
-                  </label>
-                  <label htmlFor="coopaco">
-                    <input type="radio" name="coopaco" id="coopaco" value="3" onChange={handleOptionEmpresa} />
-                    COOPACO
-                  </label>
-                  <label htmlFor="compaf">
-                    <input type="radio" name="compaf" id="compaf" value="4" onChange={handleOptionEmpresa} />
-                    COMPAF
-                  </label>
-                  <label htmlFor="coopanira">
-                    <input type="radio" name="coopanira" id="coopanira" value="5" onChange={handleOptionEmpresa} />
-                    COOPANIRA
-                  </label>
+                {
+                  empresas.map((empresa, index) => {
+                    return (
+                      <label key={empresa.attribute} htmlFor={empresa.attribute}>
+                        <input type="radio" name={empresa.attribute} id={empresa.attribute} value={index} onChange={handleOptionEmpresa} />
+                        {empresa.displayName}
+                      </label>
+                    )
+                  })
+                }
                 </div>
               </ConfirmSection>
               <CancelSection>
