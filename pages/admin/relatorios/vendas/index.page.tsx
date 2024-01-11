@@ -1,21 +1,21 @@
-import { NextPage } from "next";
-import { useState, useEffect } from 'react';
+import { NextPage } from "next"
+import { useEffect, useState } from 'react'
 
-import { ButtonArea, Container, Content, Dates, EmptyTable, SearchButton, TableContainer } from './vendas';
+import { ButtonArea, Container, Content, Dates, EmptyTable, SearchButton, TableContainer } from './vendas'
 
-import { useMutation } from 'react-query';
-import { pedidoService } from "../../../../services";
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast'
+import { useMutation } from 'react-query'
+import { pedidoService } from "../../../../services"
 
-import InputMask from "react-input-mask";
+import InputMask from "react-input-mask"
 
-import jsPDF from "jspdf";
-import autoTable from 'jspdf-autotable';
-import 'jspdf-autotable';
-import { format } from "date-fns";
-import { clienteService } from '../../../../services/index';
-import Head from "next/head";
-import { Checkbox, Loading } from "@nextui-org/react";
+import { Loading } from "@nextui-org/react"
+import { format } from "date-fns"
+import jsPDF from "jspdf"
+import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
+import Head from "next/head"
+import { clienteService } from '../../../../services/index'
 
 interface Cliente {
   id: number;
@@ -269,7 +269,6 @@ const Vendas: NextPage = () => {
           <ButtonArea>
             <SearchButton type="button" onClick={() => {gerarRelatorio()}}>Pesquisar</SearchButton>
             {vendas.length > 0 && <SearchButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</SearchButton>}
-            {/* {vendas.length > 0 && } */}
             {vendas.length > 0 && 
             <>
               <label htmlFor="isAnalitico">Analitico?</label>

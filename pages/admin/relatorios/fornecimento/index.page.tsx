@@ -1,15 +1,23 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { Buttons, Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from "./fornecimento";
-import InputMask from "react-input-mask";
-import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { pedidoService } from "../../../../services";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { format } from "date-fns";
-import toast from "react-hot-toast";
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
+import { NextPage } from "next"
+import Head from "next/head"
+import { useState } from "react"
+import toast from "react-hot-toast"
+import InputMask from "react-input-mask"
+import { useMutation } from "react-query"
+import { pedidoService } from "../../../../services"
+import { Buttons, Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from "./fornecimento"
 
+interface Itens {
+  itemPedidoId?: number;
+  produtoId?: number;
+  nome: string;
+  unidade: string;
+  precoVenda: string;
+  quantidade: string;
+  total: string;
+}
 interface PedidoProps {
   id: number;
   cliente: string;
@@ -17,6 +25,7 @@ interface PedidoProps {
   status: string;
   dataEntrega: string;
   total: string;
+  itens: Array<Itens>;
 }
 
 const Fornecimento: NextPage = () => {
@@ -24,6 +33,7 @@ const Fornecimento: NextPage = () => {
   const [dataFinal, setDataFinal] = useState('')
   const [pedidos, setPedidos] = useState<PedidoProps[]>([])
   const [valorTotal, setValorTotal] = useState(0)
+  const [isAnalitico, setIsAnalitico] = useState("false")
 
   const mutation = useMutation(pedidoService.listarPedidosEntreDatas)
 
@@ -33,8 +43,9 @@ const Fornecimento: NextPage = () => {
 
     await mutation.mutateAsync({ dataInicial: dataInicialTimestamp, dataFinal: dataFinalTimestamp }, {
       onSuccess: async (data) => {
-        setPedidos(data.pedidos)
-        setValorTotal(data.valorTotal)
+        setPedidos(data.vendas)
+        setValorTotal(data.total)
+        console.log(data)
       },
       onError: async (error) => {
         toast.error('Erro ao pesquisar os produtos nessa data.')
@@ -50,16 +61,134 @@ const Fornecimento: NextPage = () => {
 
   const generateProductsPdf = async () => {
     const doc = new jsPDF()
-
-    autoTable(doc, { html: '#pedidos' })
-
     let finalY = (doc as any).lastAutoTable.finalY;
 
-    doc.text(`Valor Total: `, 14, finalY + 5)
-    doc.text(`${new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(Number(valorTotal))}`, 150, finalY + 5)
+    if (isAnalitico === "true") {  
+      for (let i = 0; i <= pedidos.length - 1; i++) {
+
+        let columns = [
+          { header: 'Cliente', dataKey: 'cliente' },
+          { header: 'Data Criacao', dataKey: 'dataCriacao' },
+          { header: 'Preço', dataKey: 'preco' },
+          { header: 'Qtde', dataKey: 'quantidade' },
+          { header: 'Total', dataKey: 'total' }
+        ]
+
+        pedidos[i].itens.forEach(item => {
+          delete item['produtoId'];
+          delete item['itemPedidoId'];
+        })
+
+        const produtosDaVenda = pedidos[i].itens.map(item => {
+          item.quantidade = String(Number(item.quantidade).toFixed(4)).replaceAll('.', ',')
+          item.precoVenda = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(Number(item.precoVenda))
+          item.total  = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(Number(item.total))
+          return Object.values(item)
+        })
+
+        if (i === 0) {
+          doc.setFontSize(11)
+          doc.text(`Pedido: ${pedidos[i].id} / Cliente: ${pedidos[i].cliente}`, 5, 10)
+          doc.text(`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedidos[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL'
+          }).format(Number(pedidos[i].total))}`, 5, 15)
+        doc.text('_____________________________________________________________________________________________', 5, 18)
+
+          // array com produtos      
+          autoTable(doc, {
+            head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+            headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
+            columns: columns,
+            body: produtosDaVenda,
+            theme: 'grid',
+            startY: 20,
+            tableWidth: 200,
+            margin: { left: 5, bottom: 15 },
+            showHead: 'firstPage',
+            styles: { overflow: 'visible', fontSize: 8 },
+            columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+            pageBreak: 'auto'
+          })
+        } else {
+          finalY = (doc as any).lastAutoTable.finalY;
+          const numberOfPages = (doc as any).internal.getNumberOfPages();
+  
+          if (finalY >= 250) {
+            doc.addPage()
+  
+            doc.setPage(numberOfPages + 1)
+  
+            doc.text(`Pedido: ${pedidos[i].id} / Cliente: ${pedidos[i].cliente}`, 5, 10)
+            doc.text(`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedidos[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(Number(pedidos[i].total))}`, 5, 15)
+          doc.text('_____________________________________________________________________________________________', 5, 18)
+  
+            // array com produtos do pedido
+            autoTable(doc, {
+              head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+              headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
+              columns: columns,
+              body: produtosDaVenda,
+              theme: 'grid',
+              startY: 20,
+              tableWidth: 200,
+              margin: { left: 5, bottom: 15 },
+              showHead: 'firstPage',
+              styles: { overflow: 'visible', fontSize: 8 },
+              columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+              pageBreak: 'auto'
+            })
+          } else {
+            doc.text(`Pedido: ${pedidos[i].id} / Cliente: ${pedidos[i].cliente}`, 5, finalY + 10)
+            doc.text(`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedidos[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(Number(pedidos[i].total))}`, 5, finalY + 15)
+          doc.text('_____________________________________________________________________________________________', 5, finalY + 18)
+  
+            // array co produtos do pedido
+            autoTable(doc, {
+              head: [['Nome', 'Und', 'Preço', 'Qtde', 'Total']],
+              headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
+              columns: columns,
+              body: produtosDaVenda,
+              theme: 'grid',
+              startY: finalY + 20,
+              tableWidth: 200,
+              margin: { left: 5, bottom: 15 },
+              showHead: 'firstPage',
+              styles: { overflow: 'visible', fontSize: 8 },
+              columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+              pageBreak: 'auto'
+            })
+          }
+        }
+
+        
+      }
+
+      finalY = (doc as any).lastAutoTable.finalY;
+
+      doc.setFontSize(14)
+      doc.text(`Valor Total dos Pedidos: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(valorTotal))}`, 5, finalY + 25)
+    } else {
+      autoTable(doc, { html: '#pedidos' })
+
+      doc.text(`Valor Total: `, 14, finalY + 5)
+      doc.text(`${new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      }).format(Number(valorTotal))}`, 150, finalY + 5)
+    }
 
     const dataInicialFormatada = dataInicial.split('/').reverse().join('-')
     const dataFinalFormatada = dataFinal.split('/').reverse().join('-')
@@ -92,6 +221,11 @@ const Fornecimento: NextPage = () => {
           <Buttons>
             {dataInicial.length > 0 && <SearchButton type="button" onClick={() => {handleCleanFields()}}>Limpar Campos</SearchButton>}
             {pedidos.length > 0 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
+            {pedidos.length > 0 && 
+            <>
+              <label htmlFor="isAnalitico">Analitico?</label>
+              <input type="checkbox" name="isAnalitico" id="isAnalitico" value={isAnalitico} onChange={() => {isAnalitico === "false" ? setIsAnalitico("true") : setIsAnalitico("false")}} />
+            </>}
           </Buttons>
         </Content>
         {mutation.isLoading && <h1>Carregando Pedidos</h1>}
