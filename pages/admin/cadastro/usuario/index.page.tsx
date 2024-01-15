@@ -1,19 +1,19 @@
 import type { NextPage } from "next"
-import Image from "next/image";
-import { useState, FormEvent, useEffect } from 'react';
+import Image from "next/image"
+import { FormEvent, useEffect, useState } from 'react'
 
-import { Admin, Container, FormButton, Forms, FormSubmitButton, InputFilter, TableContainer, User } from './usuario';
-import EditImg from '../../../../assets/edit.png'
+import { Loading } from "@nextui-org/react"
+import Head from "next/head"
+import { useRouter } from "next/router"
+import toast from "react-hot-toast"
+import { useQuery } from "react-query"
 import DeleteImg from '../../../../assets/delete.png'
-import { clienteService, usuarioService } from "../../../../services";
-import toast from "react-hot-toast";
-import DeleteModal from "../../../../components/Modal/Delete/index.page";
-import { useRouter } from "next/router";
-import Head from "next/head";
-import Pagination from "../../../../components/Pagination/index.page";
-import { useQuery } from "react-query";
-import { Loading } from "@nextui-org/react";
-import { Cliente } from "../cliente/index.page";
+import EditImg from '../../../../assets/edit.png'
+import DeleteModal from "../../../../components/Modal/Delete/index.page"
+import Pagination from "../../../../components/Pagination/index.page"
+import { clienteService, usuarioService } from "../../../../services"
+import { Cliente } from "../cliente/index.page"
+import { Admin, Container, FormButton, FormSubmitButton, Forms, InputFilter, TableContainer, User } from './usuario'
 
 export interface UserProps {
   id: number;
@@ -85,8 +85,11 @@ const CadastroUsuario: NextPage = () => {
     }))
   }
 
-  const handleSubmitAdmin = async () => {
+  const handleSubmitAdmin = async (event: FormEvent) => {
     try {
+
+      event.preventDefault()
+      
       const { errors } = await usuarioService.cadastrarUsuarioAdmin({
         nome: nomeAdmin,
         email: emailAdmin,
@@ -106,6 +109,9 @@ const CadastroUsuario: NextPage = () => {
 
   const handleSubmitUser = async (event: FormEvent) => {
     try {
+
+      event.preventDefault()
+
       const { errors } = await usuarioService.cadastrarUsuarioRegular({
         nome: nome,
         email: email,
