@@ -454,7 +454,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           pedidoId: Number(pedido.id),
           itemPedidoId: Number(product.itemPedidoId),
           precoVenda: Number(product.precoVenda),
-          quantidade: Number(quantidade.replaceAll('.', '').replaceAll(',', '.'))
+          quantidadeAntiga: Number(product.quantidade.replaceAll('.', '').replaceAll(',', '.')),
+          quantidadeNova: Number(quantidade.replaceAll('.', '').replaceAll(',', '.'))
         })
 
         if (!errors) {
@@ -469,7 +470,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   }
 
   const handleDeleteItemPedido = (product: ProductsProps) => {
-    setIdItemPedido(`${product.itemPedidoId} ${pedido.id}`)
+    setIdItemPedido(`${product.itemPedidoId} ${pedido.id} ${product.quantidade} ${product.estanteId} ${product.produtoId}`)
     const index = products.findIndex(productInArray => productInArray.itemPedidoId === product.itemPedidoId)
     delete products[index]
     setIsDeleteItemPedidoModalOpen(true)
