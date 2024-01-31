@@ -23,6 +23,7 @@ interface ProductsProps {
   produtoId?: string;
   nome: string;
   unidade: string;
+  unidades: string;
   quantidade: string;
   precoVenda: string;
   total: string;
@@ -120,6 +121,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const { data, error, isLoading, isSuccess, isError } = useQuery(['produtosPedido', pedido.id], () => pedidoService.listarProdutosByPedidoId(pedido.id), { refetchOnWindowFocus: false, enabled: isOpen })
 
   let products: Array<ProductsProps> = [];
+
+  const fetchValorTotal = async () => {
+    const { data, errors } = await pedidoService.recuperarValorTotal(pedido.id)
+
+    if (!errors) {
+      setValorTotal(data.valorTotal)
+    }
+  }
   
   if (isSuccess) {
     products = data.produtos
@@ -170,7 +179,6 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
         queryClient.invalidateQueries('getPedidosForDashboard')
         toast.success(data.message)
         onRequestClose()
-        // router.reload()
       } else {
         toast.error('Não foi possível cancelar o pedido, verifique!')
       }
@@ -184,11 +192,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const doc = new jsPDF('l')
 
     products.forEach(product => {
+      product.unidades = ''
       delete product['produtoId'];
       delete product['itemPedidoId'];
     })
 
     const formatedPrices = products.map(produto => {
+      produto.unidades = ''
       produto.quantidade = new Intl.NumberFormat('pt-BR', {
         style: 'decimal',
         minimumFractionDigits: 4
@@ -201,12 +211,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
         style: 'currency',
         currency: 'BRL'
       }).format(Number(produto.total))
-      return { nome: produto.nome, unidade: produto.unidade, quantidade: produto.quantidade, precoVenda: produto.precoVenda, total: produto.total }
+      return { nome: produto.nome, unidade: produto.unidade, unidades: produto.unidades, quantidade: produto.quantidade, precoVenda: produto.precoVenda, total: produto.total }
     })
-
-    // const teste = formatedPrices.map(produto => {
-    //   return { nome: produto.nome, unidade: produto.unidade, quantidade: produto.quantidade, precoVenda: produto.precoVenda, total: produto.total }
-    // })
 
     const newProdutosArray = formatedPrices.map(produto => {
       return Object.values(produto)
@@ -256,14 +262,15 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     let columns = [
       { header: 'Nome', dataKey: 'nome' },
-      { header: 'Und', dataKey: 'unidade' },
+      { header: 'Med', dataKey: 'unidade' },
+      { header: 'Und', dataKey: 'unidades' },
       { header: 'Qtde', dataKey: 'quantidade' },
       { header: 'Preço', dataKey: 'preco' },
       { header: 'Total', dataKey: 'total' }
     ]
 
     autoTable(doc, {
-      head: [['Nome', 'Und', 'Qtde', 'Preço', 'Total']],
+      head: [['Nome', 'Med', 'Und', 'Qtde', 'Preço', 'Total']],
       headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
       columns: columns,
       body: newProdutosArray,
@@ -274,14 +281,19 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       margin: { right: 125, bottom: 15 },
       showHead: 'firstPage',
       styles: { overflow: 'visible', fontSize: 8 },
-      columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+      columnStyles: { 
+        'nome': { overflow: 'ellipsize', cellWidth: 'auto' },
+        'quantidade': { halign: 'right' },
+        'preco': { halign: 'right' },
+        'total': { halign: 'right' }
+      },
       pageBreak: 'auto'
     })
 
     doc.setPage(pageNumber)
 
     autoTable(doc, {
-      head: [['Nome', 'Und', 'Qtde', 'Preço', 'Total']],
+      head: [['Nome', 'Med', 'Und', 'Qtde', 'Preço', 'Total']],
       headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
       columns: columns,
       body: newProdutosArray,
@@ -292,7 +304,12 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       margin: { left: 153, bottom: 15 },
       showHead: 'firstPage',
       styles: { overflow: 'visible', fontSize: 8 },
-      columnStyles: { 'nome': { overflow: 'ellipsize', cellWidth: 'auto' } },
+      columnStyles: { 
+        'nome': { overflow: 'ellipsize', cellWidth: 'auto' },
+        'quantidade': { halign: 'right' },
+        'preco': { halign: 'right' },
+        'total': { halign: 'right' }
+      },
       pageBreak: 'auto'
     })
 
@@ -300,17 +317,17 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     const pageSize = doc.internal.pageSize
     let pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight()
     let finalY = (doc as any).lastAutoTable.finalY;
-    const valorTotal = new Intl.NumberFormat('pt-BR', {
+    const valorTotalFormatado = new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
-    }).format(Number(pedido.valorTotal))
+    }).format(Number(valorTotal))
 
     if (finalY <= 180) {
       doc.text(`Valor Total: `, 14, finalY + 5)
-      doc.text(`${valorTotal}`, 125, finalY + 5)
+      doc.text(`${valorTotalFormatado}`, 125, finalY + 5)
 
       doc.text(`Valor Total: `, 154, finalY + 5)
-      doc.text(`${valorTotal}`, 264, finalY + 5)
+      doc.text(`${valorTotalFormatado}`, 264, finalY + 5)
 
       doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, finalY + 8)
 
@@ -361,10 +378,10 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       doc.setPage(numberOfPages + 1)
 
       doc.text(`Valor Total: `, 14, 20)
-      doc.text(`${valorTotal}`, 125, 20)
+      doc.text(`${valorTotalFormatado}`, 125, 20)
 
       doc.text(`Valor Total: `, 154, 20)
-      doc.text(`${valorTotal}`, 265, 20)
+      doc.text(`${valorTotalFormatado}`, 265, 20)
 
       doc.text('____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', 0, 23)
 
@@ -459,6 +476,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
         })
 
         if (!errors) {
+          fetchValorTotal()
           queryClient.invalidateQueries('produtosPedido')
           toast.success('Produto alterado com sucesso!')
           setIsUpdateItem(false)
