@@ -55,15 +55,15 @@ const empresas: Array<EmpresaProps> = [
     cidade: 'Goiânia',
     estado: 'Goiás'
   },
-  {
-    attribute: 'coperal',
-    displayName: 'COPERAL',
-    nome: 'COPERAL',
-    cnpj: '46.258.870/0001-66',
-    endereco: 'Rua 26 de setembro, nº 21, lt. 23, Setor Estrela Dalva',
-    cidade: 'Goiânia',
-    estado: 'Goiás'
-  },
+  // {
+  //   attribute: 'coperal',
+  //   displayName: 'COPERAL',
+  //   nome: 'COPERAL',
+  //   cnpj: '46.258.870/0001-66',
+  //   endereco: 'Rua 26 de setembro, nº 21, lt. 23, Setor Estrela Dalva',
+  //   cidade: 'Goiânia',
+  //   estado: 'Goiás'
+  // },
   {
     attribute: 'coopassen',
     displayName: 'COOPASSEN',
@@ -98,6 +98,15 @@ const empresas: Array<EmpresaProps> = [
     cnpj: '50.702.609/0001-80',
     endereco: 'Rua José Caitano Leal, Quadra 17, Lote 33, Setor Sul',
     cidade: 'Goianira',
+    estado: 'Goiás'
+  },
+  {
+    attribute: 'magno',
+    displayName: 'MAGNO',
+    nome: 'MAGNO COMERCIO DE ALIMENTOS LTDA',
+    cnpj: '52.308.366/0001-26',
+    endereco: 'Rua Pinheiro Chagas, Número 16, Vl. Nova Canaã',
+    cidade: 'Goiânia',
     estado: 'Goiás'
   }
 ]
