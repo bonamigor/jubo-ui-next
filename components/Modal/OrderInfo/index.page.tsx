@@ -124,7 +124,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const router = useRouter()
   const queryClient = useQueryClient()
   const [dataEntrega, setDataEntrega] = useState('')
-  const [empresa, setEmpresa] = useState(0)
+  const [empresaSelecionada, setEmpresaSelecionada] = useState(0)
   const [observacaoPedidoInicial, setObservacaoPedidoInicial] = useState('')
   const [observacaoPedido, setObservacaoPedido] = useState('')
   const [obsCancelamento, setobsCancelamento] = useState('')
@@ -170,7 +170,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     try {
       const { data: confirmarData, errors: confirmarErrors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
-      const { data: empresaData, errors: empresaErrors } = await pedidoService.setarEmpresaAoPedido(pedido.id, empresa)
+      const { data: empresaData, errors: empresaErrors } = await pedidoService.setarEmpresaAoPedido(pedido.id, empresaSelecionada)
       if (observacaoPedidoInicial !== observacaoPedido) {
         const result = await pedidoService.adicionarObservacao({ observacao: observacaoPedido, pedidoId: pedido.id })
         observacaoData = result.data
@@ -239,7 +239,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     })
 
     let pageNumber = doc.internal.pages.length - 1
-    const idEmpresa = pedido.empresa ?? empresa
+    const idEmpresa = pedido.empresa ?? empresaSelecionada
 
     doc.text(`${empresas[idEmpresa].nome}`, 14, 15)
     doc.text(`${empresas[idEmpresa].nome}`, 154, 15)
@@ -455,7 +455,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   }
 
   const handleOptionEmpresa = (event: any) => {
-    setEmpresa(event.target.value)
+    const idEmpresaSelecionada = empresas.findIndex(empresa => empresa.nome.trim() === event.target.value.trim())
+    setEmpresaSelecionada(idEmpresaSelecionada)
   }
 
   const validateConfirmar = () => dataEntrega.length > 0
@@ -601,7 +602,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
               <ConfirmSection>
                 <h2>Deseja {pedido.status === 'CRIADO' ? 'confirmar?' : 'gerar PDF?'}</h2>
                 {pedido.status === 'CRIADO' &&
-                  <div>
+                  <div id="dataentrega">
                     <InputMask mask="99/99/9999" placeholder='Data de Entrega' onChange={event => { setDataEntrega(event.target.value) }} />
                     {pedido.status === 'CRIADO' && <button onClick={confirmOrder} disabled={!isValidConfirmar}>Confirmar Pedido</button>}
                   </div>
@@ -610,16 +611,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   <button onClick={generatePdf}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
-                {
-                  empresas.map((empresa, index) => {
-                    return (
-                      <label key={empresa.attribute} htmlFor={empresa.attribute}>
-                        <input type="radio" name={empresa.attribute} id={empresa.attribute} value={index} onChange={handleOptionEmpresa} />
-                        {empresa.displayName}
-                      </label>
-                    )
-                  })
-                }
+                  <select name="empresas" id="empresa" onChange={handleOptionEmpresa}>
+                    {empresas.map((empresa, index) => {
+                      return (
+                        <option key={index}>{empresa.nome}</option>
+                      )
+                    })}
+                  </select>
                 </div>
               </ConfirmSection>
               <CancelSection>

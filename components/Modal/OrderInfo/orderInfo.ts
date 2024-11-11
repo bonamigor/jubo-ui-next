@@ -173,7 +173,6 @@ export const ConfirmSection = styled.div`
   button {
     width: 100%;
     padding: 0 1.5rem;
-    margin-left: 1rem;
     height: 3rem;
     background: var(--green-500);
     color: #FFF;
@@ -191,15 +190,7 @@ export const ConfirmSection = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    input[type="radio"] {
-      width: 15px;
-      height: 15px;
-      margin-left: 15px;
-      margin-right: 5px;
-      margin-top: -1px;
-      vertical-align: middle;
-    }
+    width: 100%
   }
 `
 
