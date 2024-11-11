@@ -108,6 +108,15 @@ const empresas: Array<EmpresaProps> = [
     endereco: 'Rua Pinheiro Chagas, Número 16, Vl. Nova Canaã',
     cidade: 'Goiânia',
     estado: 'Goiás'
+  },
+  {
+    attribute: 'belo-horizonte',
+    displayName: 'Belo Horizonte',
+    nome: 'COMERCIAL BELO HORIZONTE LTDA',
+    cnpj: '30.291.399/0001-78',
+    endereco: 'Av. Peru, S/N, Qd. 08, Lt. 11, Sala 01, Jd. Belo Horizonte',
+    cidade: 'Aparecida de Goiânia',
+    estado: 'Goiás'
   }
 ]
 
