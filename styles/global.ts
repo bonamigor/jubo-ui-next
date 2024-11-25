@@ -25,6 +25,8 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   html {
+    scroll-behavior: smooth;
+
     @media (max-width: 1080px) {
       font-size: 93.75%; // 15px
     }

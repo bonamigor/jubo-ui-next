@@ -49,7 +49,7 @@ export const DropdownMenuItem = styled.a<MenuItemProps>`
   transition: color 0.2s;
 
   &:hover {
-    color: var(--gray-200);
+    text-decoration: underline;
   }
 `
 

@@ -37,20 +37,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       window.sessionStorage.clear()
     }
 
-    // if (!router.pathname.includes('admin') && userAdmin) {
-    //   toast.error('Você não possui acesso para esta página! Te redirecionamos para a página de Login')
-    //   router.push('/')
-    //   window.localStorage.clear()
-    //   window.sessionStorage.clear()
-    // }
-
   }, [router, router.pathname])
 
   return (
     <QueryClientProvider client={queryClient} contextSharing={true}>
       <UserProvider>
         <PedidoProvider>
-          <Navbar isUserLoggedIn={isUserLoggedIn} />
+          {router.pathname.includes('retrospectiva') ? (<></>) : (<Navbar isUserLoggedIn={isUserLoggedIn} />)}
           <Toaster
             position="top-right"
             reverseOrder={false}/>
