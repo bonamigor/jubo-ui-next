@@ -77,9 +77,10 @@ const ProdutoService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  atualizarStatusDoProduto: async (id: number) => {
+  atualizarStatusDoProduto: async (id: number, ativo: number) => {
     const response = await httpClient.put(
-      `/api/produtos/${id}/status`
+      `/api/produtos/${id}/status`,
+      { ativo }
     )
 
     let errors = null

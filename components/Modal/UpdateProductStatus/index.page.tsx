@@ -21,7 +21,7 @@ const UpdateStatus: NextPage<UpdateStatusModalProps> = ({ isOpen, onRequestClose
   const handleUpdateStatus = async (produto: ProdutoProps) => {
     if (produto) {
       const ativo = produto.ativo === 1 ? 0 : 1;
-      const { data, errors } = await produtoService.atualizarStatusDoProduto(produto.id)
+      const { data, errors } = await produtoService.atualizarStatusDoProduto(produto.id, produto.ativo)
 
       if (!errors) {
         onRequestClose()
