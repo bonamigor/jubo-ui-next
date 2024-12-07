@@ -76,6 +76,27 @@ const ProdutoService = (httpClient: AxiosInstance) => ({
       errors
     }
   },
+
+  atualizarStatusDoProduto: async (id: number) => {
+    const response = await httpClient.put(
+      `/api/produtos/${id}/status`
+    )
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
+  },
+
   deletarProduto: async (id: number) => {
     const response = await httpClient.delete(
       `/api/produtos/${id}`
