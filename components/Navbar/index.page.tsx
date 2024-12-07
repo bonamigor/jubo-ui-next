@@ -110,6 +110,11 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
                       <DropdownMenuItem isActive={isActive({route, item: '2023'})}>2023</DropdownMenuItem>
                     </Link>
                   </Dropdown.Item>
+                  <Dropdown.Item>
+                    <Link href="/admin/retrospectiva/2024" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: '2024'})}>2024</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
               <LogginButton text={userName} />
