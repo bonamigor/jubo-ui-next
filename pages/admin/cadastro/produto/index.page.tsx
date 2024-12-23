@@ -69,7 +69,7 @@ const CadastroProduto: NextPage = () => {
 
   const VINTE_E_QUATRO_HORAS = (60 *  1000) * 60 * 24
 
-  const { data, isLoading, isSuccess, isError } = useQuery('produtos', produtoService.listarTodosOsProdutos, { staleTime: VINTE_E_QUATRO_HORAS })
+  const { data, isLoading, isSuccess, isError } = useQuery('produtos', produtoService.listarTodosOsProdutosParaAdmin, { staleTime: VINTE_E_QUATRO_HORAS })
 
   let produtos: any;
   let produtosPaginados: any;

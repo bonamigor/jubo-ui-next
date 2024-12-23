@@ -25,6 +25,12 @@ const ProdutoService = (httpClient: AxiosInstance) => ({
     return response.data
   },
 
+  listarTodosOsProdutosParaAdmin: async () => {
+    const response = await httpClient.get('/api/produtos/admin')
+
+    return response.data
+  },
+
   listarProdutosParaComprar: async (
     { dataInicial, dataFinal }: 
     { dataInicial: number, dataFinal: number}) => {
