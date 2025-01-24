@@ -32,7 +32,7 @@ const Home: NextPage = () => {
             window.sessionStorage.setItem('userName', data.user.nome)
             window.sessionStorage.setItem('userEmail', data.user.email)
             window.sessionStorage.setItem('userAdmin', data.user.admin)
-            receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin })
+            receiveUser({ id: data.user.id, name: data.user.nome, email: data.user.email, admin: data.user.admin, clienteId: data.user.clienteId ? data.user.clienteId : 0 })
             toast.success('Logado com sucesso!')
             router.push('/admin/dashboard')
           } else {

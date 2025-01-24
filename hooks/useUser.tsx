@@ -5,7 +5,7 @@ interface User {
   name: string;
   email: string;
   admin: boolean;
-  clienteId?: number;
+  clienteId: number;
 }
 
 interface UserProviderProps {
@@ -29,7 +29,7 @@ export function UserProvider({ children }: UserProviderProps) {
   }
 
   async function logoutUser() {
-    setUser({ id: 0, name: '', email: '', admin: false})
+    setUser({ id: 0, name: '', email: '', admin: false, clienteId: 0 })
   }
 
   async function getUserData() {
@@ -37,7 +37,8 @@ export function UserProvider({ children }: UserProviderProps) {
       id: Number(window.sessionStorage.getItem('userId')),
       name: String(window.sessionStorage.getItem('userName')),
       email: String(window.sessionStorage.getItem('userEmail')),
-      admin: String(window.sessionStorage.getItem('userAdmin')) === '1' ? true : false
+      admin: String(window.sessionStorage.getItem('userAdmin')) === '1' ? true : false,
+      clienteId: Number(window.sessionStorage.getItem('userClienteId')) ? Number(window.sessionStorage.getItem('userClienteId')) : 0
     }
     setUser(userData)
   }

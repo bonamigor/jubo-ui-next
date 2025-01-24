@@ -127,10 +127,21 @@ const Navbar: NextPage<NavbarProps> = ({ isUserLoggedIn }) => {
               <Link href="/cliente/estante" passHref>
                 <MenuItem isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem>
               </Link>
-              {/* <MenuItem onClick={() => {criarPedido()}} isActive={isActive({route, item: 'estante'})}>REALIZAR PEDIDO</MenuItem> */}
               <Link href="/cliente/pedidos" passHref>
                 <MenuItem isActive={isActive({route, item: 'cliente/pedidos'})}>PEDIDOS</MenuItem>
               </Link>
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <MenuItem isActive={isActive({route, item: 'configuracoes'})}>CONFIGURAÇÕES</MenuItem>
+                </Dropdown.Trigger>
+                <Dropdown.Menu>
+                  <Dropdown.Item>
+                    <Link href="/cliente/alterar-senha" passHref>
+                      <DropdownMenuItem isActive={isActive({route, item: 'senha'})}>Alterar Senha</DropdownMenuItem>
+                    </Link>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
               <LogginButton text={userName} />
             </Menu>
           )}
