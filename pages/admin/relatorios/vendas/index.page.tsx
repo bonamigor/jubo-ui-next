@@ -237,6 +237,88 @@ const Vendas: NextPage = () => {
     doc.save(`vendas-${data}-cliente-${Number(clienteId.split(' ')[0])}`)
   }
 
+    const generateProductsExcel = async () => {
+    const XLSX = require('xlsx');
+    const workbook = XLSX.utils.book_new();
+    const worksheetData = [];
+  
+    if (isAnalitico === "true") {  
+      // Modo Analítico - todos os pedidos na mesma worksheet com cabeçalhos
+      vendas.forEach((venda) => {
+        // Adicionar cabeçalho do pedido
+        worksheetData.push(
+          [`Pedido: ${venda.id} / Cliente: ${venda.cliente}`],
+          [`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(venda.dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(venda.total)}`],
+          ['Nome', 'Und', 'Preço', 'Qtde', 'Total'] // cabeçalho da tabela
+        );
+  
+        // Adicionar itens do pedido
+        venda.itens.forEach(item => {
+          worksheetData.push([
+            item.nome,
+            item.unidade,
+            new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.precoVenda)),
+            String(Number(item.quantidade).toFixed(4)).replace('.', ','),
+            new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.total))
+          ]);
+        });
+  
+        // Adicionar linha em branco entre pedidos
+        worksheetData.push([], []);
+      });
+  
+      // Adicionar total geral no final
+      worksheetData.push(
+        [],
+        [`Valor Total dos Pedidos: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`]
+      );
+    } else {
+      // Modo Sintético - apenas os totais dos pedidos
+      worksheetData.push(['Pedido', 'Cliente', 'Data Entrega', 'Valor Total']);
+      
+      vendas.forEach(venda => {
+        worksheetData.push([
+          venda.id,
+          venda.cliente,
+          new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(venda.dataEntrega)),
+          new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(venda.total)
+        ]);
+      });
+  
+      // Adicionar total geral no final
+      worksheetData.push(
+        [],
+        [`Valor Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`]
+      );
+    }
+  
+    // Criar worksheet a partir dos dados
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Adicionar formatação para as colunas de valores (opcional)
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let C = 2; C <= 4; ++C) { // Colunas C (Preço), D (Qtde), E (Total)
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        const cell_address = {c:C, r:R};
+        const cell_ref = XLSX.utils.encode_cell(cell_address);
+        if (worksheet[cell_ref] && worksheet[cell_ref].t === 'n') {
+          worksheet[cell_ref].z = isAnalitico === "true" ? 
+            (C === 3 ? '#,##0.0000' : '"R$"#,##0.00') : '"R$"#,##0.00';
+        }
+      }
+    }
+  
+    // Adicionar worksheet ao workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Vendas");
+  
+    // Gerar o arquivo
+    const data = format(new Date(), 'dd-MM-yyyy');
+    XLSX.writeFile(workbook, `vendas-${data}-cliente-${Number(clienteId.split(' ')[0])}.xlsx`);
+  };
+
   return (
     <>
       <Head>
@@ -269,6 +351,7 @@ const Vendas: NextPage = () => {
           <ButtonArea>
             <SearchButton type="button" onClick={() => {gerarRelatorio()}}>Pesquisar</SearchButton>
             {vendas.length > 0 && <SearchButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</SearchButton>}
+            {vendas.length > 0 && <SearchButton type="button" onClick={() => {generateProductsExcel()}}>Gerar Excel</SearchButton>}
             {vendas.length > 0 && 
             <>
               <label htmlFor="isAnalitico">Analitico?</label>
