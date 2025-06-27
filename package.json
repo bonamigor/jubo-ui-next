@@ -28,7 +28,8 @@
     "react-number-format": "^4.9.1",
     "react-query": "^3.39.1",
     "react-router-dom": "6",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "17.0.23",
