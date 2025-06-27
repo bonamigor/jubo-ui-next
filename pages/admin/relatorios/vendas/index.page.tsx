@@ -16,6 +16,7 @@ import 'jspdf-autotable'
 import autoTable from 'jspdf-autotable'
 import Head from "next/head"
 import { clienteService } from '../../../../services/index'
+import * as XLSX from 'xlsx';
 
 interface Cliente {
   id: number;
