@@ -117,6 +117,15 @@ const empresas: Array<EmpresaProps> = [
     endereco: 'Av. Peru, S/N, Qd. 08, Lt. 11, Sala 01, Jd. Belo Horizonte',
     cidade: 'Aparecida de Goiânia',
     estado: 'Goiás'
+  },
+  {
+    attribute: 'mse-almeida',
+    displayName: 'MSE ALMEIDA',
+    nome: 'M S E DE ALMEIDA COMERCIO DE ALIMENTOS LTDA',
+    cnpj: '09.376.170/0001-40',
+    endereco: 'RUA  GB2, nº 19, QD 09 LT 01, Jd GUANABARA II, CEP: 74.680-600',
+    cidade: 'Goiânia',
+    estado: 'Goiás'
   }
 ]
 
