@@ -396,6 +396,24 @@ const PedidoService = (httpClient: AxiosInstance) => ({
       data: response.data,
       errors
     }
+  },
+
+  recuperarValorVendaProduto: async ({ estanteId, produtoId }: { estanteId: string, produtoId: string }) => {
+    const response = await httpClient.get(`/api/estante/${estanteId}/produto/${produtoId}/precoVenda`)
+
+    let errors = null
+
+    if (!response.data) {
+      errors = {
+        status: response.request.status,
+        statusText: response.request.statusText
+      }
+    }
+
+    return {
+      data: response.data,
+      errors
+    }
   }
   
 })

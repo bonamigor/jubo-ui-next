@@ -92,10 +92,16 @@ const PedidoProdutos: NextPage = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
     try {
+      const idEstante = String(estanteId)
+      const idProduto = produtoId.split(' ')[0]
+
+      const { data } = await pedidoService.recuperarValorVendaProduto({ estanteId: idEstante, produtoId: idProduto })
+      const precoVenda: number = data.precoVenda
+
       const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
-        estanteId: String(estanteId),
-        produtoId: produtoId.split(' ')[0],
-        precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')),
+        estanteId: idEstante,
+        produtoId: idProduto,
+        precoVenda: precoVenda,
         quantidade: Number(quantidade.replace(',','.')),
         pedidoId: String(pedidoId)
       })
@@ -108,9 +114,9 @@ const PedidoProdutos: NextPage = () => {
           produtoId: produtoId.split(' ')[0],
           nome: produtoId.split(' ')[1],
           unidade: produtoId.split('/')[1].trim(),
-          precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')),
+          precoVenda: precoVenda,
           quantidade: quantidade.replaceAll('.', ','),
-          total: (Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll('.', '').replaceAll(',', '.')) * Number(quantidade))
+          total: (precoVenda * Number(quantidade))
         }
         setProduct(newProduto)
 
