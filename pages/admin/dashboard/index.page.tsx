@@ -5,16 +5,19 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 import AlertImg from '../../../assets/alert.png'
+import ConfirmImg from '../../../assets/confirm.png'
 import BloomImg from '../../../assets/bloom.png'
 import TruckImg from '../../../assets/truck.png'
 import OrderInfo from '../../../components/Modal/OrderInfo/index.page'
 import { pedidoService } from '../../../services'
 import { PedidosObject, PedidosProps } from '../../../services/pedido'
 import { Container, Filter, InputFilter, LeftPanel, LoadingDiv, NoContent, RightPanel, TableContainer } from './dashboard'
+import FinalizarPedido from '../../../components/Modal/FinalizarPedido/index.page'
 
 const Dashboard: NextPage = () => {
   const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalFinalizarOpen, setIsModalFinalizarOpen] = useState(false)
   const queryClient = useQueryClient()
   const [filter, setFilter] = useState('')
   const [filteredPedidos, setFilteredPedidos] = useState<PedidosProps[]>([])
@@ -24,6 +27,11 @@ const Dashboard: NextPage = () => {
 
   const onRequestClose = async () => {
     setIsModalOpen(false)
+    queryClient.invalidateQueries('getPedidosForDashboard')
+  }
+
+  const onRequestCloseFinalizar = async () => {
+    setIsModalFinalizarOpen(false)
     queryClient.invalidateQueries('getPedidosForDashboard')
   }
 
@@ -47,6 +55,11 @@ const Dashboard: NextPage = () => {
     }))
   }
 
+  const handleFinalizarPedido = async (pedido: PedidosProps) => {
+    setPedido(pedido)
+    setIsModalFinalizarOpen(true)
+  }
+
   return (
     <>
       <Head>
@@ -56,7 +69,7 @@ const Dashboard: NextPage = () => {
         <div>
           <LeftPanel>
             <div>
-              <Image src={AlertImg} alt="Alerta" width={'96px'} height={'96px'}/>
+              <Image src={AlertImg} alt="Alerta" width={96} height={96}/>
             </div>
             <div>
               <h2>Novos Pedidos</h2>
@@ -66,7 +79,7 @@ const Dashboard: NextPage = () => {
           </LeftPanel>
           <RightPanel>
           <div>
-              <Image src={TruckImg} alt="Alerta" width={'96px'} height={'96px'}/>
+              <Image src={TruckImg} alt="Alerta" width={96} height={96}/>
             </div>
             <div>
               <h2>Pedidos para amanhã</h2>
@@ -117,7 +130,7 @@ const Dashboard: NextPage = () => {
                             }).format(pedido.valorTotal)}
                           </td>
                           <td>
-                            <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a>
+                            {pedido.isFinalizado === 1 ? <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a> : <a><Image onClick={() => {handleFinalizarPedido(pedido)}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>}
                           </td>
                         </tr>
                       )
@@ -136,7 +149,7 @@ const Dashboard: NextPage = () => {
                             }).format(pedido.valorTotal)}
                           </td>
                           <td>
-                            {pedido.isFinalizado === 1 ? <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a> : 'N. FINALIZ.'}
+                            {pedido.isFinalizado === 1 ? <a><Image onClick={() => {viewOrderInfo(pedido)}} src={BloomImg} alt="Visualizar" width={30} height={30} /></a> : <a><Image onClick={() => {handleFinalizarPedido(pedido)}} src={ConfirmImg} alt="Confirmar" width={30} height={30} /></a>}
                           </td>
                         </tr>
                       )
@@ -147,6 +160,7 @@ const Dashboard: NextPage = () => {
               </table>
             </TableContainer>
             <OrderInfo isOpen={isModalOpen} onRequestClose={onRequestClose} pedido={pedido}/>
+            <FinalizarPedido isOpen={isModalFinalizarOpen} onRequestClose={onRequestCloseFinalizar} pedido={pedido}/>
           </> ) : 
           (
             <NoContent>
