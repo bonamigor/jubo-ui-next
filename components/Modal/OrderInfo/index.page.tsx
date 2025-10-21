@@ -126,7 +126,34 @@ const empresas: Array<EmpresaProps> = [
     endereco: 'RUA  GB2, nº 19, QD 09 LT 01, Jd GUANABARA II, CEP: 74.680-600',
     cidade: 'Goiânia',
     estado: 'Goiás'
-  }
+  },
+  {
+    attribute: 'margareth-novais',
+    displayName: 'MARGARETH NOVAIS DE S. E. LTDA',
+    nome: 'MARGARETH NOVAIS DE SOUZA ESTRELA LTDA',
+    cnpj: '03.038.215/0001-90',
+    endereco: 'RUA NOVA OLINDA QD. 40 LT. 14 JD. DAS ESMERALDAS',
+    cidade: 'Aparecida de Goiânia',
+    estado: 'Goiás'
+  },
+  {
+    attribute: 'sbm-industria',
+    displayName: 'SBM INDÚSTRIA COM. E DIST. LTDA ME',
+    nome: 'SBM INDÚSTRIA COMÉRCIO E DISTRIBUIÇÃO LTDA ME',
+    cnpj: '15.294.850/0001-17',
+    endereco: 'Rua das Acácias Qd 42 área 2, Sala 10 jardim Maria Inês',
+    cidade: 'Aparecida de Goiânia',
+    estado: 'Goiás'
+  },
+  {
+    attribute: 'microks',
+    displayName: 'MICROKS PRODUTOS ALIMENTÍCIOS LTDA',
+    nome: 'MICROKS PRODUTOS ALIMENTÍCIOS LTDA',
+    cnpj: '00.194.604/0001-16',
+    endereco: 'Rua Manoel Cordeiro Qd 11Lt 15/16 St. Serra Dourada 2 Etapa',
+    cidade: 'Aparecida de Goiânia',
+    estado: 'Goiás'
+  }  
 ]
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
