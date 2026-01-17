@@ -16,6 +16,7 @@ import { itemPedidoService, pedidoService } from '../../../services'
 import { PedidosProps } from '../../../services/pedido'
 import DeleteModal from '../Delete/index.page'
 import { CancelSection, ConfirmSection, Container, GeneratePdf, Observacao, OrderFooter, OrderHeader, OrderItems } from './orderInfo'
+import { empresas } from '../../../utils/empresas'
 
 interface ProductsProps {
   estanteId: string;
@@ -44,117 +45,6 @@ interface EmpresaProps {
   cidade: string;
   estado: string;
 }
-
-const empresas: Array<EmpresaProps> = [
-  {
-    attribute: 'kidelicia',
-    displayName: 'Kidelicia',
-    nome: 'Panificadora e Lanchonete Kidelicia',
-    cnpj: '02.895.623/0001-03',
-    endereco: 'Rua Pinheiro Chagas, 171, Setor Sudoeste, 74303-035',
-    cidade: 'Goiânia',
-    estado: 'Goiás'
-  },
-  // {
-  //   attribute: 'coperal',
-  //   displayName: 'COPERAL',
-  //   nome: 'COPERAL',
-  //   cnpj: '46.258.870/0001-66',
-  //   endereco: 'Rua 26 de setembro, nº 21, lt. 23, Setor Estrela Dalva',
-  //   cidade: 'Goiânia',
-  //   estado: 'Goiás'
-  // },
-  {
-    attribute: 'coopassen',
-    displayName: 'COOPASSEN',
-    nome: 'COOPASSEN',
-    cnpj: '36.070.538/0001-10',
-    endereco: 'R. Padre Alcides Spolidoro, S/N, Q. I4 L. 11/12, Dist Ind Santa Edwiges',
-    cidade: 'Senador Canedo',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'coopaco',
-    displayName: 'COOPACO',
-    nome: 'COOPACO',
-    cnpj: '33.507.873/0001-44',
-    endereco: 'Rua 03, QD. 07, LT. 13, Sala 03, Recanto das Emboabas',
-    cidade: 'Aparecida de Goiânia',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'compaf',
-    displayName: 'COMPAF',
-    nome: 'COMPAF',
-    cnpj: '29.119.413/0001-71',
-    endereco: 'ROD GO-320 KM 10.5 n 100, LT. 11 QD. 03, RES BOA ESPERANCA',
-    cidade: 'Goiatuba',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'coopanira',
-    displayName: 'COOPANIRA',
-    nome: 'COOPANIRA',
-    cnpj: '50.702.609/0001-80',
-    endereco: 'Rua José Caitano Leal, Quadra 17, Lote 33, Setor Sul',
-    cidade: 'Goianira',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'magno',
-    displayName: 'MAGNO',
-    nome: 'MAGNO COMERCIO DE ALIMENTOS LTDA',
-    cnpj: '52.308.366/0001-26',
-    endereco: 'Rua Pinheiro Chagas, Número 16, Vl. Nova Canaã',
-    cidade: 'Goiânia',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'belo-horizonte',
-    displayName: 'Belo Horizonte',
-    nome: 'COMERCIAL BELO HORIZONTE LTDA',
-    cnpj: '30.291.399/0001-78',
-    endereco: 'Av. Peru, S/N, Qd. 08, Lt. 11, Sala 01, Jd. Belo Horizonte',
-    cidade: 'Aparecida de Goiânia',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'mse-almeida',
-    displayName: 'MSE ALMEIDA',
-    nome: 'M S E DE ALMEIDA COMERCIO DE ALIMENTOS LTDA',
-    cnpj: '09.376.170/0001-40',
-    endereco: 'RUA  GB2, nº 19, QD 09 LT 01, Jd GUANABARA II, CEP: 74.680-600',
-    cidade: 'Goiânia',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'margareth-novais',
-    displayName: 'MARGARETH NOVAIS DE S. E. LTDA',
-    nome: 'MARGARETH NOVAIS DE SOUZA ESTRELA LTDA',
-    cnpj: '03.038.215/0001-90',
-    endereco: 'RUA NOVA OLINDA QD. 40 LT. 14 JD. DAS ESMERALDAS',
-    cidade: 'Aparecida de Goiânia',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'sbm-industria',
-    displayName: 'SBM INDÚSTRIA COM. E DIST. LTDA ME',
-    nome: 'SBM INDÚSTRIA COMÉRCIO E DISTRIBUIÇÃO LTDA ME',
-    cnpj: '15.294.850/0001-17',
-    endereco: 'Rua das Acácias Qd 42 área 2, Sala 10 jardim Maria Inês',
-    cidade: 'Aparecida de Goiânia',
-    estado: 'Goiás'
-  },
-  {
-    attribute: 'microks',
-    displayName: 'MICROKS PRODUTOS ALIMENTÍCIOS LTDA',
-    nome: 'MICROKS PRODUTOS ALIMENTÍCIOS LTDA',
-    cnpj: '00.194.604/0001-16',
-    endereco: 'Rua Manoel Cordeiro Qd 11Lt 15/16 St. Serra Dourada 2 Etapa',
-    cidade: 'Aparecida de Goiânia',
-    estado: 'Goiás'
-  }  
-]
 
 const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const router = useRouter()
