@@ -101,14 +101,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
         };
       }
       
-      const hoje = startOfDay(new Date());
+      // const hoje = startOfDay(new Date());
       
-      if (isAfter(hoje, data) || isToday(data)) {
-        return {
-          valida: false,
-          mensagem: `Data (${format(data, 'dd/MM/yyyy')}) deve ser futura (maior que hoje - ${format(new Date(), 'dd/MM/yyyy')})`
-        };
-      }
+      // if (isAfter(hoje, data) || isToday(data)) {
+      //   return {
+      //     valida: false,
+      //     mensagem: `Data (${format(data, 'dd/MM/yyyy')}) deve ser futura (maior que hoje - ${format(new Date(), 'dd/MM/yyyy')})`
+      //   };
+      // }
       
       return {
         valida: true,
