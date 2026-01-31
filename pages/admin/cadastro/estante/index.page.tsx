@@ -69,9 +69,9 @@ const CadastroEstante: NextPage = () => {
   }
 
   const handleFilterEstanteList = (event: any) => {
-    setFilter(event.toUpperCase())
+    setFilter(event)
     setFilteredEstantes(estantes.filter(estante => {
-      return estante.cliente.toUpperCase().includes(filter)
+      return estante.cliente.toUpperCase().includes(filter.toUpperCase())
     }))
   }
 
