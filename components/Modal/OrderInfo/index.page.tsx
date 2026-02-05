@@ -266,13 +266,13 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
       theme: 'grid',
       startY: 70,
       tableWidth: 130,
-      bodyStyles: { lineColor: [0, 0, 0], lineWidth: 0.5 },
+      bodyStyles: { lineColor: [0, 0, 0], lineWidth: 0.2 },
       margin: { right: 125, bottom: 15 },
       showHead: 'firstPage',
-      styles: { overflow: 'visible', fontSize: 8 },
+      styles: { overflow: 'visible', cellWidth: 'auto', fontSize: 8 },
       columnStyles: { 
-        'nome': { overflow: 'ellipsize', cellWidth: 'auto' },
-        'quantidade': { halign: 'right' },
+        'nome': { overflow: 'ellipsize', cellWidth: 'auto', fontStyle: 'bold', fontSize: 9 },
+        'quantidade': { halign: 'right', fontStyle: 'bold', fontSize: 10 },
         'preco': { halign: 'right' },
         'total': { halign: 'right' }
       },
@@ -283,19 +283,19 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     autoTable(doc, {
       head: [['Nome', 'Med', 'Und', 'Qtde', 'Preço', 'Total']],
-      headStyles: { fillColor: [255, 255, 255], textColor: 'black ' },
+      headStyles: { fillColor: [255, 255, 255], textColor: 'black' },
       columns: columns,
       body: newProdutosArray,
       theme: 'grid',
       startY: 70,
       tableWidth: 130,
-      bodyStyles: { lineColor: [0, 0, 0], lineWidth: 0.5 },
+      bodyStyles: { lineColor: [0, 0, 0], lineWidth: 0.2 },
       margin: { left: 153, bottom: 15 },
       showHead: 'firstPage',
-      styles: { overflow: 'visible', fontSize: 8 },
+      styles: { overflow: 'visible', cellWidth: 'auto', fontSize: 8 },
       columnStyles: { 
-        'nome': { overflow: 'ellipsize', cellWidth: 'auto' },
-        'quantidade': { halign: 'right' },
+        'nome': { overflow: 'ellipsize', cellWidth: 'auto', fontStyle: 'bold', fontSize: 9 },
+        'quantidade': { halign: 'right', fontStyle: 'bold', fontSize: 10 },
         'preco': { halign: 'right' },
         'total': { halign: 'right' }
       },
@@ -421,7 +421,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
     }
 
     doc.save(`pedido-${pedido.id}.pdf`)
-  }
+  }  
 
   const handleOptionEmpresa = (event: any) => {
     const idEmpresaSelecionada = empresas.findIndex(empresa => empresa.nome.trim() === event.target.value.trim())
