@@ -61,11 +61,13 @@ const EstanteService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  cadastrarEstante: async ({ periodo, clienteId, observacao }: 
-    { periodo: string, clienteId: number, observacao: string }) => {
+  cadastrarEstante: async ({ periodo, clienteId, observacao, empresa }: 
+    { periodo: string, clienteId: number, observacao: string, empresa?: number }) => {
+    const dados = empresa ? { periodo, clienteId, observacao, ativa: 1, empresa } : { periodo, clienteId, observacao, ativa: 1 }
+
     const response = await httpClient.post(
       '/api/estantes',
-      { periodo, clienteId, observacao, ativa: 1 }
+      dados
     )
 
     let errors = null
@@ -83,11 +85,12 @@ const EstanteService = (httpClient: AxiosInstance) => ({
     }
   },
 
-  atualizarEstante: async ({ periodo, clienteId, observacao, id }: 
-    { periodo: string, clienteId: number, observacao: string, id: number }) => {
+  atualizarEstante: async ({ periodo, clienteId, observacao, empresa, id }: 
+    { periodo: string, clienteId: number, observacao: string, empresa?: number, id: number }) => {
+      const dados = empresa ? { periodo, clienteId, observacao, empresa, id } : { periodo, clienteId, observacao, id }
     const response = await httpClient.put(
       '/api/estantes',
-      { periodo, clienteId, observacao, id }
+      dados
     )
 
     let errors = null

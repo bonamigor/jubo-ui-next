@@ -203,7 +203,7 @@ const EstanteProduto: NextPage = () => {
                       <td>{produto.unidade}</td>
                       <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}</td>
                       <td>{produto.quantidade}</td>
-                      <td>{produto.ativo}</td>
+                      <td>{produto.ativo === 1 ? 'ATIVO' : 'DESATIVADO'}</td>
                       <td>
                         <a><Image onClick={() => {handleUpdateProductStatus(produto)}} src={ConfirmImg} alt="Atualizar status do produto" width={30} height={30} /></a>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
@@ -220,7 +220,7 @@ const EstanteProduto: NextPage = () => {
                       <td>{produto.unidade}</td>
                       <td>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL'}).format(produto.precoVenda)}</td>
                       <td>{produto.quantidade}</td>
-                      <td>{produto.ativo === 1 ? 'ATIVO' : 'DESATIVADO'}</td>
+                      <td style={{ color: produto.ativo === 1 ? 'var(--green-500)' : 'var(--red-500)' }}>{produto.ativo === 1 ? 'ATIVO' : 'DESATIVADO'}</td>
                       <td>
                         <a><Image onClick={() => {handleUpdateProductStatus(produto)}} src={ConfirmImg} alt="Atualizar status do produto" width={30} height={30} /></a>
                         <a><Image onClick={() => {prepareUpdate(produto)}} src={EditImg} alt="Visualizar" width={30} height={30} /></a>

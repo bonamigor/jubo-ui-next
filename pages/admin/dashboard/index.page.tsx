@@ -15,7 +15,7 @@ import { Container, Filter, InputFilter, LeftPanel, LoadingDiv, NoContent, Right
 import FinalizarPedido from '../../../components/Modal/FinalizarPedido/index.page'
 
 const Dashboard: NextPage = () => {
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', empresa: 1, isFinalizado: 0 })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalFinalizarOpen, setIsModalFinalizarOpen] = useState(false)
   const queryClient = useQueryClient()

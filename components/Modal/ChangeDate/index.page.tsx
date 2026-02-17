@@ -6,6 +6,7 @@ import { pedidoService } from '../../../services';
 import { useEffect, useState } from 'react';
 import InputMask from "react-input-mask";
 import { PedidosProps } from '../../../services/pedido';
+import { isValid } from 'date-fns';
 
 interface ChangeDateModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface ChangeDateModalProps {
 
 const ChangeDate: NextPage<ChangeDateModalProps> = ({ isOpen, onRequestClose, pedido }) => {
   const [dataEntrega, setDataEntrega] = useState('')
-  const [isValid, setIsValid] = useState(false)
+  const [isValido, setIsValido] = useState(false)
 
   const handleChangeOrderDate = async (pedido: PedidosProps) => {
     const dataFormatada = new Date(dataEntrega.split('/').reverse().join('-')).getTime()
@@ -29,11 +30,11 @@ const ChangeDate: NextPage<ChangeDateModalProps> = ({ isOpen, onRequestClose, pe
     }
   }
 
-  const validateAlterar = () => dataEntrega.length >= 10
+  const validateAlterar = () => isValid(new Date(dataEntrega.split('/').reverse().join('-')).getTime())
   
   useEffect(() => {
-    const isValid = validateAlterar();
-    setIsValid(isValid);
+    const isValidado = validateAlterar();
+    setIsValido(isValidado);
   }, [dataEntrega])
 
   return (
@@ -51,7 +52,7 @@ const ChangeDate: NextPage<ChangeDateModalProps> = ({ isOpen, onRequestClose, pe
               <InputMask mask="99/99/9999" onChange={event => setDataEntrega(event.target.value)} value={dataEntrega} />
             </div>
             <Buttons>
-              <button type='button' onClick={() => handleChangeOrderDate(pedido)} disabled={!isValid}>Atualizar</button>
+              <button type='button' onClick={() => handleChangeOrderDate(pedido)} disabled={!isValido}>Atualizar</button>
               <button type='button' className='no' onClick={onRequestClose}>Fechar</button>
             </Buttons>
           </Content>

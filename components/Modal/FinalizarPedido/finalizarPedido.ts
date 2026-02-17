@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 export const Container = styled.form`
+  background: var(--white);
+  border: 4px solid var(--green-500);
+  padding: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;

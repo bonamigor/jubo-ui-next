@@ -30,6 +30,7 @@ interface Pedido {
   cidade: string;
   estado: string;
   telefone: string;
+  empresa: number;
   isFinalizado: number;
 }
 
@@ -40,7 +41,7 @@ const Pedido: NextPage = () => {
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
   const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [isConfirmOrderModalOpen, setIsConfirmOrderModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
+  const [pedido, setPedido] = useState<Pedido>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', empresa: 0, isFinalizado: 0 })
   const [pedidoId, setPedidoId] = useState(0)
 
   const fetchPedidoById = async () => {

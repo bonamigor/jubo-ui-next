@@ -185,8 +185,10 @@ const PedidoProdutos: NextPage = () => {
               <h2>Dados Pedido N° {pedidoId}</h2>
               <div>
                 <p><span>Colégio:</span> {cliente.nome}</p>
-                <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date())}</p>
-                <p><span>Status:</span> {pedido.status}</p>
+                <div className="info-grid">
+                  <p><span>Data Criação:</span> {new Intl.DateTimeFormat('pt-BR', {timeZone: 'UTC'}).format(new Date())}</p>
+                  <p><span>Status:</span> {pedido.status}</p>
+                </div>
               </div>
             </PedidoData>
           </FormHeader>
@@ -196,7 +198,7 @@ const PedidoProdutos: NextPage = () => {
                 <div>
                   <input type="text" placeholder="Pesquise o Produto" 
                       list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
-                      value={produtoId} onChange={event => {setProdutoId(event.target.value)}} />
+                      value={produtoId} onChange={event => {setProdutoId(event.target.value)}}   />
                   <datalist id="produtos">
                     {produtoNaEstante.map(produto => {
                       return (

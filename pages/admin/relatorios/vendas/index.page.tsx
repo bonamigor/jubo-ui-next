@@ -1,7 +1,7 @@
 import { NextPage } from "next"
 import { useEffect, useState } from 'react'
 
-import { ButtonArea, Container, Content, Dates, EmptyTable, SearchButton, TableContainer } from './vendas'
+import { ButtonArea, Container, Content, Dates, EmptyTable, SearchButton, TableContainer, TotalValue } from './vendas'
 
 import toast from 'react-hot-toast'
 import { useMutation } from 'react-query'
@@ -391,7 +391,7 @@ const Vendas: NextPage = () => {
                 </tbody>
               </table>
             </TableContainer>
-            <h1>Valor Total: { new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total) }</h1>
+            <TotalValue>Valor Total: { new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total) }</TotalValue>
           </>
         ) : (
           <EmptyTable>

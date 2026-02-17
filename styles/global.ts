@@ -4,19 +4,43 @@ export const GlobalStyle = createGlobalStyle`
   :root {
     --white: #FFFFFF; // Links Header
 
-    --gray-100: #F2F2F2; // Input Background
-    --gray-200: #E5E5E5; // Background
-    --gray-250: #C4C4C4;
-    --gray-300: #B1B1B1; // Placeholders
-    --gray-400: #a8a8b3;
-    --gray-700: #969cb2;
-    --gray-800: #29292e;
-    --gray-850: #1f2729;
-    --gray-900: #121214; // Text
     --black: #000000;
 
     --cyan-500: #61dafb;
     --green-500: #04B486; // Alternative Background
+
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-150: #e5e7eb;
+    --gray-200: #e5e7eb;
+    --gray-250: #d1d5db;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    
+    --green-50: #f0fdf4;
+    --green-100: #dcfce7;
+    --green-200: #bbf7d0;
+    --green-600: #16a34a;
+    --green-800: #166534;
+    
+    --red-50: #fef2f2;
+    --red-100: #fee2e2;
+    --red-200: #fecaca;
+    --red-500: #ef4444;
+    --red-600: #dc2626;
+    --red-800: #991b1b;
+    
+    --blue-100: #dbeafe;
+    --blue-300: #93c5fd;
+    --blue-500: #3b82f6;
+    --blue-700: #1d4ed8;
+    
+    --emerald-50: #ecfdf5;
+    --rose-50: #fff1f2;
   }
   
   * {
@@ -56,27 +80,34 @@ export const GlobalStyle = createGlobalStyle`
     cursor: not-allowed;
   }
 
-  .react-modal-overlay {
-    background: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.react-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem; /* Adiciona padding ao redor do modal */
+}
 
-  .react-modal-content {
-    width: 100%;
-    max-width: 1200px;
-    background: var(--gray-200);
-    padding: 3rem;
-    position: relative;
-    border-radius: 0.25rem;
-    text-align: center;
-  }
+.react-modal-content {
+  position: relative;
+  background: transparent;
+  overflow: auto;
+  border-radius: 8px;
+  outline: none;
+  max-width: 95vw; /* Limita largura máxima */
+  max-height: 95vh; /* Limita altura máxima */
+  background-color: var(--white);
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
   .react-modal-close {
     position: absolute;

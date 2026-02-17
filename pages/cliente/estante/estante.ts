@@ -6,6 +6,11 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: -7rem;
+  padding: 0 1rem;
+  
+  @media (max-width: 768px) {
+    margin-top: 1rem;
+  }
 `
 
 export const Content = styled.div`
@@ -13,83 +18,32 @@ export const Content = styled.div`
   flex-direction: column;
   align-items: center;
   background: var(--white);
-  border-radius: 10px;
-  width: 1200px;
-  height: 170px;
-  padding: 0 5px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
   
   h1 {
-    margin-top: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--gray-700);
+    font-size: 1.8rem;
+    text-align: center;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
   }
 
   h2 {
     font-weight: 400;
-  }
-`
-
-export const SelectEstante = styled.div`
-  form {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 30px;
-
-    input {
-      width: 600px;
-      padding: 0 1.5rem;
-      height: 4rem;
-      border-radius: 0.25rem;
-      border: 1px solid #d7d7d7;
-      background: var(--gray-100);
-      font-weight: 400;
+    color: var(--gray-500);
+    font-size: 1.1rem;
+    text-align: center;
+    
+    @media (max-width: 768px) {
       font-size: 1rem;
-      &::placeholder {
-        color: var(--gray-300);
-        font-size: 1.5rem;
-        font-weight: 400;
-      }
-      & + input {
-        margin-top: 1rem;
-      }
-    }
-
-    select {
-      width: 80%;
-      padding: 0 1.5rem;
-      height: 4rem;
-      border-radius: 0.25rem;
-      border: 1px solid #d7d7d7;
-      background: var(--gray-100);
-      font-weight: 400;
-      font-size: 1rem;
-
-      &::placeholder {
-        color: var(--gray-300);
-        font-size: 1.5rem;
-        font-weight: 400;
-      }
-      
-      option {
-        padding: 0 1.5rem;
-      }
-    }
-
-    button {
-      width: 200px;
-      padding: 0 1.5rem;
-      height: 4rem;
-      margin: 0 1rem;
-      background: var(--green-500);
-      color: #FFF;
-      border-radius: 0.25rem;
-      border: 0;
-      font-size: 1rem;
-      font-weight: 600;
-      transition: filter 0.2s;
-      &:hover {
-        filter: brightness(0.9);
-      }
     }
   }
 `
@@ -98,69 +52,188 @@ export const InputFilter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 4rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 1.5rem;
 
   input {
     padding: 0 1.5rem;
-    margin: 0 1rem;
-    height: 4rem;
-    border-radius: 0.25rem;
-    border: 1px solid #d7d7d7;
-    background: var(--gray-100);
+    height: 3.5rem;
+    border-radius: 8px;
+    border: 2px solid var(--gray-200);
+    background: var(--white);
     font-weight: 400;
     font-size: 1rem;
-    width: 1200px;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
     &::placeholder {
-      color: var(--gray-300);
-      font-size: 1.5rem;
+      color: var(--gray-400);
+      font-size: 1rem;
       font-weight: 400;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--green-500);
+      box-shadow: 0 0 0 3px rgba(0, 180, 120, 0.1);
+    }
+
+    &:hover {
+      border-color: var(--gray-300);
     }
   }
 `
 
 export const TableContainer = styled.div`
-  margin-top: 10px;
+  width: 100%;
+  max-width: 1200px;
+  overflow-x: auto;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   table {
-    width: 1200px;
-    border-spacing: 0 0.5rem;
-    text-align: center;
-    margin-bottom: 1rem;
+    width: 100%;
+    border-spacing: 0;
+    text-align: left;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
     
-    th {
-      color: var(--text-body);
-      font-weight: 400;
-      padding: 1rem 2rem;
-      line-height: 1.5rem;
-    }
-
     thead {
+      background: var(--green-500);
+      
       tr {
-        &:first-child {
-          color: var(--gray-700);
+        th {
+          color: var(--white);
+          font-weight: 600;
+          padding: 1.2rem 1.5rem;
+          font-size: 1rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          
+          &:first-child {
+            width: 80px;
+          }
+          
+          &:last-child {
+            width: 100px;
+            text-align: center;
+          }
         }
       }
     }
 
     tbody {
       tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--gray-100);
+        
+        &:hover {
+          background-color: var(--gray-50);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
         td {
-          font-size: 1rem;
+          padding: 1.2rem 1.5rem;
+          color: var(--gray-700);
+          font-size: 0.95rem;
+          border-bottom: 1px solid var(--gray-100);
+          
+          &:first-child {
+            font-weight: 600;
+            color: var(--green-600);
+          }
+          
+          &:nth-child(4) {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          
+          &:last-child {
+            text-align: center;
+            padding: 0.5rem;
+          }
         }
       }
     }
+  }
 
-    td {
-      padding: 1rem 2rem;
-      border: 0;
-      background: var(--white);
-      color: var(--black);
-      border-radius: 0.25rem;
-
-      a {
-        margin: 0 5px;
+  @media (max-width: 768px) {
+    border-radius: 8px;
+    
+    table {
+      thead {
+        display: none;
+      }
+      
+      tbody {
+        tr {
+          display: block;
+          margin-bottom: 1rem;
+          border: 1px solid var(--gray-200);
+          border-radius: 8px;
+          padding: 1rem;
+          
+          td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border: none;
+            
+            &:before {
+              content: attr(data-label);
+              font-weight: 600;
+              color: var(--gray-600);
+              font-size: 0.9rem;
+              margin-right: 1rem;
+            }
+            
+            &:first-child {
+              font-weight: 600;
+              color: var(--green-600);
+            }
+            
+            &:last-child {
+              justify-content: center;
+              padding-top: 1rem;
+              border-top: 1px solid var(--gray-100);
+            }
+          }
+        }
       }
     }
   }
 `
+
+// Adicionar ao final do arquivo da tela web, antes do export
+export const TableRow = styled.tr`
+  cursor: pointer;
+  
+  a {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+    
+    img {
+      filter: brightness(1);
+      transition: filter 0.3s ease;
+      
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
+`
+
+// Ajuste no JSX da tabela para usar o componente TableRow:
+// Substituir <tr key={estante.id}> por <TableRow key={estante.id}>

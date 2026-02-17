@@ -43,9 +43,7 @@ const Pedidos: NextPage = () => {
   const [isCancelOrderModalOpen, setIsCancelOrderModalOpen] = useState(false)
   const [isChangeDateModalOpen, setIsChangeDateModalOpen] = useState(false)
   const [isConfirmOrderModalOpen, setIsConfirmOrderModalOpen] = useState(false)
-  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', isFinalizado: 0 })
-
-
+  const [pedido, setPedido] = useState<PedidosProps>({ id: 0, dataCriacao: 0, dataEntrega: 0, valorTotal: 0, status: '', observacao: '', obsCancelamento: '', nome: '', endereco: '', cidade: '', estado: '', telefone: '', empresa: 0, isFinalizado: 0 })
 
   let clientes: Array<Cliente> = [];
 
@@ -74,6 +72,8 @@ const Pedidos: NextPage = () => {
     setPreviousClientId(idCliente)
     
     const { data, errors } = await pedidoService.listarPedidosByCliente(idCliente)
+
+    console.log(data.pedidos)
 
     if (!errors) {
       setIsOrdersLoading(false)
