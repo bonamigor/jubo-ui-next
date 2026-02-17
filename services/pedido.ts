@@ -13,7 +13,7 @@ export interface PedidosProps {
   cidade: string;
   estado: string;
   telefone: string;
-  empresa?: number;
+  empresa: number;
   isFinalizado: number;
 }
 
@@ -22,10 +22,11 @@ export interface PedidosObject {
 }
 
 const PedidoService = (httpClient: AxiosInstance) => ({
-  criarPedido: async (clienteId: number) => {
+  criarPedido: async ({ clienteId, empresaId }: { clienteId: number, empresaId?: number }) => {
+    const dados = empresaId ? { clienteId, empresaId } : { clienteId }
     const response = await httpClient.post(
       '/api/pedidos',
-      { clienteId })
+      dados)
 
       let errors = null
 

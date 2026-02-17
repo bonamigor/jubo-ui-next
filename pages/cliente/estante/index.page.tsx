@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { Container, Content, InputFilter, TableContainer } from "./estante";
+import { Container, Content, InputFilter, TableContainer, TableRow } from "./estante";
 import { useState, useEffect, FormEvent } from 'react';
 import { estanteService, pedidoService } from "../../../services";
 import Image from "next/image";
@@ -12,6 +12,7 @@ interface EstanteClienteProps {
   id: number;
   periodo: string;
   clienteId: number;
+  empresaId: number;
   cliente: string;
   observacao: string;
   ativa: number;
@@ -45,9 +46,8 @@ const EstanteCliente: NextPage = () => {
 
   const createOrderAndPushToRoute = async (estante: EstanteClienteProps) => {
     const clienteId: number = Number(window.sessionStorage.getItem('userClientId'))
-
     try {
-      const { data, errors } = await pedidoService.criarPedido(clienteId)
+      const { data, errors } = await pedidoService.criarPedido({ clienteId, empresaId: estante.empresaId })
 
       if (!errors) {
         receivePedido({ id: Number(data.pedido.pedidoId), status: String(data.pedido.status), dataCriacao: String(data.pedido.dataCriacao), clienteId: Number(data.pedido.clienteId) })
@@ -77,7 +77,7 @@ const EstanteCliente: NextPage = () => {
               <tr>
                 <th>ID</th>
                 <th>Cliente</th>
-                <th>Período</th>
+                <th style={{ textAlign: 'center' }}>Período</th>
                 <th>Observação</th>
                 <th>Ações</th>
               </tr>
@@ -87,29 +87,29 @@ const EstanteCliente: NextPage = () => {
               {filter.length > 1 ? (
                 filteredEstantes.map(estante => {
                   return (
-                    <tr key={estante.id}>
+                    <TableRow key={estante.id}>
                       <td>{estante.id}</td>
                       <td>{estante.cliente}</td>
-                      <td>{estante.periodo}</td>
+                      <td style={{ textAlign: 'center' }}>{estante.periodo}</td>
                       <td>{estante.observacao}</td>
                       <td>
                         <a><Image onClick={() => router.push(`/cliente/pedido/${pedidoId}/estante/${estante.id}/produtos`)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
-                    </tr>
+                    </TableRow>
                   )
                 })
               ) : (
                 estantes.map(estante => {
                   return (
-                    <tr key={estante.id}>
+                    <TableRow key={estante.id}>
                       <td>{estante.id}</td>
                       <td>{estante.cliente}</td>
-                      <td>{estante.periodo}</td>
+                      <td style={{ textAlign: 'center' }}>{estante.periodo}</td>
                       <td>{estante.observacao}</td>
                       <td>
                         <a><Image onClick={() => createOrderAndPushToRoute(estante)} src={AddImg} alt="Adicionar" width={30} height={30} /></a>
                       </td>
-                    </tr>
+                    </TableRow>
                   )
                 })
               )}

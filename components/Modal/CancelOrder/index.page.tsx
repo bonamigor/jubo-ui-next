@@ -39,7 +39,7 @@ const CancelOrder: NextPage<CancelOrderModalProps> = ({ isOpen, onRequestClose, 
             <h2>Deseja mesmo cancelar esse Pedido?</h2>
             <Textarea placeholder='Por quê quer cancelar esse pedido?' css={{ mb: "1.5rem", w: "900px" }} onChange={event => setObservacao(event.target.value)} />
             <Buttons>
-              <button type='button' onClick={() => handleCancelOrder(pedido)}>Cancelar</button>
+              <button type='button' onClick={() => handleCancelOrder(pedido)}>Sim</button>
               <button type='button' className='no' onClick={onRequestClose}>Não</button>
             </Buttons>
           </Content>

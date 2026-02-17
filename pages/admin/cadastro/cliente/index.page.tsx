@@ -52,9 +52,9 @@ const CadastroCliente: NextPage = () => {
   }
 
   const handleFilterClienteList = (event: any) => {
-    setFilter(event.toUpperCase())
+    setFilter(event)
     setFilteredClients(clienteResponse.clientes.filter((client: Cliente) => {
-      return client.nome.toUpperCase().includes(filter)
+      return client.nome.toUpperCase().includes(filter.toUpperCase())
     }))
   }
   

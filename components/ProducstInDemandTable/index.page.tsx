@@ -9,7 +9,7 @@ import DeleteImg from '../../assets/delete.png'
 import EditImg from '../../assets/edit.png'
 import { pedidoService } from '../../services'
 import DeleteModal from '../Modal/Delete/index.page'
-import { CancelButton, ConfirmButton, DecideButtons, TableContainer, TableFooter, TableTitle } from './productsInDemand'
+import { CancelButton, ConfirmButton, DecideButtons, EmptyState, StyledTextarea, TableContainer, TableFooter, TableTitle } from './productsInDemand'
 
 interface ProductsProps {
   itemPedidoId: string;
@@ -112,9 +112,9 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
   return (
     <>
       {products.length < 1 ? (
-        <div>
-            <h1>Não há produtos nesse pedido (ainda...!)</h1>
-        </div>
+        <EmptyState>
+          <h1>Não há produtos nesse pedido (ainda...!)</h1>
+        </EmptyState>
       ) : (
         <>
           <TableTitle>
@@ -170,7 +170,14 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
                 }).format(valorTotal)}
             </h4>
           </TableFooter>
-          <Textarea placeholder="Deixe uma observação para o fornecedor. OBS.: A observação não pode conter mais de 255 caracteres;" size="lg" css={{ mt: "1.5rem", w: "1000px" }} value={observacao} onChange={event => setObservacao(event.target.value)} />
+          <StyledTextarea>
+            <Textarea 
+              placeholder="Deixe uma observação para o fornecedor. OBS.: A observação não pode conter mais de 255 caracteres;" 
+              size="lg" 
+              value={observacao} 
+              onChange={event => setObservacao(event.target.value)} 
+            />
+          </StyledTextarea>
           <DecideButtons>
             <ConfirmButton onClick={handleFecharPedido} disabled={!(products.length > 0)}>Finalizar Pedido</ConfirmButton>
             <CancelButton onClick={handleDeletePedido}>Cancelar Pedido</CancelButton>

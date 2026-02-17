@@ -39,14 +39,12 @@ const CopiarEstante: NextPage = () => {
 
   const VINTE_E_QUATRO_HORAS = (60 * 1000) * 60 * 24
 
-  // Buscar clientes
   const { data: clienteResponse, isLoading: isLoadingClientes } = useQuery(
     'getAllClientes', 
     clienteService.listarTodosOsClientesReactQuery, 
     { staleTime: VINTE_E_QUATRO_HORAS }
   )
 
-  // Validar formulário
   useEffect(() => {
     const isValid = estanteOrigemId.length > 0 && 
                     estanteDestinoId.length > 0 && 
@@ -54,7 +52,6 @@ const CopiarEstante: NextPage = () => {
     setIsValid(isValid)
   }, [estanteOrigemId, estanteDestinoId])
 
-  // Buscar estantes do cliente de origem quando selecionado
   useEffect(() => {
     if (clienteOrigemId) {
       setIsLoadingEstantesOrigem(true)
@@ -75,7 +72,6 @@ const CopiarEstante: NextPage = () => {
     }
   }, [clienteOrigemId])
 
-  // Buscar estantes do cliente de destino quando selecionado
   useEffect(() => {
     if (clienteDestinoId) {
       setIsLoadingEstantesDestino(true)
