@@ -138,5 +138,15 @@ export const empresas: Array<EmpresaProps> = [
     endereco: 'AV CARLOS DE PINA, S/N, QUADRA 17 LOTE 02, SETOR CENTRAL, 75.165-000',
     cidade: 'Ouro Verde de Goiás',
     estado: 'Goiás'
+  },
+  {
+    id: 13,
+    attribute: 'mendes',
+    displayName: 'MENDES ALIMENTOS',
+    nome: 'MENDES ALIMENTOS',
+    cnpj: '26.669.899/0001-23',
+    endereco: 'AV C17, N. 92, QD 147, ST SUDOESTE, 74.303-280',
+    cidade: 'Goiânia',
+    estado: 'Goiás'
   }
 ]
