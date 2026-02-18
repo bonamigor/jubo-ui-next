@@ -589,7 +589,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   <button onClick={generatePdf}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
-                  <select name="empresas" id="empresa" value={empresas[(pedido.empresa === null ? 0 : (pedido.empresa - 1))].nome} onChange={handleOptionEmpresa}>
+                  <select name="empresas" id="empresa" value={empresas[((pedido.empresa === null || pedido.empresa === 0) ? 0 : (pedido.empresa - 1))].nome} onChange={handleOptionEmpresa}>
                     {empresas.map((empresa, index) => {
                       return (
                         <option key={index}>{empresa.nome}</option>

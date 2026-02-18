@@ -20,7 +20,7 @@ export const Content = styled.div`
   background: var(--white);
   border-radius: 12px;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1500px;
   height: 270px;
   padding: 0 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -112,7 +112,7 @@ export const Orderless = styled.div`
   background: transparent;
   border-radius: 12px;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1500px;
   height: 300px;
   padding: 3rem;
   margin-top: 2rem;
@@ -138,7 +138,7 @@ export const LoadingOrders = styled.div`
   margin-top: 2rem;
   border-radius: 10px;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1500px;
   height: 300px;
   padding: 0 5px;
   
@@ -152,7 +152,7 @@ export const LoadingOrders = styled.div`
 export const TableContainer = styled.div`
   margin-top: 2rem;
   width: 100%;
-  max-width: 1300px;
+  max-width: 1500px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
