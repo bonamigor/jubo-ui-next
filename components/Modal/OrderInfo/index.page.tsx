@@ -139,14 +139,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
 
       const { data: confirmarData, errors: confirmarErrors } = await pedidoService.confirmarPedidoById({ pedidoId: pedido.id, dataEntrega: dataFormatada })
-      const { data: empresaData, errors: empresaErrors } = await pedidoService.setarEmpresaAoPedido(pedido.id, empresaSelecionada)
+
       if (observacaoPedidoInicial !== observacaoPedido) {
         const result = await pedidoService.adicionarObservacao({ observacao: observacaoPedido, pedidoId: pedido.id })
         observacaoData = result.data
         observacaoErrors = result.errors
       }
 
-      if (!confirmarErrors && !empresaErrors && !observacaoErrors) {
+      if (!confirmarErrors && !observacaoErrors) {
         toast.success(confirmarData.message)
         onRequestClose()
         router.reload()
@@ -211,7 +211,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     console.log(pedido)
 
-    const idEmpresa = (pedido.empresa === null || pedido.empresa === 0) ? empresaSelecionada : (pedido.empresa - 1)
+    const idEmpresaDoPedido = (pedido.empresa === null || pedido.empresa === 0) ? 1 : (pedido.empresa - 1)
+    const idEmpresa = (empresaSelecionada !== 0) ? empresaSelecionada : idEmpresaDoPedido
 
     doc.text(`${empresas[idEmpresa].nome}`, 14, 15)
     doc.text(`${empresas[idEmpresa].nome}`, 154, 15)
@@ -589,7 +590,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                   <button onClick={generatePdf}>Criar PDF</button>
                 </div>
                 <div id='empresa'>
-                  <select name="empresas" id="empresa" value={empresas[((pedido.empresa === null || pedido.empresa === 0) ? 0 : (pedido.empresa - 1))].nome} onChange={handleOptionEmpresa}>
+                  <select name="empresas" id="empresa" onChange={handleOptionEmpresa}>
                     {empresas.map((empresa, index) => {
                       return (
                         <option key={index}>{empresa.nome}</option>
