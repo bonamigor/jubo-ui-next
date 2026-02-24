@@ -211,7 +211,7 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
 
     console.log(pedido)
 
-    const idEmpresaDoPedido = (pedido.empresa === null || pedido.empresa === 0) ? 1 : (pedido.empresa - 1)
+    const idEmpresaDoPedido = (pedido.empresa === null || pedido.empresa === 0) ? 0 : (pedido.empresa - 1)
     const idEmpresa = (empresaSelecionada !== 0) ? empresaSelecionada : idEmpresaDoPedido
 
     doc.text(`${empresas[idEmpresa].nome}`, 14, 15)
