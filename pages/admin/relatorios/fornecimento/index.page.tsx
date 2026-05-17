@@ -195,6 +195,91 @@ const Fornecimento: NextPage = () => {
 
     doc.save(`fornecimento-${dataInicialFormatada}-a-${dataFinalFormatada}`)
   }
+
+  const generateProductsExcel = async () => {
+    const XLSX = require('xlsx');
+    const workbook = XLSX.utils.book_new();
+    const worksheetData = [];
+
+    if (isAnalitico === "true") {  
+      // Modo Analítico - todos os pedidos na mesma worksheet com cabeçalhos
+      for (let i = 0; i <= pedidos.length - 1; i++) {
+        // Adicionar cabeçalho do pedido
+        worksheetData.push(
+          [`Pedido: ${pedidos[i].id} / Cliente: ${pedidos[i].cliente}`],
+          [`Data Entrega: ${new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedidos[i].dataEntrega))} / Valor Total: ${new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+          }).format(Number(pedidos[i].total))}`],
+          ['Nome', 'Und', 'Preço', 'Qtde', 'Total'] // cabeçalho da tabela
+        );
+
+        // Adicionar itens do pedido
+        pedidos[i].itens.forEach(item => {
+          worksheetData.push([
+            item.nome,
+            item.unidade,
+            new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.precoVenda)),
+            String(Number(item.quantidade).toFixed(4)).replace('.', ','),
+            new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.total))
+          ]);
+        });
+
+        // Adicionar linha em branco entre pedidos
+        worksheetData.push([], []);
+      }
+
+      // Adicionar total geral no final
+      worksheetData.push(
+        [],
+        [`Valor Total dos Pedidos: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(valorTotal))}`]
+      );
+    } else {
+      // Modo Sintético - apenas os totais dos pedidos
+      worksheetData.push(['Pedido', 'Cliente', 'Data Entrega', 'Valor Total']);
+      
+      pedidos.forEach(pedido => {
+        worksheetData.push([
+          pedido.id,
+          pedido.cliente,
+          new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(new Date(pedido.dataEntrega)),
+          new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(pedido.total))
+        ]);
+      });
+
+      // Adicionar total geral no final
+      worksheetData.push(
+        [],
+        [`Valor Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(valorTotal))}`]
+      );
+    }
+
+    // Criar worksheet a partir dos dados
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    
+    // Adicionar formatação para as colunas de valores (opcional)
+    if (worksheet['!ref']) {
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      for (let C = 2; C <= 4; ++C) { // Colunas C (Preço), D (Qtde), E (Total)
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+          const cell_address = {c: C, r: R};
+          const cell_ref = XLSX.utils.encode_cell(cell_address);
+          if (worksheet[cell_ref] && worksheet[cell_ref].t === 'n') {
+            worksheet[cell_ref].z = isAnalitico === "true" ? 
+              (C === 3 ? '#,##0.0000' : '"R$"#,##0.00') : '"R$"#,##0.00';
+          }
+        }
+      }
+    }
+
+    // Adicionar worksheet ao workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+
+    // Gerar o arquivo
+    const dataInicialFormatada = dataInicial.split('/').reverse().join('-');
+    const dataFinalFormatada = dataFinal.split('/').reverse().join('-');
+    XLSX.writeFile(workbook, `fornecimento-${dataInicialFormatada}-a-${dataFinalFormatada}.xlsx`);
+  };
   
   return (
     <>
@@ -220,17 +305,17 @@ const Fornecimento: NextPage = () => {
           </Dates>
           <Buttons>
             {dataInicial.length > 0 && <SearchButton type="button" onClick={() => {handleCleanFields()}}>Limpar Campos</SearchButton>}
-            {pedidos.length > 0 && <GeneratePdfButton type="button" onClick={() => {generateProductsPdf()}}>Gerar PDF</GeneratePdfButton>}
-            {pedidos.length > 0 && 
+            {(pedidos && pedidos.length > 0) ? <GeneratePdfButton type="button" onClick={() => {generateProductsExcel()}}>Gerar PDF</GeneratePdfButton> : <></>}
+            {(pedidos && pedidos.length > 0) ?
             <>
               <label htmlFor="isAnalitico">Analitico?</label>
               <input type="checkbox" name="isAnalitico" id="isAnalitico" value={isAnalitico} onChange={() => {isAnalitico === "false" ? setIsAnalitico("true") : setIsAnalitico("false")}} />
-            </>}
+            </> : <></>}
           </Buttons>
         </Content>
         {mutation.isLoading && <h1>Carregando Pedidos</h1>}
 
-        {pedidos.length > 0 ? (
+        {(pedidos && pedidos.length > 0) ? (
           <TableContainer>
           <table id="pedidos">
             <thead>

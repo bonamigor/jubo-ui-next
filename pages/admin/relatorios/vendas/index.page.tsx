@@ -238,7 +238,7 @@ const Vendas: NextPage = () => {
     doc.save(`vendas-${data}-cliente-${Number(clienteId.split(' ')[0])}`)
   }
 
-    const generateProductsExcel = async () => {
+  const generateProductsExcel = async () => {
     const XLSX = require('xlsx');
     const workbook = XLSX.utils.book_new();
     const worksheetData = [];

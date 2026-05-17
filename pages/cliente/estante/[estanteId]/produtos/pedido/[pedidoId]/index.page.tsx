@@ -51,6 +51,9 @@ const PedidoProdutos: NextPage = () => {
   const [pedido, setPedido] = useState({ id: 0, status: '', dataCriacao: '', dataConfirmacao: '', dataCancelamento: '', dataEntrega: '', valorTotal: 0, clienteId: 0});
   const [isUpdate, setIsUpdate] = useState(false)
   const [isValid, setIsValid] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<ProdutoNaEstanteProps | null>(null);
+  const [editingItem, setEditingItem] = useState<ProdutoNoPedidoProps | null>(null);
 
   useEffect(() => {
     const fetchProdutos = async () => {
@@ -82,95 +85,122 @@ const PedidoProdutos: NextPage = () => {
     fetchPedido()
   }, [estanteId, pedidoId, produtos])
 
-  const validate = () => produtoId.length > 0 && quantidade.length > 0
+  const validate = () => selectedProduct !== null && quantidade.length > 0;
 
   useEffect(() => {
-    const isValid = validate();
-    setIsValid(isValid);
-  }, [produtoId, quantidade])
+  const isValid = validate();
+  setIsValid(isValid);
+}, [selectedProduct, quantidade]);
   
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+
+    if (!selectedProduct) {
+      toast.error('Selecione um produto válido da lista.');
+      return;
+    }
+
     try {
-      const idEstante = String(estanteId)
-      const idProduto = produtoId.split(' ')[0]
+    const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
+      estanteId: String(estanteId),
+      produtoId: String(selectedProduct.produtoId), // Usa o ID real
+      precoVenda: selectedProduct.precoVenda,      // Usa o preço real
+      quantidade: Number(quantidade.replace(',', '.')),
+      pedidoId: String(pedidoId)
+    });
 
-      const { data } = await pedidoService.recuperarValorVendaProduto({ estanteId: idEstante, produtoId: idProduto })
-      const precoVenda: number = data.precoVenda
+    if (!errors) {
+      // Limpa os campos e o produto selecionado
+      setSearchTerm('');
+      setSelectedProduct(null);
+      setQuantidade('');
 
-      const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
-        estanteId: idEstante,
-        produtoId: idProduto,
-        precoVenda: precoVenda,
-        quantidade: Number(quantidade.replace(',','.')),
-        pedidoId: String(pedidoId)
-      })
+      // Cria o objeto para a tabela
+      const newProduto: ProdutoNoPedidoProps = {
+        produtoId: String(selectedProduct.produtoId),
+        nome: selectedProduct.nome,
+        unidade: selectedProduct.unidade,
+        precoVenda: selectedProduct.precoVenda,
+        quantidade: quantidade.replace('.', ','),
+        total: selectedProduct.precoVenda * Number(quantidade.replace(',', '.'))
+      };
+      setProduct(newProduto);
 
-      if (!errors) {
-        setProdutoId('')
-        setQuantidade('')
-
-        const newProduto: ProdutoNoPedidoProps = {
-          produtoId: produtoId.split(' ')[0],
-          nome: produtoId.split(' ')[1],
-          unidade: produtoId.split('/')[1].trim(),
-          precoVenda: precoVenda,
-          quantidade: quantidade.replaceAll('.', ','),
-          total: (precoVenda * Number(quantidade))
-        }
-        setProduct(newProduto)
-
-        toast.success('Produto adicionado no pedido!')
-      }
+      toast.success('Produto adicionado no pedido!');
+    }
     } catch (error) {
-      toast.error('Erro ao adicionar o produto no pedido.')
-      console.error(error)
+      toast.error('Erro ao adicionar o produto no pedido.');
+      console.error(error);
     }
   }
 
   const prepareUpdate = async (produto: ProdutoNoPedidoProps) => {
-    setProdutoId(`${produto.itemPedidoId} - ${produto.produtoId} . ${produto.nome} - R$ ${produto.precoVenda}/${produto.unidade}`)
-    setQuantidade(String(produto.quantidade))
-    setQuantidadeAntiga(produto.quantidade.split('.')[0])
-    setIsUpdate(true)
-  }
+    setEditingItem(produto);
+    
+    setSelectedProduct({
+      produtoId: Number(produto.produtoId),
+      nome: produto.nome,
+      unidade: produto.unidade,
+      precoVenda: produto.precoVenda,
+      quantidade: Number(produto.quantidade),
+      total: produto.total
+    });
+    
+    setQuantidade(String(produto.quantidade));
+    
+    setQuantidadeAntiga(produto.quantidade.split('.')[0]);
+    
+    setIsUpdate(true);
+    
+    setSearchTerm('');
+  };
 
   const handleUpdate = async () => {
-    try {
-      const itemPedidoId = produtoId.split(' ')[0]
-      const idProduto = produtoId.split(' ')[2]
+    if (!editingItem || !selectedProduct) {
+      toast.error('Selecione um produto para atualizar.');
+      return;
+    }
 
+    try {
       const { data, errors } = await itemPedidoService.atualizarItemDoPedido({
         estanteId: Number(estanteId),
-        produtoId: Number(idProduto),
+        produtoId: selectedProduct.produtoId, // Agora usa o ID real do produto
         pedidoId: Number(pedidoId),
-        itemPedidoId: Number(itemPedidoId),
-        precoVenda: Number(produtoId.split('R$')[1].split('/')[0].trim().replaceAll(',', '.')),
+        itemPedidoId: Number(editingItem.itemPedidoId), // ID do item no pedido
+        precoVenda: selectedProduct.precoVenda,
         quantidadeNova: Number(quantidade.replaceAll('.', '').replaceAll(',', '.')),
         quantidadeAntiga: Number(quantidadeAntiga.replaceAll('.', '').replaceAll(',', '.'))
-      })
+      });
 
       if (!errors) {
-        toast.success(data.message)
-        setProdutoId('')
-        setQuantidade('')
-        setIsUpdate(false)
-
-        const newProduto: ProdutoNoPedidoProps = {
-          produtoId: produtoId.split(' ')[0],
-          nome: produtoId.split(' ')[1],
-          unidade: produtoId.split(' ')[5],
-          precoVenda: Number(produtoId.split('-')[1].split('/')[0].trim().substring(3).replaceAll(',','.')),
+        toast.success(data.message || 'Item atualizado com sucesso!');
+        
+        // Cria o objeto atualizado para a tabela
+        const updatedProduto: ProdutoNoPedidoProps = {
+          itemPedidoId: editingItem.itemPedidoId,
+          produtoId: String(selectedProduct.produtoId),
+          nome: selectedProduct.nome,
+          unidade: selectedProduct.unidade,
+          precoVenda: selectedProduct.precoVenda,
           quantidade: quantidade.replaceAll('.', ','),
-          total: (Number(produtoId.split(' ')[3].substring(3).replaceAll('.', '').replaceAll(',', '.')) * Number(quantidade))
-        }
-        setProduct(newProduto)
+          total: selectedProduct.precoVenda * Number(quantidade.replaceAll('.', '').replaceAll(',', '.'))
+        };
+        
+        setProduct(updatedProduto);
+        
+        // Limpa todos os estados
+        setSelectedProduct(null);
+        setSearchTerm('');
+        setQuantidade('');
+        setQuantidadeAntiga('');
+        setEditingItem(null);
+        setIsUpdate(false);
       }
     } catch (error) {
-      toast.error('Erro ao atualizar Item do Pedido.')
-      console.error(error)
+      toast.error('Erro ao atualizar Item do Pedido.');
+      console.error(error);
     }
-  }
+  };
 
   return (
     <>
@@ -193,27 +223,104 @@ const PedidoProdutos: NextPage = () => {
             </PedidoData>
           </FormHeader>
           <h2>Selecione os produtos, digite a quantidade desejada e clique em Adicionar!</h2>
-            <PedidoForm onSubmit={handleSubmit}> 
+            <PedidoForm onSubmit={handleSubmit}>
               <FormContent>
                 <div>
-                  <input type="text" placeholder="Pesquise o Produto" 
-                      list="produtos" id="produto-choice" name="produto-choice" autoComplete="off"
-                      value={produtoId} onChange={event => {setProdutoId(event.target.value)}}   />
+                  {/* Input de busca (some quando produto selecionado) */}
+                  {!selectedProduct ? (
+                    <input 
+                      type="text" 
+                      placeholder="Pesquise o Produto" 
+                      list="produtos" 
+                      id="produto-choice" 
+                      name="produto-choice" 
+                      autoComplete="off"
+                      value={searchTerm}
+                      onChange={(event) => {
+                        const newValue = event.target.value;
+                        setSearchTerm(newValue);
+                        
+                        const matchedProduct = produtoNaEstante.find(
+                          produto => 
+                            `${produto.produtoId} ${produto.nome} - ${new Intl.NumberFormat('pt-BR', {
+                              style: 'currency',
+                              currency: 'BRL'
+                            }).format(produto.precoVenda)} / ${produto.unidade}` === newValue
+                        );
+                        
+                        if (matchedProduct) {
+                          setSelectedProduct(matchedProduct);
+                          setSearchTerm(''); // Limpa o termo de busca
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div style={{
+                      padding: '10px',
+                      backgroundColor: '#e3f2fd',
+                      borderRadius: '4px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      border: '1px solid #1976d2'
+                    }}>
+                      <div>
+                        <strong>{selectedProduct.nome}</strong>
+                        <br />
+                        <small>
+                          {new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          }).format(selectedProduct.precoVenda)} / {selectedProduct.unidade}
+                        </small>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setSelectedProduct(null);
+                          setSearchTerm('');
+                        }}
+                        style={{
+                          backgroundColor: '#ff5252',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '5px 10px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ✕ Alterar
+                      </button>
+                    </div>
+                  )}
+                  
                   <datalist id="produtos">
-                    {produtoNaEstante.map(produto => {
-                      return (
-                      <option key={produto.produtoId} 
+                    {produtoNaEstante.map(produto => (
+                      <option 
+                        key={produto.produtoId} 
                         value={`${produto.produtoId} ${produto.nome} - ${new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
                           currency: 'BRL'
-                      }).format(produto.precoVenda)} / ${produto.unidade}`}
-                      />)
-                    })}
+                        }).format(produto.precoVenda)} / ${produto.unidade}`}
+                      />
+                    ))}
                   </datalist>
                 </div>
-                <input type="text" placeholder="Quantidade" value={quantidade} onChange={event => {setQuantidade(event.target.value)}} />
-                <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>Adicionar</FormSubmitButton>
-                <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()}>Atualizar</FormButton>
+                
+                <input 
+                  type="text" 
+                  placeholder="Quantidade" 
+                  value={quantidade} 
+                  onChange={event => setQuantidade(event.target.value)} 
+                />
+                
+                <FormSubmitButton type="submit" isUpdate={isUpdate} disabled={!isValid}>
+                  Adicionar
+                </FormSubmitButton>
+                
+                <FormButton type="button" isUpdate={isUpdate} onClick={() => handleUpdate()} disabled={!isUpdate || !selectedProduct}>
+                  Atualizar
+                </FormButton>
               </FormContent>
             </PedidoForm>
             <ProductsInDemandTable prepareUpdate={prepareUpdate} product={product} />
