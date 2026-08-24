@@ -71,9 +71,9 @@ export const empresas: Array<EmpresaProps> = [
   },
   {
     id: 6,
-    attribute: 'magno',
-    displayName: 'MAGNO',
-    nome: 'MAGNO COMERCIO DE ALIMENTOS LTDA',
+    attribute: 'estevao',
+    displayName: 'ESTEVÃO',
+    nome: 'ESTEVÃO COMERCIO DE ALIMENTOS LTDA',
     cnpj: '52.308.366/0001-26',
     endereco: 'Rua Pinheiro Chagas, Número 16, Vl. Nova Canaã',
     cidade: 'Goiânia',
