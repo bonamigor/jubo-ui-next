@@ -2,6 +2,7 @@ import { NextPage } from 'next';
 import {  Container, OrderHeader, OrderItems } from "./orderInfo";
 import Modal from 'react-modal'
 import { pedidoService } from '../../../../services';
+import { calcularTotalItem, formatQuantidadeExibicao, parseQuantidadeBR } from '../../../../utils/parseQuantidade';
 import { useQuery } from 'react-query';
 import { Textarea } from '@nextui-org/react';
 import { useEffect } from 'react';
@@ -107,12 +108,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                             }).format(product.precoVenda)}
                           </td>
                           <td>{product.unidade}</td>
-                          <td>{product.quantidade.replaceAll('.',',')}</td>
+                          <td>{formatQuantidadeExibicao(product.quantidade)}</td>
                           <td>
                             {new Intl.NumberFormat('pt-BR', {
                                 style: 'currency',
                                 currency: 'BRL'
-                            }).format(product.total)}
+                            }).format(
+                              calcularTotalItem(product.precoVenda, product.quantidade, product.total)
+                            )}
                           </td>
                         </tr>
                       )

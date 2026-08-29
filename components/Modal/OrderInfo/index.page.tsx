@@ -17,6 +17,7 @@ import { PedidosProps } from '../../../services/pedido'
 import DeleteModal from '../Delete/index.page'
 import { CancelSection, ConfirmSection, Container, GeneratePdf, Observacao, OrderFooter, OrderHeader, OrderItems } from './orderInfo'
 import { empresas } from '../../../utils/empresas'
+import { calcularTotalItem, formatQuantidadeExibicao, parseQuantidadeBR } from '../../../utils/parseQuantidade'
 import { format, isAfter, isToday, isValid, parse, startOfDay } from 'date-fns'
 
 interface ProductsProps {
@@ -180,32 +181,27 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
   const generatePdf = () => {
     const doc = new jsPDF('l')
 
-    products.forEach(product => {
-      product.unidades = ''
-      delete product['produtoId'];
-      delete product['itemPedidoId'];
-    })
-
     const formatedPrices = products.map(produto => {
-      produto.unidades = ''
-      produto.quantidade = new Intl.NumberFormat('pt-BR', {
-        style: 'decimal',
-        minimumFractionDigits: 4
-      }).format(Number(produto.quantidade))
-      produto.precoVenda = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(Number(produto.precoVenda))
-      produto.total = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(Number(produto.total))
-      return { nome: produto.nome, unidade: produto.unidade, unidades: produto.unidades, quantidade: produto.quantidade, precoVenda: produto.precoVenda, total: produto.total }
+      const precoNumerico = Number(produto.precoVenda)
+      const totalCalculado = calcularTotalItem(produto.precoVenda, produto.quantidade, produto.total)
+
+      return {
+        nome: produto.nome,
+        unidade: produto.unidade,
+        unidades: '',
+        quantidade: formatQuantidadeExibicao(produto.quantidade),
+        precoVenda: new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(precoNumerico),
+        total: new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(totalCalculado),
+      }
     })
 
-    const newProdutosArray = formatedPrices.map(produto => {
-      return Object.values(produto)
-    })
+    const newProdutosArray = formatedPrices.map(produto => Object.values(produto))
 
     let pageNumber = doc.internal.pages.length - 1
 
@@ -465,8 +461,8 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
           pedidoId: Number(pedido.id),
           itemPedidoId: Number(product.itemPedidoId),
           precoVenda: Number(product.precoVenda),
-          quantidadeAntiga: Number(product.quantidade),
-          quantidadeNova: Number(quantidade.replaceAll('.', '').replaceAll(',', '.'))
+          quantidadeAntiga: parseQuantidadeBR(product.quantidade),
+          quantidadeNova: parseQuantidadeBR(quantidade),
         })
 
         if (!errors) {
@@ -540,12 +536,14 @@ const OrderInfo: NextPage<OrderInfoModalProps> = ({ isOpen, onRequestClose, pedi
                         <input 
                         onKeyUp={event => { handleUpdateItemPedido(product, event) }}
                         onChange={event => { setQuantidade(event.target.value) }} /> : 
-                        product.quantidade.replaceAll('.', ',')}</td>
+                        formatQuantidadeExibicao(product.quantidade)}</td>
                       <td>
                         {new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
                           currency: 'BRL'
-                        }).format(Number(product.total))}
+                        }).format(
+                          calcularTotalItem(product.precoVenda, product.quantidade, product.total)
+                        )}
                       </td>
                       <td>
                         <div>

@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import toast from "react-hot-toast"
 import ProductsInDemandTable from "../../../../../../../components/ProducstInDemandTable/index.page"
 import { clienteService, itemPedidoService, pedidoService, produtoEstanteService } from '../../../../../../../services/index'
+import { formatQuantidadeExibicao, parseQuantidadeBR } from '../../../../../../../utils/parseQuantidade'
 import { Container, Content, FormButton, FormContent, FormHeader, FormSubmitButton, PedidoData, PedidoForm } from "./produtos"
 
 interface ProdutoNaEstanteProps {
@@ -100,29 +101,33 @@ const PedidoProdutos: NextPage = () => {
       return;
     }
 
+    const quantidadeNumerica = parseQuantidadeBR(quantidade);
+    if (Number.isNaN(quantidadeNumerica)) {
+      toast.error('Quantidade inválida.');
+      return;
+    }
+
     try {
     const { errors } = await itemPedidoService.adicionarProdutoNoPedido({
       estanteId: String(estanteId),
-      produtoId: String(selectedProduct.produtoId), // Usa o ID real
-      precoVenda: selectedProduct.precoVenda,      // Usa o preço real
-      quantidade: Number(quantidade.replace(',', '.')),
+      produtoId: String(selectedProduct.produtoId),
+      precoVenda: selectedProduct.precoVenda,
+      quantidade: quantidadeNumerica,
       pedidoId: String(pedidoId)
     });
 
     if (!errors) {
-      // Limpa os campos e o produto selecionado
       setSearchTerm('');
       setSelectedProduct(null);
       setQuantidade('');
 
-      // Cria o objeto para a tabela
       const newProduto: ProdutoNoPedidoProps = {
         produtoId: String(selectedProduct.produtoId),
         nome: selectedProduct.nome,
         unidade: selectedProduct.unidade,
         precoVenda: selectedProduct.precoVenda,
-        quantidade: quantidade.replace('.', ','),
-        total: selectedProduct.precoVenda * Number(quantidade.replace(',', '.'))
+        quantidade: formatQuantidadeExibicao(quantidadeNumerica),
+        total: selectedProduct.precoVenda * quantidadeNumerica
       };
       setProduct(newProduto);
 
@@ -147,8 +152,7 @@ const PedidoProdutos: NextPage = () => {
     });
     
     setQuantidade(String(produto.quantidade));
-    
-    setQuantidadeAntiga(produto.quantidade.split('.')[0]);
+    setQuantidadeAntiga(String(produto.quantidade));
     
     setIsUpdate(true);
     
@@ -161,29 +165,36 @@ const PedidoProdutos: NextPage = () => {
       return;
     }
 
+    const quantidadeNumerica = parseQuantidadeBR(quantidade);
+    const quantidadeAntigaNumerica = parseQuantidadeBR(quantidadeAntiga);
+
+    if (Number.isNaN(quantidadeNumerica)) {
+      toast.error('Quantidade inválida.');
+      return;
+    }
+
     try {
       const { data, errors } = await itemPedidoService.atualizarItemDoPedido({
         estanteId: Number(estanteId),
-        produtoId: selectedProduct.produtoId, // Agora usa o ID real do produto
+        produtoId: selectedProduct.produtoId,
         pedidoId: Number(pedidoId),
-        itemPedidoId: Number(editingItem.itemPedidoId), // ID do item no pedido
+        itemPedidoId: Number(editingItem.itemPedidoId),
         precoVenda: selectedProduct.precoVenda,
-        quantidadeNova: Number(quantidade.replaceAll('.', '').replaceAll(',', '.')),
-        quantidadeAntiga: Number(quantidadeAntiga.replaceAll('.', '').replaceAll(',', '.'))
+        quantidadeNova: quantidadeNumerica,
+        quantidadeAntiga: quantidadeAntigaNumerica
       });
 
       if (!errors) {
         toast.success(data.message || 'Item atualizado com sucesso!');
         
-        // Cria o objeto atualizado para a tabela
         const updatedProduto: ProdutoNoPedidoProps = {
           itemPedidoId: editingItem.itemPedidoId,
           produtoId: String(selectedProduct.produtoId),
           nome: selectedProduct.nome,
           unidade: selectedProduct.unidade,
           precoVenda: selectedProduct.precoVenda,
-          quantidade: quantidade.replaceAll('.', ','),
-          total: selectedProduct.precoVenda * Number(quantidade.replaceAll('.', '').replaceAll(',', '.'))
+          quantidade: formatQuantidadeExibicao(quantidadeNumerica),
+          total: selectedProduct.precoVenda * quantidadeNumerica
         };
         
         setProduct(updatedProduto);

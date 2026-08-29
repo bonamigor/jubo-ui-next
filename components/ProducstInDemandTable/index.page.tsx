@@ -8,6 +8,7 @@ import toast from 'react-hot-toast'
 import DeleteImg from '../../assets/delete.png'
 import EditImg from '../../assets/edit.png'
 import { pedidoService } from '../../services'
+import { calcularTotalItem, formatQuantidadeExibicao, parseQuantidadeBR } from '../../utils/parseQuantidade'
 import DeleteModal from '../Modal/Delete/index.page'
 import { CancelButton, ConfirmButton, DecideButtons, EmptyState, StyledTextarea, TableContainer, TableFooter, TableTitle } from './productsInDemand'
 
@@ -144,12 +145,14 @@ const ProductsInDemandTable: NextPage<ProductsInDemandProps> = ({ prepareUpdate,
                               currency: 'BRL'
                           }).format(product.precoVenda)} / {product.unidade}
                         </td>
-                        <td>{product.quantidade.replaceAll('.', ',')}</td>
+                        <td>{formatQuantidadeExibicao(product.quantidade)}</td>
                         <td>
                           {new Intl.NumberFormat('pt-BR', {
                               style: 'currency',
                               currency: 'BRL'
-                          }).format(product.total)}
+                          }).format(
+                            calcularTotalItem(product.precoVenda, product.quantidade, product.total)
+                          )}
                         </td>
                         <td>
                           <a><Image onClick={() => prepareUpdate(product)} src={EditImg} alt="Visualizar" width={30} height={30} /></a>
