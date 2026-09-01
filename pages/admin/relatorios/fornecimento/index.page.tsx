@@ -7,6 +7,7 @@ import toast from "react-hot-toast"
 import InputMask from "react-input-mask"
 import { useMutation } from "react-query"
 import { pedidoService } from "../../../../services"
+import { CASAS_DECIMAIS_QUANTIDADE } from "../../../../utils/parseQuantidade"
 import { Buttons, Container, Content, Dates, EmptyTable, GeneratePdfButton, SearchButton, TableContainer } from "./fornecimento"
 
 interface Itens {
@@ -80,7 +81,7 @@ const Fornecimento: NextPage = () => {
         })
 
         const produtosDaVenda = pedidos[i].itens.map(item => {
-          item.quantidade = String(Number(item.quantidade).toFixed(4)).replaceAll('.', ',')
+          item.quantidade = String(Number(item.quantidade).toFixed(CASAS_DECIMAIS_QUANTIDADE)).replaceAll('.', ',')
           item.precoVenda = new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL'
@@ -220,7 +221,7 @@ const Fornecimento: NextPage = () => {
             item.nome,
             item.unidade,
             new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.precoVenda)),
-            String(Number(item.quantidade).toFixed(4)).replace('.', ','),
+            String(Number(item.quantidade).toFixed(CASAS_DECIMAIS_QUANTIDADE)).replace('.', ','),
             new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.total))
           ]);
         });

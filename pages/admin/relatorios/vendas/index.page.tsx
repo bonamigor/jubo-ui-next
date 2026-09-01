@@ -16,6 +16,7 @@ import 'jspdf-autotable'
 import autoTable from 'jspdf-autotable'
 import Head from "next/head"
 import { clienteService } from '../../../../services/index'
+import { CASAS_DECIMAIS_QUANTIDADE } from '../../../../utils/parseQuantidade'
 import * as XLSX from 'xlsx';
 
 interface Cliente {
@@ -125,7 +126,7 @@ const Vendas: NextPage = () => {
         })
 
         const produtosDaVenda = vendas[i].itens.map(item => {
-          item.quantidade = String(Number(item.quantidade).toFixed(4)).replaceAll('.', ',')
+          item.quantidade = String(Number(item.quantidade).toFixed(CASAS_DECIMAIS_QUANTIDADE)).replaceAll('.', ',')
           item.precoVenda = new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL'
@@ -262,7 +263,7 @@ const Vendas: NextPage = () => {
             item.nome,
             item.unidade,
             new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.precoVenda)),
-            String(Number(item.quantidade).toFixed(4)).replace('.', ','),
+            String(Number(item.quantidade).toFixed(CASAS_DECIMAIS_QUANTIDADE)).replace('.', ','),
             new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(item.total))
           ]);
         });

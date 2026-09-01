@@ -23,12 +23,15 @@ export function toQuantidadeNumerica(value: string | number): number {
   return Number(normalized);
 }
 
-/** Converte texto digitado pelo usuário (formato BR) em quantidade inteira. */
+export const CASAS_DECIMAIS_QUANTIDADE = 6;
+
+/** Converte texto digitado pelo usuário (formato BR) em quantidade numérica. */
 export function parseQuantidadeBR(value: string | number): number {
   const numerica = toQuantidadeNumerica(value);
 
   if (!Number.isFinite(numerica) || numerica <= 0) return NaN;
-  return Math.trunc(numerica);
+  const fator = 10 ** CASAS_DECIMAIS_QUANTIDADE;
+  return Math.round(numerica * fator) / fator;
 }
 
 export function formatQuantidadeExibicao(value: string | number): string {
@@ -39,8 +42,8 @@ export function formatQuantidadeExibicao(value: string | number): string {
   }
 
   return new Intl.NumberFormat('pt-BR', {
-    minimumFractionDigits: 4,
-    maximumFractionDigits: 4,
+    minimumFractionDigits: CASAS_DECIMAIS_QUANTIDADE,
+    maximumFractionDigits: CASAS_DECIMAIS_QUANTIDADE,
   }).format(numerica);
 }
 
